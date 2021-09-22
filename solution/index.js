@@ -1,6 +1,5 @@
 'use strict'
-let taskObj;
-// let currentElement;
+let taskObj,resultObj;
 
 const addEventListenerToDeleteButton = () => {
     const deleteButtons = document.querySelectorAll('.deleteButton');
@@ -80,6 +79,28 @@ const postTasks = () => {
     localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
 
+const postTasksforquery = () => {
+    let query = document.getElementById("search").value;
+    searchByQuery(query);
+    let generalString = ``, ongoingString = ``, finishedString = ``;
+    for (let key of resultObj.todo) {
+        generalString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+    }
+    document.getElementById("general-task-table").innerHTML = generalString;
+
+    for (let key of resultObj["in-progress"]) {
+        ongoingString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+    }
+    document.getElementById("ongoing-task-table").innerHTML = ongoingString;
+
+    for (let key of resultObj.done) {
+        finishedString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+    }
+    document.getElementById("finished-task-table").innerHTML = finishedString;
+    addEventListenerToTasks();
+    addEventListenerToDeleteButton();
+}
+
 const deleteNAddToOtherTask = (WantedTypeOfTask, innerTaskText) => {
     for (let taskarray in taskObj) {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
@@ -115,6 +136,34 @@ const deleteTask = (innerTextOfTitle) => {
     postTasks();
 }
 
+const searchByQuery = (query) => {
+    const queryRegex = new RegExp(`${query}`, 'i');
+    resultObj = {
+        todo: [],
+        "in-progress": [],
+        done: []
+    };
+    for (let i = 0; i < taskObj.todo.length; i++) {
+        if (queryRegex.test(taskObj.todo[i])) {
+            resultObj.todo.push(taskObj.todo[i]);
+            continue;
+        }
+    }
+    for (let i = 0; i < taskObj["in-progress"].length; i++) {
+        if (queryRegex.test(taskObj["in-progress"][i])) {
+            resultObj["in-progress"].push(taskObj["in-progress"][i]);
+            continue;
+        }
+    }
+    for (let i = 0; i < taskObj.done.length; i++) {
+        if (queryRegex.test(taskObj.done[i])) {
+            resultObj.done.push(taskObj.done[i]);
+            continue;
+        }
+    }
+    return resultObj;
+}
+
 if (localStorage.getItem("tasks")) {
     taskObj = JSON.parse(localStorage.getItem("tasks"));
     postTasks();
@@ -128,3 +177,4 @@ else {
     postTasks();
     localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
+document.getElementById("search").addEventListener("keyup",postTasksforquery)
