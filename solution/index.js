@@ -1,11 +1,9 @@
 //setting variables for the document elements
 let taskDiv = document.getElementById('tasks-div')
 let taskSectionsArray = Array.from(document.querySelectorAll('.task-section'));
-//an array that holds each section's list items
- let toDoChidrenArray = [];
- let inProgressChildrenArray = [];
- let doneChildrenArray = [];
-
+ let toDoTasksUl = document.getElementsByClassName('to-do-tasks')[0];
+ let inProgressTasksUl = document.getElementsByClassName('in-progress-tasks')[0];
+ let doneTasksUl = document.getElementsByClassName('done-tasks')[0];
 //adding a list item functionality
 function addTask(e){
     let target = e.target;
@@ -16,11 +14,17 @@ function addTask(e){
        }else{
             let newTaskInnerItem = createElement('input', children = [], classes = ['taskItemInner'], attributes = {value: `${target.previousElementSibling.value}`, 'disabled' :''});
             let newTask = createElement('li',children = [newTaskInnerItem], classes = ['taskItem'], attributes = {});
+            
             newTaskInnerItem.addEventListener('blur', saveValueBlur);
             newTask.addEventListener('dblclick', gainFocus);
+            newTask.addEventListener('mouseenter', hoverReplace);
+            /*
+            newTask.addEventListener('mouseleave', () => {
+                window.removeEventListener('keydown',innerKeyReplace);
+            }); */
+
             target.nextElementSibling.insertBefore(newTask, target.nextElementSibling.firstChild);
             target.previousElementSibling.value = '';
-            
        }
     }
 }
@@ -40,7 +44,51 @@ taskDiv.addEventListener('click', addTask)
  function saveValueBlur(e){
     e.target.setAttribute('disabled', '');
  }
+ //
 
+ // hover + alt + 1/2/3 functionality
+ function hoverReplace(e){
+     let target = e.target;
+
+     function innerKeyReplace(e){
+        console.log(e.altKey)
+        if(e.altKey ){
+            console.log(e.key)
+            if(e.key == 1){
+                toDoTasksUl.append(target);
+            }else if(e.key == 2){
+               inProgressTasksUl.append(target);
+            }else if(e.key == 3){
+                doneTasksUl.append(target);
+            }
+       }
+     } 
+     target.addEventListener('mouseleave', () => {
+        window.removeEventListener('keydown',innerKeyReplace);
+    });
+           
+      if(target.tagName === 'LI'){
+        console.log(e.target);
+          window.addEventListener('keydown',innerKeyReplace);
+      }
+ }
+ 
+ /*
+ function innerKeyReplace(e){
+     console.log(e.target);
+    //console.log(e.altKey)
+    if(e.altKey ){
+        console.log(e.key)
+        if(e.key == 1){
+            toDoTasksUl.append(e.target);
+        }else if(e.key == 2){
+           inProgressTasksUl.append(e.target);
+        }else if(e.key == 3){
+            doneTasksUl.append(e.target);
+        }
+   }
+ }
+ */
 
 
 
