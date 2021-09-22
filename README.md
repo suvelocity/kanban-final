@@ -6,7 +6,7 @@ Welcome to your pre-course final project. You are going to build a task-manageme
 
 ![Example](./example.png)
 
-## Instructions
+##  Instructions
 
 1. Fork this repo into your account.
 2. Clone the forked repo to your computer.
