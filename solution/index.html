@@ -7,8 +7,35 @@
     <script src="./index.js" defer></script>
     <link rel="stylesheet" href="./styles.css" />
     <title>Tasks manager</title>
-    <div id = main>
-        
+    <div id = 'main'>
+
+   
+
+        <h1 id = "page-title">Task Manager</h1>
+
+        <div id = search>
+            <h2>Search</h2>
+            <input type="text" id = "search">
+        </div>
+
+        <div id = "toDo">
+            <ul class = "to-do-tasks"></ul>
+            <h2>To do</h1>
+            <input type="text" id = "add-to-do-task">
+            <button id="submit-add-to-do">Add</button>
+        </div>
+        <div id = "inProgress">
+            <h2>In progress</h1>
+            <ul class = "in-progress-tasks"></ul>
+            <input type="text" id = "add-in-progress-task">
+            <button id="submit-add-in-progress">Add</button>
+        </div>
+        <div id = "done">
+            <h2>Done</h1>
+            <ul class = "done-tasks"></ul>
+            <input type="text" id ="add-done-task">
+            <button id="submit-add-done">Add</button>
+        </div>
 
     </div>
 </head>
