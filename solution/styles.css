@@ -1,6 +1,9 @@
 h1{
     text-align: center;
 }
+ul{
+  list-style: none;  
+}
 #search{
     display: flex;
     justify-content: center;
