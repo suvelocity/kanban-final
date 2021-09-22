@@ -3,6 +3,7 @@ const localSave=localStorage.getItem("tasks")
 let data
 if(localSave!=undefined){
    data=JSON.parse(localSave)
+   generateExistsTasks()
 //    console.log(data)
 }
 else{
@@ -92,7 +93,21 @@ function saveLocalData(){
     }
     
     function generateExistsTasks(){
-        
+        for(let i=0;i<data.todo.length;i++){    
+        const newTaskEl=createLiElement(data.todo[i])
+        const sectionUl=document.querySelector("#main > section:nth-child(2) > div > ul")
+        sectionUl.prepend(newTaskEl)
+        }
+        for(let i=0;i<data["in-progress"].length;i++){    
+            const newTaskEl=createLiElement(data["in-progress"][i])
+            const sectionUl=document.querySelector("#main > section:nth-child(3) > div > ul")
+            sectionUl.prepend(newTaskEl)
+            }
+            for(let i=0;i<data.done.length;i++){    
+                const newTaskEl=createLiElement(data.done[i])
+                const sectionUl=document.querySelector("#main > section:nth-child(4) > div > ul")
+                sectionUl.prepend(newTaskEl)
+                }
     }
 
 // function addTaskEvent(){
