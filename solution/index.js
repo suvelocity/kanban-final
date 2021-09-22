@@ -20,7 +20,8 @@ mainContianer.addEventListener('click', handleClick)
 function handleClick(event) {
   if (event.target.className.includes('submit-task')) {
     const list = event.target.parentElement.querySelector('ul')
-    addTaskBox(list)
+    const taskText = event.target.parentElement.querySelector('input').value
+    addTaskBox(list, taskText)
   }
 }
 
@@ -32,8 +33,7 @@ class TaskBox extends HTMLElement {
   }
   connectedCallback() {
     let container = document.createElement('div')
-    container.textContent = 'hello'
-    this.append(container)
+    container.textContent = this.append(container)
   }
 }
 
@@ -41,7 +41,8 @@ customElements.define('task-box', TaskBox)
 
 /**************** Main Functions ****************/
 
-function addTaskBox(list) {
+function addTaskBox(list, text) {
   const taskBox = document.createElement('task-box')
   list.append(taskBox)
+  taskBox.querySelector('div').textContent = text
 }
