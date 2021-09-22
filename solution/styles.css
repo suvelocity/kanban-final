@@ -9,7 +9,7 @@ h1{
     margin-bottom: 50px;
 }
 
-.tasks-div{
+#tasks-div{
     display: flex;
     justify-content: center;
 }
