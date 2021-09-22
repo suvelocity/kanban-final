@@ -3,6 +3,7 @@ body{
     flex-direction: column;
     align-items: center;
 }
+
 div{
     display: flex;
     flex-direction: row;
@@ -13,15 +14,26 @@ section{
     width: 400px;
     background-color: rgb(240, 233, 215);
     font-size: large;
-    font-family:monospace;
     border-radius: 10px;
     border-width: 5px;
     border-style: double;
-
+    
 }
 h3{
     margin: 10px 0 20px 0;
     text-align: center;
+    font-family:monospace;
     text-decoration: underline;
     font-size:xx-large;
+}
+.task{
+    list-style: none;
+    padding: 8px 10px 8px 10px;
+    margin: 5px 0 5px 0;
+    background-color: rgb(248, 248, 234);
+    font-family:sans-serif;
+    letter-spacing: 1px;
+}
+ul{
+    padding-inline-start: 0;
 }
