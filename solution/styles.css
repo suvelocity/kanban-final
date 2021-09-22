@@ -1,0 +1,25 @@
+/* tags selectors */
+body{
+    font-family: Sans-serif;
+    font-size: 14;
+    width: 100%;
+    background-color: #E0E0E0;
+  }
+  h1 {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+  }
+/* id selectors */
+#to-do-section{
+    float: left;
+    background-color: aqua;
+}
+#in-progress-section{
+background-color: chartreuse;
+}
+#done-section{
+    float: right;
+    background-color: coral;
+}
+/* classs selectors */
