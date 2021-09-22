@@ -11,6 +11,7 @@ const KEY_3 = 51;
 document.addEventListener('click', onClickHandler);
 let searchInput = document.querySelector("#search")
 searchInput.addEventListener('keyup', onKeyUpSearchInput);
+document.addEventListener("dblclick", onDoubleClick)
 if(localStorage.getItem('tasks') === null){
     const tasks = {
         "todo": [],
@@ -50,7 +51,7 @@ function onClickHandler(event){
             case "search":
                 // Do search, will build it later                        
         }
-        loadTasksToPage("");   
+        loadTasksToPage(searchInput.value);   
     }    
 }  
 
@@ -59,6 +60,37 @@ function onKeyUpSearchInput(){
     loadTasksToPage(searchQuery);
 }
 
+function onDoubleClick(event){
+    event.preventDefault();
+    let target = event.target;
+    if(target.tagName === "LI"){      
+        let taskValue = target.textContent;                        
+        let newInput = createElement('input', [], ["edit-input"], {value: taskValue, "data-section": target.dataset.section});  
+        target.textContent = "";      
+        target.append(newInput);
+        target.addEventListener("blur",() => blurEditTask(taskValue, newInput), true);         
+        newInput.focus();
+        newInput.select();
+    }
+}
+
+// ===> after edit - save changes <===
+function blurEditTask(pastTaskValue, editedTaskInput){    
+    const taskManagerDataString = localStorage.getItem('tasks');
+    const taskManagerDataJSON = JSON.parse(taskManagerDataString);  
+
+    // gets dataset (key in tasks)
+    let key = editedTaskInput.dataset.section;
+    const arrayOfSection = taskManagerDataJSON[key];
+    for (let taskIndex = 0; taskIndex < arrayOfSection.length; taskIndex++) {
+        if(arrayOfSection[taskIndex] === pastTaskValue){
+            arrayOfSection[taskIndex] = editedTaskInput.value;
+        }
+    }
+    localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
+    editedTaskInput.remove();
+    loadTasksToPage(searchInput.textContent);
+}
 
 /* 
 *   ===> Adding task to LocalStorage <===
@@ -111,7 +143,7 @@ function createTaskUl(query, key, classes){
         let taskLowCased = task.toLowerCase();
         let queryLowCased =  query.toLowerCase();      
         if(taskLowCased.includes(queryLowCased)){
-            liArray.push(createElement("li", [task], ["task"]));
+            liArray.push(createElement("li", [task], ["task"], {"data-section": key}));
         }        
     }
     let ul = createElement("ul", liArray, [...classes]);  
