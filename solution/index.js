@@ -107,8 +107,10 @@ function createTaskUl(query, key, classes){
     const taskManagerDataString = localStorage.getItem('tasks');
     const taskManagerDataJSON = JSON.parse(taskManagerDataString);
     let liArray = [];
-    for(let task of taskManagerDataJSON[key]){
-        if(task.includes(query)){
+    for(let task of taskManagerDataJSON[key]){ 
+        let taskLowCased = task.toLowerCase();
+        let queryLowCased =  query.toLowerCase();      
+        if(taskLowCased.includes(queryLowCased)){
             liArray.push(createElement("li", [task], ["task"]));
         }        
     }

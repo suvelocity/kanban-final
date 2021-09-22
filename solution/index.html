@@ -9,43 +9,43 @@
     <title>Tasks manager</title>
 </head>
 <body>
-    <div>
+    <div class="head-div">
         <header id="page-title">
             Task manager
         </header> 
-        <input placeholder="Search..." id="search">  
+        <input placeholder="Search..." id="search" class="search-input">  
     </div> 
     <div class="main-div">        
         <div class="section-div">
-            <div>
-                <input type="text" id="add-to-do-task">
-                <button type="button" id="submit-add-to-do">Submit</button>
+            <div class="input-div">                
+                <input type="text" id="add-to-do-task" class="add-input">
+                <button type="button" id="submit-add-to-do" class="submit-button">Submit</button>
             </div>
-            <br>
-            to do
-            <br>   
+
+            <h2 class="topic">To-Do</h2>
+
             <div id="div-to-do-tasks">
             </div>                     
         </div>
         <div class="section-div">
-            <div>
-                <input type="text" id="add-in-progress-task">
-                <button type="button" id="submit-add-in-progress">Submit</button>
+            <div class="input-div">
+                <input type="text" id="add-in-progress-task" class="add-input">
+                <button type="button" id="submit-add-in-progress" class="submit-button">Submit</button>
             </div>
-            <br>
-            in progress
-            <br>
+            
+            <h2 class="topic">In Progress</h2>
+            
             <div id="div-in-progress-tasks">
             </div> 
         </div>
         <div class="section-div">
-            <div>
-                <input type="text" id="add-done-task">
-                <button type="button" id="submit-add-done">Submit</button>
+            <div class="input-div">
+                <input type="text" id="add-done-task" class="add-input">
+                <button type="button" id="submit-add-done" class="submit-button">Submit</button>
             </div>
-            <br>
-            done
-            <br>
+            
+            <h2 class="topic">Done!</h2>
+            
             <div id="div-done-tasks">
             </div> 
         </div>

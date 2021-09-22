@@ -1,4 +1,13 @@
+header{
+    text-align: center;
+    font-size: 38px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: orangered;
+}
 .main-div{    
+    text-align: center;
+}
+.head-div{
     text-align: center;
 }
 .section-div{
@@ -6,11 +15,60 @@
     display: inline-grid;
     width: 30%;
     margin-left: 30px;    
-    background: #ce8888;
+    border: 3px solid blueviolet;
 }
 /* every li should have this class */
 .task{
     color: black;
     text-align: left;
     list-style-type: none;
+    margin-top: 7px;
+    margin-right: 8%;
+    padding: 7px 7px;
+    border: 1px solid black;
+}
+.input-div{
+    margin-top: 5px;
+    width: 100%;
+}
+.topic{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: cornflowerblue;
+}
+.search-input{
+    border-radius: 4px;
+    height: 24px;
+    border: 1px solid gray;
+    width: 25%;
+    margin-top: 25px;
+    margin-bottom: 50px;
+}
+.search-input:focus{
+    outline: none;
+    border: 1px solid paleturquoise;
+    box-shadow: 3px 3px 5px #aaaaaa;
+}
+.add-input{
+    border-radius: 4px;
+    height: 24px;
+    border: 1px solid;
+    width: 50%;
+}
+.add-input:focus{
+    outline: none;
+    border: 1px solid green;
+    box-shadow: 3px 3px 5px #aaaaaa;
+}
+.submit-button{
+    border-radius: 3px;
+    padding: 5px 10px;
+    margin-left: 3px;
+    background-color: cornflowerblue;
+    color: snow;
+}
+.submit-button:hover{
+    background-color: lightseagreen;
+    box-shadow: 3px 3px 5px #aaaaaa;
 }
