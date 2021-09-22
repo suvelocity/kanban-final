@@ -1,32 +1,38 @@
 'use strict'
-let taskObj = {
-    generalTasks: [
-        { nameOfTask: "Bring Down Trash" },
-        { nameOfTask: "Throw Away Dirt" },
-    ],
-    ongoingTasks: [
-        { nameOfTask: "Clean Dishes" },
-    ],
-    finishedTasks: [
-        { nameOfTask: "Clean the Room" },
-    ],
+let taskObj;
+if(localStorage.getItem("SavedTasks")) {
+    taskObj = JSON.parse(localStorage.getItem("SavedTasks"));
+}
+else {
+    taskObj = {
+        generalTasks: [
+            { nameOfTask: "Bring Down Trash" },
+            { nameOfTask: "Throw Away Dirt" },
+        ],
+        ongoingTasks: [
+            { nameOfTask: "Clean Dishes" },
+        ],
+        finishedTasks: [
+            { nameOfTask: "Clean the Room" },
+        ],
+    }
 }
 
 const addTask = (taskType) => {
     if (taskType === "generalTasks") {
         const taskValue = document.getElementById("add-to-do-task").value;
         const newObj = { nameOfTask: taskValue }
-        taskObj[taskType].push(newObj);
+        taskObj[taskType].unshift(newObj);
     }
     else if (taskType === "ongoingTasks") {
         const taskValue = document.getElementById("add-in-progress-task").value;
         const newObj = { nameOfTask: taskValue }
-        taskObj[taskType].push(newObj);
+        taskObj[taskType].unshift(newObj);
     }
     else if (taskType === "finishedTasks") {
         const taskValue = document.getElementById("add-done-task").value;
         const newObj = { nameOfTask: taskValue }
-        taskObj[taskType].push(newObj);
+        taskObj[taskType].unshift(newObj);
     }
     postTasks();
 }
@@ -47,5 +53,7 @@ const postTasks = () => {
         finishedString += `<li class="done-tasks">${key.nameOfTask}</li>`
     }
     document.getElementById("finished-task-table").innerHTML = finishedString;
+    localStorage.setItem("SavedTasks", JSON.stringify(taskObj));
 }
+
 postTasks();
