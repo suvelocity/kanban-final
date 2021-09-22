@@ -53,33 +53,36 @@ function updateLocalSaveData(){
 //  Maniputale tasks order and sections  //
 let taskToMove
 const moveTask = (section) => {
-    // Get the needed data about the task
+        // Get the needed data about the task
     const previusTaskUl = taskToMove.closest("ul")
     const taskText = taskToMove.innerText
-    // Create the task in it's new section
+        // Create the task in it's new section
     const newTaskElem = createTask(taskText)
     section.prepend(newTaskElem)
     console.log(section, taskText)
-    // Removes the task from it's previus section
+        // Removes the task from it's previus section
     taskToMove.parentElement.removeChild(taskToMove)
-    // Updates local storage
+        // Updates local storage
     removeTaskData(taskText)
     addNewTaskData(section, taskText)
     updateLocalSaveData()
+    taskToMove = null
 
 }
 function moveBetweenSections({altKey, key}){
-    if (altKey && key == 1){
-        const toDoList = document.querySelector(".to-do-tasks")
-        moveTask(toDoList)
-    }
-    if (altKey && key == 2){
-        const toDoList = document.querySelector(".in-progress-tasks")
-        moveTask(toDoList)
-    }
-    if (altKey && key == 3){
-        const toDoList = document.querySelector(".done-tasks")
-        moveTask(toDoList)
+    if (taskToMove){
+        if (altKey && key == 1){
+            const toDoList = document.querySelector(".to-do-tasks")
+            moveTask(toDoList)
+        }
+        if (altKey && key == 2){
+            const toDoList = document.querySelector(".in-progress-tasks")
+            moveTask(toDoList)
+        }
+        if (altKey && key == 3){
+            const toDoList = document.querySelector(".done-tasks")
+            moveTask(toDoList)
+        }
     }
 }
 function hoverHandler({target}){
@@ -88,7 +91,10 @@ function hoverHandler({target}){
         document.addEventListener("keydown", moveBetweenSections)
         // console.log(target)
     }
-    target.onmouseout = () => {document.removeEventListener("keypress", moveBetweenSections)}
+    target.onmouseout = () => {
+        document.removeEventListener("keypress", moveBetweenSections)
+        taskToMove = null
+    }
 }
 
 //  Create and delete elements  //
