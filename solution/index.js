@@ -4,45 +4,50 @@
     "in-progress": [],
     "done": []
       })
-    ); */
+    ); 
+    */
    //localStorage.clear();
     console.log(JSON.parse(localStorage.tasks).todo);
-//localstorage loading function
-function addTaskByLocalStorage(listValue){
-    let newTaskInnerItem = createElement('input', children = [], classes = ['taskItemInner'], attributes = {value: `${listValue}`, 'disabled' :''});
-    let newTask = createElement('li',children = [newTaskInnerItem], classes = ['taskItem'], attributes = {});
-    
-    newTaskInnerItem.addEventListener('blur', saveValueBlur);
-    newTask.addEventListener('dblclick', gainFocus);
-    newTask.addEventListener('mouseenter', hoverReplace);
-    
-    return newTask;
+    let localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
 
-}
-//load local storage
 
-let localStorageElements = JSON.parse(localStorage.tasks);
-console.log(localStorageElements.todo);
-for(let element of localStorageElements.todo){
-    document.getElementsByClassName('to-do-tasks')[0].append(addTaskByLocalStorage(element));
-}
-for(let element of localStorageElements['in-progress']){
-    document.getElementsByClassName('in-progress-tasks')[0].append(addTaskByLocalStorage(element));
-}
-for(let element of localStorageElements.done){
-    document.getElementsByClassName('done-tasks')[0].append(addTaskByLocalStorage(element));
-}
+document.body.addEventListener('mouseover' ,addHoverReplace);
+document.body.addEventListener('dblclick',gainFocus);
+document.body.addEventListener('focusout', saveValueBlur);
 
 
 
 //setting variables for the document elements
 let taskDiv = document.getElementById('tasks-div')
 let taskSectionsArray = Array.from(document.querySelectorAll('.task-section'));
- let toDoTasksUl = document.getElementsByClassName('to-do-tasks')[0];
- let inProgressTasksUl = document.getElementsByClassName('in-progress-tasks')[0];
- let doneTasksUl = document.getElementsByClassName('done-tasks')[0];
  let submitButtonArray = Array.from(document.getElementsByClassName('add-task'));
- let localStorageTasksObjectForUpdate = JSON.parse(localStorage.tasks);
+ 
+ //localstorage loading function
+ if(localStorageObjectForUpdate.todo.length > 0 || localStorageObjectForUpdate['in-progress'].length > 0 || localStorageObjectForUpdate.done.length > 0){
+    let toDoSection = document.getElementById('to-do-container');
+    let inProgressContainer = document.getElementById('in-progress-container');
+    let donContainer = document.getElementById('done-container');
+    toDoSection.innerHTML = localStorageObjectForUpdate.todo[0];
+    inProgressContainer.innerHTML = localStorageObjectForUpdate['in-progress'][0];
+    donContainer.innerHTML = localStorageObjectForUpdate.done[0];
+
+    var toDoTasksUl = toDoSection.firstChild;
+    var inProgressTasksUl = inProgressContainer.firstChild;
+    var doneTasksUl = donContainer.firstChild;
+
+ }else{
+    var toDoTasksUl = createElement('ul', children = [], classes = ['to-do-tasks'], attributes = {})
+    var inProgressTasksUl = createElement('ul', children = [], classes = ['in-progress-tasks'], attributes = {})
+    var doneTasksUl = createElement('ul', children = [], classes = ['done-tasks'], attributes = {})
+
+    document.getElementById('to-do-section').appendChild(toDoTasksUl);
+    document.getElementById('in-progress-section').appendChild(inProgressTasksUl);
+    document.getElementById('done-section').appendChild(doneTasksUl);
+ }
+//load local storage
+
+ //adding the section lists to the DOM
+
 //adding a list item functionality
 function addTask(e){
     let target = e.target;
@@ -54,30 +59,20 @@ function addTask(e){
        }else{
             let newTaskInnerItem = createElement('input', children = [], classes = ['taskItemInner'], attributes = {value: `${target.previousElementSibling.value}`, 'disabled' :''});
             let newTask = createElement('li',children = [newTaskInnerItem], classes = ['taskItem'], attributes = {});
-            
-            newTaskInnerItem.addEventListener('blur', saveValueBlur);
-            newTask.addEventListener('dblclick', gainFocus);
-            newTask.addEventListener('mouseenter', hoverReplace);
+            console.log(target.nextElementSibling.firstChild);
+            target.nextElementSibling.firstChild.insertBefore(newTask, target.nextElementSibling.firstChild.firstChild);
 
-            console.log(`${target.previousElementSibling.value}`);
-            //local storage insertion
-            if(currentSection.id === 'to-do-section'){
-                localStorageTasksObjectForUpdate.todo.push(`${target.previousElementSibling.value}`);
-               console.log(localStorageTasksObjectForUpdate.todo);
-            }else if(currentSection.id === 'in-progress-section'){
-                localStorageTasksObjectForUpdate['in-progress'].push(`${target.previousElementSibling.value}`);
-            }else if(currentSection.id === 'done-section'){
-                localStorageTasksObjectForUpdate.done.push(`${target.previousElementSibling.value}`)
-            }
-                console.log(JSON.stringify(localStorageTasksObjectForUpdate));
-            localStorage.setItem('tasks', JSON.stringify(localStorageTasksObjectForUpdate));
-            // end of local storage insertion
-            target.nextElementSibling.insertBefore(newTask, target.nextElementSibling.firstChild);
+              //local storage insertion
+              localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
+              localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
+              localStorageObjectForUpdate.done[0] = doneTasksUl.outerHTML;
+              console.log(localStorageObjectForUpdate);
+              localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
+              // end of local storage insertion
+
             target.previousElementSibling.value = '';
-
-            
-            
-            
+             
+            console.log(toDoTasksUl);
        }
     }
 }
@@ -95,6 +90,11 @@ taskDiv.addEventListener('click', addTask)
 
  // getting out of focus after blur
  function saveValueBlur(e){
+    let target = e.target;
+     if(target.className != 'taskItemInner'){
+        return;
+     }
+     console.log(e.target.tagName + 'blurred');
     e.target.setAttribute('disabled', '');
  }
  //
@@ -102,58 +102,44 @@ taskDiv.addEventListener('click', addTask)
  // hover + alt + 1/2/3 functionality
  function hoverReplace(e){
      let target = e.target;
-
-     function innerKeyReplace(e){
+  
+      console.log(target + 'hovered');
+      function innerKeyReplace(e){
         console.log(e.altKey)
-        if(e.altKey ){
-            console.log(e.key)
-            if(e.key == 1){
-                toDoTasksUl.append(target);
-            }else if(e.key == 2){
-               inProgressTasksUl.append(target);
-            }else if(e.key == 3){
-                doneTasksUl.append(target);
+            if(e.altKey ){
+                console.log(e.key)
+                if(e.key == 1){
+                    toDoTasksUl.append(target);
+                }else if(e.key == 2){
+                inProgressTasksUl.append(target);
+                }else if(e.key == 3){
+                    doneTasksUl.append(target);
+                }
             }
+                 //local storage insertion
+                 localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
+                 localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
+                 localStorageObjectForUpdate.done[0] = doneTasksUl.outerHTML;
+                 console.log(localStorageObjectForUpdate);
+                 localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
+                 // end of local storage insertion
        }
-     } 
-     target.addEventListener('mouseleave', () => {
-        window.removeEventListener('keydown',innerKeyReplace);
-    });
-           
-      if(target.tagName === 'LI'){
-        console.log(e.target);
-          window.addEventListener('keydown',innerKeyReplace);
-      }
+
+       console.log(target.parentElement.parentElement);
+       target.addEventListener('mouseleave', () => {
+            window.removeEventListener('keydown',innerKeyReplace);
+        }); 
+
+        window.addEventListener('keydown',innerKeyReplace);
  }
- 
- /*
- function innerKeyReplace(e){
-     console.log(e.target);
-    //console.log(e.altKey)
-    if(e.altKey ){
-        console.log(e.key)
-        if(e.key == 1){
-            toDoTasksUl.append(e.target);
-        }else if(e.key == 2){
-           inProgressTasksUl.append(e.target);
-        }else if(e.key == 3){
-            doneTasksUl.append(e.target);
-        }
-   }
- }
- */
-
-
-
-
-
-
-
-
-
-
-
-
+//add addHoverReplace
+function addHoverReplace(e){
+    if (e.target.tagName != 'LI'){
+        return
+    };
+    e.target.addEventListener('mouseenter', hoverReplace);
+    console.log('added hover replace')
+}
 
 //create Element function
 function createElement(tagName, children = [], classes = [], attributes = {}) {
