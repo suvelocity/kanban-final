@@ -9,28 +9,39 @@
     <title>Tasks manager</title>
 </head>
 <body>
-    <div id=""></div>
+ <div id="upper-section">
     <h1 id="page-title">Kaban</h1>
     <input id="search" type="text" placeholder="Search">
+ </div>
+ <div class="wrapper">
     <!-- to do section -->
-    <section id="to-do-section"> 
-            
-        <ul class="to-do-tasks"></ul>
-        <div class="kanban__title"></div>
-        <input id="add-to-do-task" type="text">
-        <button id="submit-add-to-do"></button>
+    <section class="box" id="to-do-section">
+        <h2>To do</h2> 
+        <ul id="ulll" class="to-do-tasks anyUL">
+            <!-- enter li here -->
+        </ul>
+        <input class="add-input" id="add-to-do-task" type="text" placeholder="add to do">
+        <br>
+        <button class="addBT addBT-fill" id="submit-add-to-do"  >Add</button>
     </section>
+    <div class="middler"></div>
     <!-- in progress section -->
-    <section id="in-progress-section"> 
-        <ul class="in-progress-tasks"></ul>
-        <input id="add-in-progress-task" type="text">
-        <button id="submit-add-in-progress"></button>
+    <section  class="box" id="in-progress-section"> 
+        <h2>In progress</h2>
+        <ul id="ulll" class="in-progress-tasks anyUL"></ul>
+        <input class="add-input" id="add-in-progress-task" type="text" placeholder="add in progress">
+        <br>
+        <button class="addBT addBT-fill" id="submit-add-in-progress" >Add</button>
     </section>
+    <div class="middler"></div>
     <!-- to do section -->
-    <section id="done-section"> 
-        <ul class="done-tasks"></ul>
-        <input id="add-done-task" type="text">
-        <button id="submit-add-done"></button>
+    <section  class="box" id="done-section"> 
+        <h2>Done</h2>
+        <ul id="ulll" class="done-tasks"></ul>
+        <input class="add-input anyUL" id="add-done-task" type="text" placeholder="add done">
+        <br>
+        <button class="addBT addBT-fill" id="submit-add-done" >Add</button>
     </section>
+ </div>
 </body>
 </html>

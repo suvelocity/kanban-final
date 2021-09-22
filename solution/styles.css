@@ -5,21 +5,140 @@ body{
     width: 100%;
     background-color: #E0E0E0;
   }
-  h1 {
-    position: absolute;
-    left: 16px;
-    top: 16px;
+  ul {
+    transition: border-color 2s ease, all 0.1s ease;
+    list-style-type:none ;
+  }
+  .to-do-tasks {
+    border-top: 5px solid #FFB300;
   }
 /* id selectors */
-#to-do-section{
-    float: left;
-    background-color: aqua;
+#upper-section{
+    margin-bottom: 35px;
 }
-#in-progress-section{
-background-color: chartreuse;
+#page-title{
+    display: inline;
 }
-#done-section{
-    float: right;
-    background-color: coral;
+#search{
+    margin-left: 35%;
 }
 /* classs selectors */
+.to-do-tasks {
+    border-top: 5px solid #FFB300;
+  }
+  .in-progress-tasks {
+    border-top: 5px solid #0084ff;
+  }
+  .done-tasks {
+    border-top: 5px solid #34c916;
+  }
+  .LiDiv{
+      border: 1px solid black;
+      border-radius: 5px;
+      box-shadow: rgba(3, 102, 214, 0.3) 1px 1px 1px 3px;
+  }
+  .li-task{
+      color: black;
+      font-size: 16px;
+      /* should be on the div */
+      border: 1px solid rgb(255, 255, 255);
+      border-radius: 5px;
+      box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+      margin: 10px 5px 10px 0;
+  }
+/*  */
+.box{
+    display: table-cell;
+    border-radius:5px;
+    height: 500px;
+    border: 1px solid black;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.text{
+    color:white;
+    font-weight:bold;
+    text-align:center;
+    padding: 10px 0;
+}
+
+.wrapper {
+    display: table;
+    width: 100%;
+}
+
+.middler {
+    display: table-cell;
+    width: 10%;
+}
+
+/* add buttons style */
+.addBT {
+    position: relative;
+    box-sizing: border-box;
+    display: inline-block;
+    overflow: hidden;
+    padding: 8px 20px;
+    margin: 0px 3px 6px;
+    text-align: center;
+    border: 2px solid rgb(255, 255, 255);
+    text-decoration: none;
+    color: rgb(7, 7, 12);
+    white-space: nowrap;
+    z-index: 0;
+    border-radius: 3px;
+} 
+
+
+.addBT i {
+    padding-right: 8px;
+} 
+
+
+.addBT-fill::before {
+    position: absolute;
+    content: "";
+    background: rgb(160, 46, 46);
+    transition-duration: 0.3s;
+    z-index: -1;
+    inset: 0px 0px auto auto;
+    opacity: 1;
+} 
+
+
+.addBT-fill:hover::before {
+    width: 0px;
+    height: 100%;
+    opacity: 1;
+} 
+
+
+.addBT-fill {
+    background: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    transition: all 0.3s ease 0s;
+} 
+
+
+.addBT-fill:hover {
+    background: transparent;
+    color: rgb(255, 255, 255);
+    transition: all 0.3s ease 0s;
+} 
+
+
+.addBT-fill::after {
+    position: absolute;
+    content: "";
+    background: rgb(255, 255, 255);
+    transition-duration: 0.3s;
+    z-index: -1;
+    inset: 0px auto auto 0px;
+    width: 50%;
+    height: 100%;
+    opacity: 1;
+} 
+
+
+.addBT-fill:hover::after {
+    width: 0px;
+} 
