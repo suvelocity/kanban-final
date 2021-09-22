@@ -22,6 +22,7 @@ function handleClick(event) {
     const list = event.target.parentElement.querySelector('ul')
     const taskText = event.target.parentElement.querySelector('input').value
     addTaskBox(list, taskText)
+    captureData()
   }
 }
 
@@ -45,4 +46,34 @@ function addTaskBox(list, text) {
   const taskBox = document.createElement('task-box')
   list.append(taskBox)
   taskBox.querySelector('div').textContent = text
+}
+
+function captureData() {
+  const sections = [...document.querySelectorAll('section')]
+  const resultsArray = sections.map(stripData)
+  storeLocally(resultsArray)
+}
+
+/**Stores the data captured in localStorage.
+ *
+ * @param {Array} data - the array that contains the data objects
+ */
+function storeLocally(data) {
+  localStorage.setItem('tasks', JSON.stringify(data))
+}
+
+/**************** Utility Functions ****************/
+
+function stripData(section) {
+  const list = section.querySelector('.task-list')
+  const sectionName = section.className.replace('-section', '')
+  const tasksArray = [...list.children]
+  const strippedTasksArray = tasksArray.map(stripTaskBox)
+  const keyValuePair = { [sectionName]: strippedTasksArray }
+  return keyValuePair
+}
+
+function stripTaskBox(taskBox) {
+  const text = taskBox.querySelector('div').textContent
+  return text
 }
