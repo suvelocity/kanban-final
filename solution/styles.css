@@ -1,0 +1,14 @@
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 1000px;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 400px;
+  width: 300px;
+}
