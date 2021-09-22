@@ -9,5 +9,29 @@
     <title>Tasks manager</title>
 </head>
 <body>
+    <div id="head-container">
+        <h1 id="page-title">KANBAN - Your Personal Task Organizer</h1>
+    </div>
+    <input id="search" type="text" placeholder="Search a task...">
+    <div id="main-container">
+        <section id="to-do-section">
+            <header class="section-header">To Do Tasks</header>
+            <ul id="to-do-tasks"></ul>
+            <input id="add-to-do-task" class="section-input" type="text" placeholder="Add to do task">
+            <button id="submit-add-to-do">Add Task</button>
+        </section>
+        <section id="in-progress-section">
+            <header class="section-header">In Progress Tasks</header>
+            <ul id="in-progress-tasks"></ul>
+            <input id="add-in-progress-task" class="section-input" type="text" placeholder="Add in progress task">
+            <button id="submit-add-in-progress">Add Task</button>
+        </section>
+        <section id="done-section">
+            <header class="section-header">Done Tasks</header>
+            <ul id="done-tasks"></ul>
+            <input id="add-done-task" class="section-input" type="text" placeholder="Add done task">
+            <button id="submit-add-done">Add Task</button>
+        </section>
+    </div>
 </body>
 </html>
