@@ -8,3 +8,7 @@
     height: 100px;
     background: #ce8888;
 }
+/* every li should have this class */
+.task{
+    color: black;
+}
