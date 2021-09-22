@@ -11,10 +11,6 @@ const inProgressTasks = document.querySelector('.in-progress-tasks')
 
 const taskBox = document.createElement('div')
 
-/**************** Event Listeners ****************/
-
-mainContianer.addEventListener('click', handleClick)
-
 /**************** Event Handlers ****************/
 
 function handleClick(event) {
@@ -34,7 +30,7 @@ class TaskBox extends HTMLElement {
   }
   connectedCallback() {
     let container = document.createElement('div')
-    container.textContent = this.append(container)
+    this.append(container)
   }
 }
 
@@ -45,6 +41,7 @@ customElements.define('task-box', TaskBox)
 function addTaskBox(list, text) {
   const taskBox = document.createElement('task-box')
   list.append(taskBox)
+  console.log(taskBox)
   taskBox.querySelector('div').textContent = text
 }
 
@@ -77,3 +74,28 @@ function stripTaskBox(taskBox) {
   const text = taskBox.querySelector('div').textContent
   return text
 }
+
+function loadData() {
+  const data = JSON.parse(localStorage.getItem('tasks'))
+  parseData(data)
+}
+
+function parseData(data) {
+  data.forEach((obj) => {
+    const listName = Object.keys(obj) + '-section'
+    const sectionElement = document.querySelector(`.${listName}`)
+    const listElement = sectionElement.querySelector('.task-list')
+    const textArray = obj[Object.keys(obj)]
+    textArray.forEach((item) => {
+      console.log(`${listElement},${item} `)
+      addTaskBox(listElement, item)
+    })
+  })
+}
+
+/**************** Event Listeners ****************/
+//TODO: replace all single quotes (') with double quotes ("")
+
+mainContianer.addEventListener('click', handleClick)
+
+window.addEventListener('load', loadData())
