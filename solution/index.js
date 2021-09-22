@@ -1,30 +1,47 @@
 'use strict'
 let taskObj;
+// let currentElement;
 
 const addEventListenerToDeleteButton = () => {
     const deleteButtons = document.querySelectorAll('.deleteButton');
     deleteButtons.forEach(element => {
         element.addEventListener("click", function () {
-            deleteTask(element.parentElement.getElementsByClassName("task")[0].innerText)
+            deleteTask(element.parentElement.parentElement.getElementsByClassName("task")[0].innerText)
         }
         )
     }
     );
 }
+
 const addEventListenerToTasks = () => {
-    const taskdivs = document.querySelectorAll('.TaskDiv');
-    taskdivs.forEach(element => {
-        element.addEventListener("click", function (e) {
-           element.style.backgroundColor = "yellow";
-            if(e.altKey){
-               console.log(555);
-           }
-        }
-        )
+    const taskLi = document.querySelectorAll('.task');
+    taskLi.forEach(element => {
+        element.addEventListener("click", function () {
+            try { document.querySelector("#selectedTask").id = ""; }
+            catch { element.id = "selectedTask"; }
+            element.id = "selectedTask";
+            window.addEventListener("keydown", function (e) {
+                if (e.key === "Alt") {
+                    window.addEventListener("keydown", function (e) {
+                        if (e.key === "1") {
+                            let innerTaskText = element.innerText;
+                            deleteNAddToOtherTask("todo", innerTaskText);
+                        }
+                        else if (e.key === "2") {
+                            let innerTaskText = element.innerText;
+                            deleteNAddToOtherTask("in-progress", innerTaskText);
+                        }
+                        else if (e.key === "3") {
+                            let innerTaskText = element.innerText;
+                            deleteNAddToOtherTask("done", innerTaskText);
+                        }
+                        });
+                }
+            })
+        })
     }
-    );
+    )
 }
-addEventListenerToTasks();
 
 const addTask = (taskType, id) => {
     const taskValue = document.getElementById(id).value;
@@ -37,23 +54,35 @@ const addTask = (taskType, id) => {
 const postTasks = () => {
     let generalString = ``, ongoingString = ``, finishedString = ``;
     for (let key of taskObj.todo) {
-        generalString += `<li class="task">${key}</li><button class="deleteButton"><img src="./Images/XRED.ico"></button>`
+        generalString += `<li class="task">${key}<button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
     }
     document.getElementById("general-task-table").innerHTML = generalString;
 
     for (let key of taskObj["in-progress"]) {
-        ongoingString += `<li class="task">${key}</li><button class="deleteButton"><img src="./Images/XRED.ico"></button>`
+        ongoingString += `<li class="task">${key}<button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
     }
     document.getElementById("ongoing-task-table").innerHTML = ongoingString;
 
     for (let key of taskObj.done) {
-        finishedString += `<li class="task">${key}</li><button class="deleteButton"><img src="./Images/XRED.ico"></button>`
+        finishedString += `<li class="task">${key}<button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
     }
     document.getElementById("finished-task-table").innerHTML = finishedString;
+    addEventListenerToTasks();
     addEventListenerToDeleteButton();
     localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
 
+const deleteNAddToOtherTask = (WantedTypeOfTask, innerTaskText) => {
+    for (let taskarray in taskObj) {
+        for (let i = 0; i < taskObj[taskarray].length; i++) {
+            if (taskObj[taskarray][i] == innerTaskText) {
+                taskObj[WantedTypeOfTask].unshift(innerTaskText)
+                taskObj[taskarray].splice(i, 1);
+            }
+        }
+    }
+    postTasks();
+}
 const deleteTask = (innerTextOfTitle) => {
     for (let taskarray in taskObj) {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
