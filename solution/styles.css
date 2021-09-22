@@ -1,5 +1,5 @@
 section {
-     border:1px solid black;
+     border:1px solid black; overflow: hidden;
      float: left;
      margin-right: 30px;
      
@@ -16,4 +16,8 @@ section {
         text-align:center;
         list-style: none;
         margin-right: 5em;
+        margin-bottom: 10px;
+    }
+    button,input{
+        margin-bottom: 10px;
     }
