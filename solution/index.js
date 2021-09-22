@@ -1,12 +1,52 @@
+ /*
+ localStorage.setItem('tasks', JSON.stringify({
+    "todo": [],
+    "in-progress": [],
+    "done": []
+      })
+    ); */
+   //localStorage.clear();
+    console.log(JSON.parse(localStorage.tasks).todo);
+//localstorage loading function
+function addTaskByLocalStorage(listValue){
+    let newTaskInnerItem = createElement('input', children = [], classes = ['taskItemInner'], attributes = {value: `${listValue}`, 'disabled' :''});
+    let newTask = createElement('li',children = [newTaskInnerItem], classes = ['taskItem'], attributes = {});
+    
+    newTaskInnerItem.addEventListener('blur', saveValueBlur);
+    newTask.addEventListener('dblclick', gainFocus);
+    newTask.addEventListener('mouseenter', hoverReplace);
+    
+    return newTask;
+
+}
+//load local storage
+
+let localStorageElements = JSON.parse(localStorage.tasks);
+console.log(localStorageElements.todo);
+for(let element of localStorageElements.todo){
+    document.getElementsByClassName('to-do-tasks')[0].append(addTaskByLocalStorage(element));
+}
+for(let element of localStorageElements['in-progress']){
+    document.getElementsByClassName('in-progress-tasks')[0].append(addTaskByLocalStorage(element));
+}
+for(let element of localStorageElements.done){
+    document.getElementsByClassName('done-tasks')[0].append(addTaskByLocalStorage(element));
+}
+
+
+
 //setting variables for the document elements
 let taskDiv = document.getElementById('tasks-div')
 let taskSectionsArray = Array.from(document.querySelectorAll('.task-section'));
  let toDoTasksUl = document.getElementsByClassName('to-do-tasks')[0];
  let inProgressTasksUl = document.getElementsByClassName('in-progress-tasks')[0];
  let doneTasksUl = document.getElementsByClassName('done-tasks')[0];
+ let submitButtonArray = Array.from(document.getElementsByClassName('add-task'));
+ let localStorageTasksObjectForUpdate = JSON.parse(localStorage.tasks);
 //adding a list item functionality
 function addTask(e){
     let target = e.target;
+    let currentSection = target.parentElement;
     if(target.className === 'add-task'){
         let inputText = target.previousElementSibling.value;
        if(inputText === ''){
@@ -18,13 +58,26 @@ function addTask(e){
             newTaskInnerItem.addEventListener('blur', saveValueBlur);
             newTask.addEventListener('dblclick', gainFocus);
             newTask.addEventListener('mouseenter', hoverReplace);
-            /*
-            newTask.addEventListener('mouseleave', () => {
-                window.removeEventListener('keydown',innerKeyReplace);
-            }); */
 
+            console.log(`${target.previousElementSibling.value}`);
+            //local storage insertion
+            if(currentSection.id === 'to-do-section'){
+                localStorageTasksObjectForUpdate.todo.push(`${target.previousElementSibling.value}`);
+               console.log(localStorageTasksObjectForUpdate.todo);
+            }else if(currentSection.id === 'in-progress-section'){
+                localStorageTasksObjectForUpdate['in-progress'].push(`${target.previousElementSibling.value}`);
+            }else if(currentSection.id === 'done-section'){
+                localStorageTasksObjectForUpdate.done.push(`${target.previousElementSibling.value}`)
+            }
+                console.log(JSON.stringify(localStorageTasksObjectForUpdate));
+            localStorage.setItem('tasks', JSON.stringify(localStorageTasksObjectForUpdate));
+            // end of local storage insertion
             target.nextElementSibling.insertBefore(newTask, target.nextElementSibling.firstChild);
             target.previousElementSibling.value = '';
+
+            
+            
+            
        }
     }
 }
@@ -120,3 +173,8 @@ function createElement(tagName, children = [], classes = [], attributes = {}) {
   
     return newEl
   }
+
+
+
+
+  
