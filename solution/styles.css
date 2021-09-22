@@ -21,7 +21,14 @@ section{
 ul{
     list-style: none;
 }
-li {
+li{
+    display: inline;
+}
+img{
+    width:30px;
+    height:30px;
+}
+.TaskDiv {
     border: 1px solid black;
     margin: 2px;
 }

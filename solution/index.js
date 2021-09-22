@@ -1,54 +1,80 @@
 'use strict'
 let taskObj;
-if (localStorage.getItem("SavedTasks")) {
-    taskObj = JSON.parse(localStorage.getItem("SavedTasks"));
-}
-else {
-    taskObj = {
-        generalTasks: [],
-        ongoingTasks: [],
-        finishedTasks: [],
+
+const addEventListenerToDeleteButton = () => {
+    const deleteButtons = document.querySelectorAll('.deleteButton');
+    deleteButtons.forEach(element => {
+        element.addEventListener("click", function () {
+            deleteTask(element.parentElement.getElementsByClassName("task")[0].innerText)
+        }
+        )
     }
+    );
 }
-// taskObj = {
-//     generalTasks: [
-//         { nameOfTask: "Bring Down Trash" },
-//         { nameOfTask: "Throw Away Dirt" },
-//     ],
-//     ongoingTasks: [
-//         { nameOfTask: "Clean Dishes" },
-//     ],
-//     finishedTasks: [
-//         { nameOfTask: "Clean the Room" },
-//     ],
-// }
+const addEventListenerToTasks = () => {
+    const taskdivs = document.querySelectorAll('.TaskDiv');
+    taskdivs.forEach(element => {
+        element.addEventListener("click", function (e) {
+           element.style.backgroundColor = "yellow";
+            if(e.altKey){
+               console.log(555);
+           }
+        }
+        )
+    }
+    );
+}
+addEventListenerToTasks();
 
 const addTask = (taskType, id) => {
     const taskValue = document.getElementById(id).value;
     if (!document.getElementById(id).value.replace(/\s/g, '')) { return alert('s') }
     document.getElementById(id).value = "";
-    const newObj = { nameOfTask: taskValue }
-    taskObj[taskType].unshift(newObj);
+    taskObj[taskType].unshift(taskValue);
     postTasks();
 }
 
 const postTasks = () => {
     let generalString = ``, ongoingString = ``, finishedString = ``;
-    for (let key of taskObj.generalTasks) {
-        generalString += `<li class="to-do-tasks">${key.nameOfTask}</li>`
+    for (let key of taskObj.todo) {
+        generalString += `<li class="task">${key}</li><button class="deleteButton"><img src="./Images/XRED.ico"></button>`
     }
     document.getElementById("general-task-table").innerHTML = generalString;
 
-    for (let key of taskObj.ongoingTasks) {
-        ongoingString += `<li class="in-progress-tasks">${key.nameOfTask}</li>`
+    for (let key of taskObj["in-progress"]) {
+        ongoingString += `<li class="task">${key}</li><button class="deleteButton"><img src="./Images/XRED.ico"></button>`
     }
     document.getElementById("ongoing-task-table").innerHTML = ongoingString;
 
-    for (let key of taskObj.finishedTasks) {
-        finishedString += `<li class="done-tasks">${key.nameOfTask}</li>`
+    for (let key of taskObj.done) {
+        finishedString += `<li class="task">${key}</li><button class="deleteButton"><img src="./Images/XRED.ico"></button>`
     }
     document.getElementById("finished-task-table").innerHTML = finishedString;
-    localStorage.setItem("SavedTasks", JSON.stringify(taskObj));
+    addEventListenerToDeleteButton();
+    localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
 
-postTasks();
+const deleteTask = (innerTextOfTitle) => {
+    for (let taskarray in taskObj) {
+        for (let i = 0; i < taskObj[taskarray].length; i++) {
+            if (taskObj[taskarray][i] == innerTextOfTitle) {
+                taskObj[taskarray].splice(i, 1);
+            }
+        }
+    }
+    postTasks();
+}
+
+if (localStorage.getItem("tasks")) {
+    taskObj = JSON.parse(localStorage.getItem("tasks"));
+    postTasks();
+}
+else {
+    taskObj = {
+        "todo": [],
+        "in-progress": [],
+        "done": []
+    }
+    postTasks();
+    localStorage.setItem("tasks", JSON.stringify(taskObj));
+}
