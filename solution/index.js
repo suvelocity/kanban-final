@@ -1,39 +1,34 @@
 'use strict'
 let taskObj;
-if(localStorage.getItem("SavedTasks")) {
+if (localStorage.getItem("SavedTasks")) {
     taskObj = JSON.parse(localStorage.getItem("SavedTasks"));
 }
 else {
     taskObj = {
-        generalTasks: [
-            { nameOfTask: "Bring Down Trash" },
-            { nameOfTask: "Throw Away Dirt" },
-        ],
-        ongoingTasks: [
-            { nameOfTask: "Clean Dishes" },
-        ],
-        finishedTasks: [
-            { nameOfTask: "Clean the Room" },
-        ],
+        generalTasks: [],
+        ongoingTasks: [],
+        finishedTasks: [],
     }
 }
+// taskObj = {
+//     generalTasks: [
+//         { nameOfTask: "Bring Down Trash" },
+//         { nameOfTask: "Throw Away Dirt" },
+//     ],
+//     ongoingTasks: [
+//         { nameOfTask: "Clean Dishes" },
+//     ],
+//     finishedTasks: [
+//         { nameOfTask: "Clean the Room" },
+//     ],
+// }
 
-const addTask = (taskType) => {
-    if (taskType === "generalTasks") {
-        const taskValue = document.getElementById("add-to-do-task").value;
-        const newObj = { nameOfTask: taskValue }
-        taskObj[taskType].unshift(newObj);
-    }
-    else if (taskType === "ongoingTasks") {
-        const taskValue = document.getElementById("add-in-progress-task").value;
-        const newObj = { nameOfTask: taskValue }
-        taskObj[taskType].unshift(newObj);
-    }
-    else if (taskType === "finishedTasks") {
-        const taskValue = document.getElementById("add-done-task").value;
-        const newObj = { nameOfTask: taskValue }
-        taskObj[taskType].unshift(newObj);
-    }
+const addTask = (taskType, id) => {
+    const taskValue = document.getElementById(id).value;
+    if (!document.getElementById(id).value.replace(/\s/g, '')) { return alert('s') }
+    document.getElementById(id).value = "";
+    const newObj = { nameOfTask: taskValue }
+    taskObj[taskType].unshift(newObj);
     postTasks();
 }
 
