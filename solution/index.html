@@ -11,32 +11,37 @@
 <body>
     <h1 id="page-title">Tasks manager</h1>
     <div id="main">
-        <section class="to-do-tasks">
+        <input placeholder="search" id="search">
+        <section>
             <div>
            <label>To Do</label> 
            <ul class="to-do-tasks">
-               <li>make home work</li>
            </ul>
         </div>
-        <input id="add-to-do-tasks" placeholder="add task">
+        <input id="add-to-do-task" placeholder="add task">
         <button id="submit-add-to-do">submit</button>
         </section>
-    </div>
 
-    <!-- <div>
-        <section>
-            <ul>In Progress
-                <li>make home work</li>
-            </ul>
-        </section>
-    </div>
 
-    <div>
         <section>
-            <ul>Tasks Done
-                <li>make home work</li>
-            </ul>
+            <div>
+           <label>In Progress</label> 
+           <ul class="in-progress-tasks">
+           </ul>
+        </div>
+        <input id="add-in-progress-task" placeholder="add task">
+        <button id="submit-add-in-progress">submit</button>
         </section>
-    </div> -->
+
+        <section>
+            <div>
+           <label>Tasks Done</label> 
+           <ul class="done-tasks">
+           </ul>
+        </div>
+        <input id="add-done-task" placeholder="add task">
+        <button id="submit-add-done">submit</button>
+        </section>
+</div>
 </body>
 </html>
