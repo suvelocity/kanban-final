@@ -16,6 +16,14 @@ const addEventListenerToDeleteButton = () => {
 const addEventListenerToTasks = () => {
     const taskLi = document.querySelectorAll('.task');
     taskLi.forEach(element => {
+        element.addEventListener("dblclick", function () {
+            let oldinnerTaskText = element.getElementsByClassName("TaskTitle")[0].innerText;
+            element.getElementsByClassName("TaskTitle")[0].contentEditable = true;
+            element.getElementsByClassName("TaskTitle")[0].onblur = function () {
+                let newinnerTaskText = element.getElementsByClassName("TaskTitle")[0].innerText;
+                deleteNChangeTask(oldinnerTaskText, newinnerTaskText);
+            }
+        })
         element.addEventListener("click", function () {
             try { document.querySelector("#selectedTask").id = ""; }
             catch { element.id = "selectedTask"; }
@@ -35,7 +43,7 @@ const addEventListenerToTasks = () => {
                             let innerTaskText = element.innerText;
                             deleteNAddToOtherTask("done", innerTaskText);
                         }
-                        });
+                    });
                 }
             })
         })
@@ -54,17 +62,17 @@ const addTask = (taskType, id) => {
 const postTasks = () => {
     let generalString = ``, ongoingString = ``, finishedString = ``;
     for (let key of taskObj.todo) {
-        generalString += `<li class="task">${key}<button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+        generalString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
     }
     document.getElementById("general-task-table").innerHTML = generalString;
 
     for (let key of taskObj["in-progress"]) {
-        ongoingString += `<li class="task">${key}<button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+        ongoingString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
     }
     document.getElementById("ongoing-task-table").innerHTML = ongoingString;
 
     for (let key of taskObj.done) {
-        finishedString += `<li class="task">${key}<button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+        finishedString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
     }
     document.getElementById("finished-task-table").innerHTML = finishedString;
     addEventListenerToTasks();
@@ -83,6 +91,19 @@ const deleteNAddToOtherTask = (WantedTypeOfTask, innerTaskText) => {
     }
     postTasks();
 }
+
+const deleteNChangeTask = (oldTaskText, newTaskText) => {
+    for (let taskarray in taskObj) {
+        for (let i = 0; i < taskObj[taskarray].length; i++) {
+            if (taskObj[taskarray][i] == oldTaskText) {
+                taskObj[taskarray].splice(i, 1);
+                taskObj[taskarray].unshift(newTaskText)
+            }
+        }
+    }
+    postTasks();
+}
+
 const deleteTask = (innerTextOfTitle) => {
     for (let taskarray in taskObj) {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
