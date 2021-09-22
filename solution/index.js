@@ -15,14 +15,23 @@ function createElement(tag, content = [], clss = [], attr = {}, eventListener = 
         newElem.setAttribute(`${att}`, `${value}`)
     }
     for (let [event, opperator] of Object.entries(eventListener)){
-        newElem.setAttribute(`${event}`, `${opperator}`)
+        newElem.addEventListener(`${event}`, opperator)
     }
     return newElem
+}
+const deleteTask = ({target}) => {
+    const elementToDelete = target.closest("li")
+    elementToDelete.parentElement.removeChild(elementToDelete)
 }
 function addNewTask({target}){
     const section = target.closest("section")
     const newTask = section.querySelector("input").value
-    const newTaskElem = createElement("li", [newTask], ["task"])
+    if (newTask == "" ) {
+        alert("OOPS! can't add empty task")
+        return
+    }
+    const taskDeleteButton = createElement("button", ["❌"], ["delete-button"], {}, {click: deleteTask})
+    const newTaskElem = createElement("li", [newTask, taskDeleteButton], ["task"])
     const sectionUl = section.querySelector("ul")
     sectionUl.prepend(newTaskElem)
     section.querySelector("input").value = ""
