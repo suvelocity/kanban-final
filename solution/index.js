@@ -10,7 +10,7 @@ let Tasks = {"todo":[],"inprogress":[],"done":[]};
 //   })
         
 let counterId = 0;      
-const addTodo = (idToAdd) =>{
+const add= (idToAdd) =>{
     
     let currValeu = document.getElementById(`${idToAdd}-input`).value;
     if(currValeu === ""){
@@ -27,7 +27,7 @@ const addTodo = (idToAdd) =>{
     ul.append(Li);
     Tasks[idToAdd].push(currValeu);
     localStorage.setItem("Tasks",JSON.stringify(Tasks));
-    document.getElementById(`${idToAdd}-task`).value = '';
+    document.getElementById(`${idToAdd}-input`).value = '';
 
 }
 
