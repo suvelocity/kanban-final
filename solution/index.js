@@ -13,6 +13,9 @@ const taskBox = document.createElement('div')
 
 /**************** Event Handlers ****************/
 
+/**Handles click events.
+ * @param {Object} event - event object recieved from event listener
+ */
 function handleClick(event) {
   if (event.target.className.includes('submit-task')) {
     const list = event.target.parentElement.querySelector('ul')
@@ -24,6 +27,8 @@ function handleClick(event) {
 
 /**************** Classes ****************/
 
+/** Initializes a class for the custom element 'task-box'.
+ */
 class TaskBox extends HTMLElement {
   constructor() {
     super()
@@ -38,6 +43,11 @@ customElements.define('task-box', TaskBox)
 
 /**************** Main Functions ****************/
 
+/** Creates a new task-box element and adds it to the list passed.
+ *
+ * @param {HTMLElement} list - the element that will contain the task-box
+ * @param {String} text - the text to be inserted inside the task-box
+ */
 function addTaskBox(list, text) {
   const taskBox = document.createElement('task-box')
   const listItem = document.createElement('li')
@@ -48,6 +58,35 @@ function addTaskBox(list, text) {
   taskBox.querySelector('div').textContent = text
 }
 
+/**************** Utility Functions ****************/
+
+function stripData(section) {
+  const list = section.querySelector('.task-list')
+  const classes = [...list.classList]
+  let goodClassName = classes.filter((className) =>
+    className.includes('-tasks')
+  )
+  goodClassName = goodClassName.join('')
+  console.log(goodClassName)
+  const readyClassName = goodClassName.replace('-section', '')
+  console.log(readyClassName)
+  const tasksArray = [...list.children]
+  const strippedTasksArray = tasksArray.map(stripTaskBox)
+  const keyValuePair = { [readyClassName]: strippedTasksArray }
+  return keyValuePair
+}
+
+function stripTaskBox(taskBox) {
+  const text = taskBox.querySelector('div').textContent
+  return text
+}
+
+function extractTaskText() {}
+
+/**************** Storage Functions ****************/
+
+/**Captures a snapshot of the data on the page and stores it in localStorage
+ */
 function captureData() {
   const sections = [...document.querySelectorAll('section')]
   const resultsArray = sections.map(stripData)
@@ -59,43 +98,30 @@ function captureData() {
 }
 
 /**Stores the data captured in localStorage.
- *
- * @param {Array} data - the array that contains the data objects
+ * @param {Array} data - the array that contains the data object
  */
 function storeLocally(data) {
   localStorage.setItem('tasks', JSON.stringify(data))
 }
 
-/**************** Utility Functions ****************/
-
-function stripData(section) {
-  const list = section.querySelector('.task-list')
-  const sectionName = section.className.replace('-section', '')
-  const tasksArray = [...list.children]
-  const strippedTasksArray = tasksArray.map(stripTaskBox)
-  const keyValuePair = { [sectionName]: strippedTasksArray }
-  return keyValuePair
-}
-
-function stripTaskBox(taskBox) {
-  const text = taskBox.querySelector('div').textContent
-  return text
-}
-
+/** Loads data from localStorage. Creates data item in localStorage if it is empty.
+ */
 function loadData() {
   assertDataNotEmpty()
   const data = JSON.parse(localStorage.getItem('tasks'))
   parseData(data)
 }
 
+/** Takes data and displays it on the page.
+ *
+ * @param {Object} data - the data from which information will be parsed
+ */
 function parseData(data) {
-  console.log(data)
   const propsArr = Object.entries(data)
-  console.log(propsArr)
   propsArr.forEach((prop) => {
-    const listName = prop[0] + '-section'
-    const sectionElement = document.querySelector(`.${listName}`)
-    const listElement = sectionElement.querySelector('.task-list')
+    const listName = prop[0]
+    console.log(listName)
+    const listElement = document.querySelector(`.${listName}`)
     const textArray = prop[1]
     //reverse if for creating each taskBox in the order they appeared last.
     //this could be fixed if we reverse ahead the order in which they are stored by. so this is a temp fix.
@@ -120,13 +146,3 @@ function assertDataNotEmpty() {
 mainContianer.addEventListener('click', handleClick)
 
 window.addEventListener('load', loadData())
-
-/*
-i'm currently storing the data in the form of: 3 objects inside 1 array.
-the requested form is actually:
-3 proprties inside one object.
-it should look like this in local storage:
-key                     value
-tasks                   {todo: ['task1','task2'], in-progress: ['ahla','janana'], done: ['shoko', 'bimbo']}
-
-*/
