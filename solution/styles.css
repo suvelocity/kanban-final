@@ -50,6 +50,10 @@ task-box {
   margin: 10px auto;
 }
 
+task-box:hover {
+  background-color: cornflowerblue;
+}
+
 section {
   border: 1px solid gray;
   margin: 1rem;
