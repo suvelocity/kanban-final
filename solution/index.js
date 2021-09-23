@@ -11,6 +11,9 @@ const inProgressTasks = document.querySelector('.in-progress-tasks')
 
 const taskBox = document.createElement('div')
 
+/**************** Constants ****************/
+const POSSIBLE_KEYS = ['1', '2', '3']
+
 /**************** Event Handlers ****************/
 
 /**Handles click events.
@@ -26,9 +29,46 @@ function handleClick(event) {
 }
 
 function handleKeyPress(event) {
-  if (document.querySelector('task-box:hover') && event.altKey) {
-    console.log('alt pressed')
+  if (document.querySelector('task-box:hover')) {
+    if (event.altKey && POSSIBLE_KEYS.includes(event.key)) {
+      handleMultipleKeys(event)
+    }
   }
+}
+
+function handleMultipleKeys(event) {
+  const task = document.querySelector('task-box:hover')
+  console.log('combo detected!')
+  console.log(task)
+  let list
+  switch (event.key) {
+    case '1':
+      list = todoTasks
+      break
+    case '2':
+      list = inProgressTasks
+      break
+    case '3':
+      list = doneTasks
+      break
+    default:
+      list = null
+      break
+  }
+  console.log(list)
+  if (list) {
+    moveTask(task, list)
+  }
+}
+
+function moveTask(task, list) {
+  addTaskBox(list, stripTaskBox(task))
+  removeTask(task)
+  captureData()
+}
+
+function removeTask(task) {
+  task.remove()
 }
 
 /**************** Classes ****************/
@@ -72,16 +112,23 @@ function addTaskBox(list, text) {
  * @returns an object containing the section name as key and taskBox texts as value
  */
 function stripData(section) {
-  const list = section.querySelector('.task-list')
-  const classes = [...list.classList]
-  let goodClassName = classes.filter((className) =>
-    className.includes('-tasks')
-  )
-  goodClassName = goodClassName.join('')
-  console.log(goodClassName)
-  const readyClassName = goodClassName.replace('-section', '')
+  console.log(section)
+  const classNames = [...section.classList].join('')
+  console.log(classNames)
+  const readyClassName = classNames.replace('-section', '')
   console.log(readyClassName)
-  const tasksArray = [...list.children]
+
+  // const classes = [...list.classList]
+  // let goodClassName = classes.filter((className) =>
+  // className.includes('-tasks')
+  // )
+  // goodClassName = goodClassName.join('')
+  // console.log(goodClassName)
+  // const readyClassName = goodClassName.replace('-tasks', '')
+  const list = section.querySelectorAll('task-box')
+  console.log(...list)
+  const tasksArray = [...list]
+  console.log(tasksArray)
   const strippedTasksArray = tasksArray.map(stripTaskBox)
   const keyValuePair = { [readyClassName]: strippedTasksArray }
   return keyValuePair
@@ -93,6 +140,8 @@ function stripData(section) {
  * @returns the text from the taskBox
  */
 function stripTaskBox(taskBox) {
+  console.log(taskBox)
+  console.log(taskBox.querySelector('div'))
   const text = taskBox.querySelector('div').textContent
   return text
 }
@@ -100,6 +149,9 @@ function stripTaskBox(taskBox) {
 function listenToKeyboard(event) {}
 
 /**************** Storage Functions ****************/
+
+// whats going on?
+// after using moveTask, captureData wont work.
 
 /**Captures a snapshot of the data on the page and stores it in localStorage
  */
@@ -135,9 +187,10 @@ function loadData() {
 function parseData(data) {
   const propsArr = Object.entries(data)
   propsArr.forEach((prop) => {
-    const listName = prop[0]
-    console.log(listName)
-    const listElement = document.querySelector(`.${listName}`)
+    const sectionName = prop[0] + '-section'
+    console.log(sectionName)
+    const sectionElement = document.querySelector(`.${sectionName}`)
+    const listElement = sectionElement.querySelector('ul')
     const textArray = prop[1]
     //reverse if for creating each taskBox in the order they appeared last.
     //this could be fixed if we reverse ahead the order in which they are stored by. so this is a temp fix.
