@@ -44,6 +44,7 @@ In addition the page should contain:
 - [ ] Trying to submit empty tasks should cause an alert.
 - [ ] Double clicking a task element will enable the user to edit its text. When the task element loses focus (`blur` event) the change will be saved.
 - [ ] Hovering over a task element and pressing `alt + 1-3` will move the task to the appropriate list (`1`: todo, `2`: in-progress, `3`: done).
+      Save list data after moving.
 - [ ] The search input should filter tasks case-**in**sensitively, so that only tasks that match the search string are displayed. The filter will be reapplied every time the user changes the content of the search input (on **every keystroke**).
 
 ### Storage
