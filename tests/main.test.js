@@ -7,8 +7,8 @@ const path = require('path')
 const basePath = path.join(__dirname, '..')
 const pagePath = path.join('file://', basePath, `/solution/index.html`)
 
-let page
-let browser
+let page   
+let browser //= await puppeteer.launch({ headless: false, slowMo: 40 }) //change to false if you want to view the page
 
 const submitAddToDoBtn = '#submit-add-to-do'
 const submitInProgressBtn = '#submit-add-in-progress'

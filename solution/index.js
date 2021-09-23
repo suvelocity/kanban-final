@@ -15,7 +15,13 @@ document.body.addEventListener('mouseover' ,addHoverReplace);
 document.body.addEventListener('dblclick',gainFocus);
 document.body.addEventListener('focusout', saveValueBlur);
 
-
+function localStorageSave(){
+    localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
+    localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
+    localStorageObjectForUpdate.done[0] = doneTasksUl.outerHTML;
+    console.log(localStorageObjectForUpdate);
+    localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
+}
 
 //setting variables for the document elements
 let taskDiv = document.getElementById('tasks-div')
@@ -59,17 +65,13 @@ function addTask(e){
        if(inputText === ''){
             alert("You haven't entered any text");
        }else{
-            let newTaskInnerItem = createElement('input', children = [], classes = ['taskItemInner'], attributes = {value: `${target.previousElementSibling.value}`, 'disabled' :''});
-            let newTask = createElement('li',children = [newTaskInnerItem], classes = ['task'], attributes = {});
+            //let newTaskInnerItem = createElement('input', children = [], classes = ['taskItemInner'], attributes = {value: `${target.previousElementSibling.value}`, 'disabled' :''});
+            let newTask = createElement('li',children = [/*newTaskInnerItem */ `${target.previousElementSibling.value}`], classes = ['task'], attributes = {});
             console.log(target.nextElementSibling.firstChild);
             target.nextElementSibling.firstChild.insertBefore(newTask, target.nextElementSibling.firstChild.firstChild);
 
               //local storage insertion
-              localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
-              localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
-              localStorageObjectForUpdate.done[0] = doneTasksUl.outerHTML;
-              console.log(localStorageObjectForUpdate);
-              localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
+              localStorageSave();
               // end of local storage insertion
 
             target.previousElementSibling.value = '';
@@ -85,18 +87,20 @@ taskDiv.addEventListener('click', addTask)
 //gaining focus function
  function gainFocus(e){
      let target = e.target;
-     if(target.className === 'taskItemInner'){
-         target.removeAttribute('disabled');
+     if(target.tagName === 'LI'){
+         //target.removeAttribute('disabled');
+         target.setAttribute('contenteditable' , 'true');
      }
  };
 
  // getting out of focus after blur
  function saveValueBlur(e){
     let target = e.target;
-     if(target.className != 'taskItemInner'){
+     if(target.tagName != 'LI'){
         return;
      }
-    e.target.setAttribute('disabled', '');
+     target.setAttribute('contenteditable', 'false');
+    localStorageSave();
  }
  //
 
@@ -108,18 +112,15 @@ taskDiv.addEventListener('click', addTask)
       function innerKeyReplace(e){
             if(e.altKey ){
                 if(e.key == 1){
-                    toDoTasksUl.append(target);
+                    toDoTasksUl.insertBefore(target, toDoTasksUl.firstChild);
                 }else if(e.key == 2){
-                inProgressTasksUl.append(target);
+                inProgressTasksUl.insertBefore(target, inProgressTasksUl.firstChild);
                 }else if(e.key == 3){
-                    doneTasksUl.append(target);
+                    doneTasksUl.insertBefore(target,doneTasksUl.firstChild);
                 }
             }
                  //local storage insertion
-                 localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
-                 localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
-                 localStorageObjectForUpdate.done[0] = doneTasksUl.outerHTML;
-                 localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
+                 localStorageSave();
                  // end of local storage insertion
        }
 
