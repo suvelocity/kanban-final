@@ -15,8 +15,13 @@ li:hover {
 
     color: rgb(59, 39, 20);
     background-color: burlywood;
+    max-width: 220px;
 }
 
+li{
+    text-align: left;
+    border: none;
+}
 section {
     
     border-radius: 20px;
@@ -28,7 +33,8 @@ section {
     text-align: center;
     min-height: 300px;
     min-width: 300px;
-    /* margin: inherit; */    
+    /* margin: inherit; */ 
+       
    
    
 
@@ -66,9 +72,20 @@ button,input {
     height: 20px;
 }
 
+.task {
+width: 180px;
+height: 20px;
+}
 /* input{
     border-radius: 5px;
     border-width: 1px;
     font-family: inherit;
     /* height: 20px; 
 } */
+
+#chageTaskInput{
+
+    border: inherit;
+    background-color: transparent;
+    /* outline: none; */
+}

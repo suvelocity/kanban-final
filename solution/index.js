@@ -10,9 +10,9 @@ if (localStorage.getItem('tasks') === null) {
     localStorage.setItem('tasks', JSON.stringify(tasks))
 }
 let tasksObj = JSON.parse(localStorage.getItem('tasks'))
-generateTasks()
-
+generateTasks()//generates all tasks in the localStorage
 divSections.addEventListener('click', addTasks)// adding the addTasks to the click eventlistener 
+divSections.addEventListener('dblclick', changeTask)
 
 function addTasks(e) {
     const target = e.target
@@ -54,24 +54,55 @@ function addTasks(e) {
         localStorage.setItem('tasks', JSON.stringify(tasksObj))
     }
 }
-
-function generateTasks(){
-    for(let i of tasksObj.todo){
+function generateTasks() {
+    for (let i of tasksObj.todo) {
         const task = document.createElement("li")
-        task.setAttribute("class","task")
-        task.innerHTML=i
+        task.setAttribute("class", "task")
+        task.innerHTML = i
         ul1.append(task)
     }
-    for(let i of tasksObj["in-progress"]){
+    for (let i of tasksObj["in-progress"]) {
         const task = document.createElement("li")
-        task.setAttribute("class","task")
-        task.innerHTML=i
+        task.setAttribute("class", "task")
+        task.innerHTML = i
         ul2.append(task)
     }
-    for(let i of tasksObj.done){
+    for (let i of tasksObj.done) {
         const task = document.createElement("li")
-        task.setAttribute("class","task")
-        task.innerHTML=i
+        task.setAttribute("class", "task")
+        task.innerHTML = i
         ul3.append(task)
+    }
+}
+
+
+function changeTask(e) {
+    e.preventDefault()
+    const task = e.target
+    if (task.className === 'task') {
+        let newInput = document.createElement('input')
+        newInput.setAttribute('id', 'chageTaskInput')
+        const oldcontent = task.textContent
+        newInput.value = task.textContent
+        task.innerText = ''
+        let abc = []
+        task.append(newInput)
+        newInput.focus()
+        newInput.addEventListener('blur', () => {
+            task.innerHTML = newInput.value
+            switch (task.parentElement.id) {
+                case "ul1":
+                    abc = tasksObj.todo
+                    break
+                case "ul2":
+                    abc = tasksObj['in-progress']
+                    break
+                case "ul3":
+                    abc = tasksObj.done
+                    break
+            }
+            abc[abc.findIndex(a => a === oldcontent)] = newInput.value
+            localStorage.setItem('tasks', JSON.stringify(tasksObj))
+        })
     }
 }
