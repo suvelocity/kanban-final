@@ -1,0 +1,54 @@
+#search{
+    position: absolute;
+    right: 46%;
+    top :14%;
+}
+#page-title {
+    position: absolute;
+    right: 48%;
+    top: 2%;
+}
+.sections{
+    box-sizing: content-box;  
+    width: 350px;
+    height: 200px;
+    padding: 30px;  
+    border: 10px solid blue;
+}
+#first{
+    position: absolute;
+    right: 75%;
+    bottom: 45%;
+}
+#second{
+    position: absolute;
+    right: 39%;
+    bottom: 45%;
+}
+#third{
+    position: absolute;
+    right: 3%;
+    bottom: 45%;
+}
+li{
+    box-sizing: content-box;
+    width: 220px;
+    height: 30px;
+    margin: 10px;
+    border: thin solid black;
+}
+button{
+    position: absolute;
+    right: 0%;
+    bottom: 0%;
+}
+.inputs{
+    position: absolute;
+    right: 5%;
+    bottom: 0%;
+}
+#search-button{
+    position: absolute;
+    right: 43%;
+    bottom: 83.8%;
+}
