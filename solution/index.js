@@ -5,13 +5,22 @@ const KEY_1 = 49;
 const KEY_2 = 50;
 const KEY_3 = 51;
 
+//==========================
+// ===== Global Vars =======
+//==========================
+
+let editTextValue = "";
+let searchInput = document.querySelector("#search");
+let pressed = new Set();
+
 // ============================
 // ====== Main run ============
 // ============================
+
 document.addEventListener('click', onClickHandler);
-let searchInput = document.querySelector("#search")
-searchInput.addEventListener('keyup', onKeyUpSearchInput);
-document.addEventListener("dblclick", onDoubleClick)
+document.addEventListener("dblclick", onDoubleClick);
+document.addEventListener('keyup', onKeyUpHandler);
+//localStorage.clear();
 if(localStorage.getItem('tasks') === null){
     const tasks = {
         "todo": [],
@@ -21,8 +30,6 @@ if(localStorage.getItem('tasks') === null){
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 loadTasksToPage("");
-
-
 
 
 // ============================
@@ -47,60 +54,116 @@ function onClickHandler(event){
             case "submit-add-done":
                 inputValue = getTextFromInputId("add-done-task");
                 AddToSection(inputValue, "done");  
-                break;
-            case "search":
-                // Do search, will build it later                        
-        }
+                break;                                  
+        }   
+        // if(target.dataset.important === 'false'){
+        //     const tasksJSON = getTasksJSON();
+        //     for(let task of tasksJSON[target.parentNode.dataset.section]){
+        //         if(task === target.parentNode.innerText){
+        //             task.important = true;
+        //         }
+        //     }
+        //     localStorage.setItem('tasks', JSON.stringify(tasksJSON));  
+        // }                     
+        // else if(target.dataset.important === 'true'){
+        //     const tasksJSON = getTasksJSON();
+        //     for(let task of tasksJSON[target.parentNode.dataset.section]){
+        //         if(task === target.parentNode.innerText){
+        //             task.important = false;
+        //         }
+        //     }
+        //     localStorage.setItem('tasks', JSON.stringify(tasksJSON));  
+        // }
         loadTasksToPage(searchInput.value);   
     }    
 }  
 
-function onKeyUpSearchInput(){   
-    let searchQuery = document.getElementById("search").value    
-    loadTasksToPage(searchQuery);
+function onKeyPressLiHandler(event){    
+    console.log("down");
+    pressed.add(event.keyCode);
+    let arrayOfKeys = [KEY_1, KEY_2, KEY_3];
+    //event.repeat = false;
+    if(event === undefined){
+        return;
+    }
+    for (let key = 0; key < arrayOfKeys.length; key++) {
+        if(event.altKey && pressed.has(arrayOfKeys[key])){
+            event.preventDefault();
+            let target = event.target;             
+            const taskManagerDataJSON = getTasksJSON(); 
+            const sectionArray = taskManagerDataJSON[target.dataset.section];
+            let index = sectionArray.indexOf(target.textContent);
+            //Deletes selected task and update
+            sectionArray.splice(index, 1);
+            localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
+            //Add to the selected section
+            if(arrayOfKeys[key] === KEY_1){
+                AddToSection(target.textContent, 'todo'); 
+            }
+            else if(arrayOfKeys[key] === KEY_2){
+                AddToSection(target.textContent, 'in-progress'); 
+            }
+            else if(arrayOfKeys[key] === KEY_3){
+                AddToSection(target.textContent, 'done'); 
+            }  
+            loadTasksToPage(searchInput.textContent);          
+            console.log("Alt + " + key);
+        }
+        
+    }
+    
+    // if (!pressed.has(KEY_1) && !event.altKey) {
+    //     return;
+    // }
+    // else{
+    //     console.log("HERE");
+    // }
+    pressed.clear();
 }
 
+function onKeyUpHandler(event){       
+    if (event.target.id === "search"){
+        let searchQuery = document.getElementById("search").value    
+        loadTasksToPage(searchQuery);
+    }    
+}
+    
+
+// ===> double click on task event <===
 function onDoubleClick(event){
     event.preventDefault();
     let target = event.target;
-    if(target.tagName === "LI"){      
-        let taskValue = target.textContent;                        
-        let newInput = createElement('input', [], ["edit-input"], {value: taskValue, "data-section": target.dataset.section});  
-        target.textContent = "";      
-        target.append(newInput);
-        target.addEventListener("blur",() => blurEditTask(taskValue, newInput), true);         
-        newInput.focus();
-        newInput.select();
+    target.contentEditable = true;
+    if(target.tagName === "LI"){              
+        editTextValue = target.textContent;                                                
+        target.addEventListener("blur", blurEditTask, true);  
+        target.focus();                         
     }
 }
 
 // ===> after edit - save changes <===
-function blurEditTask(pastTaskValue, editedTaskInput){    
-    const taskManagerDataString = localStorage.getItem('tasks');
-    const taskManagerDataJSON = JSON.parse(taskManagerDataString);  
+function blurEditTask(event){        
+    const taskManagerDataJSON = getTasksJSON();
+    let textAfterEdit = event.target.textContent;
+    let target = event.target;
 
     // gets dataset (key in tasks)
-    let key = editedTaskInput.dataset.section;
+    let key = target.dataset.section;
     const arrayOfSection = taskManagerDataJSON[key];
-    for (let taskIndex = 0; taskIndex < arrayOfSection.length; taskIndex++) {
-        if(arrayOfSection[taskIndex] === pastTaskValue){
-            arrayOfSection[taskIndex] = editedTaskInput.value;
-        }
-    }
-    localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
-    editedTaskInput.remove();
+    let taskBeforeEditIndex = arrayOfSection.indexOf(editTextValue);
+    arrayOfSection[taskBeforeEditIndex] = textAfterEdit;    
+    localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));    
     loadTasksToPage(searchInput.textContent);
 }
 
 /* 
 *   ===> Adding task to LocalStorage <===
 *   taskName: String
-*   Section: String, where to add (to-do, prograss, done);
+*   key: String, where to add (to-do, in-prograss, done);
 */
 function AddToSection(taskName, key){
-    const taskManagerDataString = localStorage.getItem('tasks');
-    const taskManagerDataJSON = JSON.parse(taskManagerDataString);
-    const arrayOfSection = taskManagerDataJSON[key];
+    const taskManagerDataJSON = getTasksJSON();
+    const arrayOfSection = taskManagerDataJSON[key];    
     arrayOfSection.unshift(taskName);    
     localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));         
 }
@@ -114,9 +177,7 @@ function getTextFromInputId(id){
     return inputValue;
 }
 
-function loadTasksToPage(query){
-    const taskManagerDataString = localStorage.getItem('tasks');
-    const taskManagerDataJSON = JSON.parse(taskManagerDataString);
+function loadTasksToPage(query){    
     let todoDiv = document.querySelector("#div-to-do-tasks");
     todoDiv.innerHTML = "";     
     let todo_Ul = createTaskUl(query, "todo", ["to-do-tasks"]);
@@ -136,18 +197,24 @@ function loadTasksToPage(query){
 
 // ===> Creating UL element from key in "task" <===
 function createTaskUl(query, key, classes){
-    const taskManagerDataString = localStorage.getItem('tasks');
-    const taskManagerDataJSON = JSON.parse(taskManagerDataString);
-    let liArray = [];
-    for(let task of taskManagerDataJSON[key]){ 
+    const taskManagerDataJSON = getTasksJSON();
+    let liArray = [];     
+    for(let task of taskManagerDataJSON[key]){         
         let taskLowCased = task.toLowerCase();
-        let queryLowCased =  query.toLowerCase();      
-        if(taskLowCased.includes(queryLowCased)){
-            liArray.push(createElement("li", [task], ["task"], {"data-section": key}));
+        let queryLowCased =  query.toLowerCase();
+        if(taskLowCased.includes(queryLowCased)){                      
+            //let importantButton = createElement("button", [], ["important-button"]); 
+            liArray.push(createElement("li", [task], ["task"], {"data-section": key, 'tabIndex': '0'}, {'keydown': (event) => {onKeyPressLiHandler(event)}}));                                 
         }        
     }
     let ul = createElement("ul", liArray, [...classes]);  
     return ul; 
+}
+
+// ===> returns JSON of tasks <===
+function getTasksJSON(){
+    const taskManagerDataString = localStorage.getItem('tasks');
+    return JSON.parse(taskManagerDataString);
 }
 
 
@@ -167,9 +234,8 @@ function createElement(tagName, children = [], classes = [], attributes = {}, ev
         myElement.setAttribute(attr, attributes[attr]);
     }
 
-    for (const listener in eventListeners){        
-        const functionArray = eventListeners[listener];                
-        myElement.addEventListener(listener, functionArray);
+    for (const [listener, handler] of Object.entries(eventListeners)){                                     
+        myElement.addEventListener(listener, handler, true);
     }
 
     return myElement;    

@@ -1,3 +1,4 @@
+
 header{
     text-align: center;
     font-size: 38px;
@@ -79,4 +80,23 @@ header{
 .submit-button:hover{
     background-color: lightseagreen;
     box-shadow: 3px 3px 5px #aaaaaa;
+}
+.important-button{
+    text-align: left;       
+    margin-right: 2%;
+    font-weight: 600;
+    background-color:blueviolet;
+    color: red;
+    padding: 10px 10px;
+}
+.important-button:hover{
+    background-color:royalblue;
+    color: tomato;
+}
+.important-task{
+    border: 2px solid red;
+    font-weight: bold;
+}
+.regular-task{
+    border-color: black;
 }
