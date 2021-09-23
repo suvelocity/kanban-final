@@ -2,7 +2,44 @@
     margin: auto;
 }
 #main{
+    border: 1px solid black;
+    margin: 0px 10px;
     display: flex;
-    justify-content: center;
-    align-content: center;
+    position: relative;
+    justify-content:
+    center; align-items:
+    center; height: 50vh;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+h3 {
+    position: relative;
+    left: 10px;
+}
+
+form {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+}
+
+ul {
+    max-height: 58px;
+    overflow-y: auto;
+}
+#toDo{
+    text-align: center;
+    border: 1px solid black;
+    padding: 10px;
+}
+#in-Progress{
+    text-align: center;
+    border: 1px solid black;
+    padding: 10px;
+}
+#done{
+    text-align: center;
+    border: 1px solid black;
+    padding: 10px;
 }
