@@ -159,7 +159,7 @@ describe(projectName, () => {
     expect(pageTitleEl).not.toBeNull()
   })
 
-  test('The todo list should be empty first', async () => {
+  test.only('The todo list should be empty first', async () => {
     const elements = await page.$$('.task')
     expect(elements.length).toBe(0)
   })
