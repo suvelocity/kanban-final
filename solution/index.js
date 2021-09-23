@@ -1,11 +1,9 @@
 const localSave=localStorage.getItem("tasks")
 let existTaskText
-// console.log(localSave)
 let data
 if(localSave!=undefined){
    data=JSON.parse(localSave)
    generateExistsTasks()
-//    console.log(data)
 }
 else{
     data={
@@ -85,7 +83,6 @@ let taskToMove
 function chooseTask(targetTask){
     if(targetTask.target.classList.contains("task")){
         taskToMove=targetTask.target
-        console.log(taskToMove)
         document.addEventListener("keydown",movingTaskToSection)
     }
     targetTask.onmouseout=() =>{
@@ -118,8 +115,6 @@ const taskText = taskToMove.innerText
     // Create the task in it's new section
 const newTaskElem = createLiElement(taskText)
 section.prepend(newTaskElem)
-console.log(section, taskText)
-    // Removes the task from it's previus section
 taskToMove.parentElement.removeChild(taskToMove)
     // Updates local storage
 removeTaskData(taskText)
@@ -187,7 +182,7 @@ function updateTask(dataKey,newTaskText){
     }
     return liEl
     }
-    // "dblclick":editTask,"blur":outOfEditTask,
+    
     //shows existing tasks that are saved in the local storage upon refreshing/start of the page
     function generateExistsTasks(){
         for(let i=0;i<data.todo.length;i++){    
@@ -207,14 +202,33 @@ function updateTask(dataKey,newTaskText){
                 sectionUl.prepend(newTaskEl)
                 }
     }
+    // +search.key
+function searchTask(search){
+    let searchText=search.target.value
+    searchText=searchText.toLowerCase()
+     const tasks=document.querySelectorAll(".task")
+     for(let i=0;i<tasks.length;i++){
+         if(searchText!==""){
+            let taskContent=tasks[i].innerText    
+             taskContent=taskContent.toLowerCase()
+             if(!taskContent.includes(searchText)){
+                 tasks[i].style="display:none;"
+                }
+     else {
+        tasks[i].style="display:block;"
+         }
+     
+        }
+        else {
+            tasks[i].style="display:block;"
+             }
+    }
+}
 
-
-
-
-
+document.getElementById("search").addEventListener("keyup",searchTask)
 document.getElementById("submit-add-to-do").addEventListener("click",addNewTask)
 document.getElementById("submit-add-in-progress").addEventListener("click",addNewTask)
 document.getElementById("submit-add-done").addEventListener("click",addNewTask)
 
-// document.addEventListener("mouseover",(e)=>{if(e.target)console.log(e)})
+
 
