@@ -15,6 +15,8 @@ const toDoTasksList = Array.from(document.getElementsByClassName('to-do-tasks'))
 const inProgressTasksList = Array.from(document.getElementsByClassName('in-progress-tasks'));
 const DoneTasksList = Array.from(document.getElementsByClassName('done-tasks'));
 
+const search = document.getElementById('search'); //search bar input section holder
+
 
 //---------------------------------------------------------EVENT LISTENERS---------------------------------------------------------------------//
 
@@ -74,7 +76,7 @@ try
    const listItems = document.querySelectorAll('.li-task');
    for( const listItem of listItems)
    {
-       listItem.addEventListener( 'dblclick', listItem.value )
+      // listItem.addEventListener( 'dblclick', listItem. )
    }
 }
 catch(err)
@@ -83,24 +85,51 @@ catch(err)
 }
 
 
+//Search bar event//
+search.addEventListener('keypress', e => {
+    if(e.key === "Enter")
+    {
+        if(isElementEmpty(search)){} //checking if field empty and assignin error class style if it is.
+        else{
+          search.classList.remove('error'); //removing error style class. if its not empty and doesnt have the error attached to it it will just keep going cuz no error cass in it
+        }
+    }
+
+})
+
+//---------------------------------------------------------FREE AREA---------------------------------------------------------------------//
+
+ 
+
+
+
 //---------------------------------------------------------FUNCTIONS---------------------------------------------------------------------//
 
 //----------------------GENERIC FUNCTIONS----------------------//
 
+//function checking if **INPUT ELEMENT** is empty attach error class style to it etc//
+function isElementEmpty(el)
+{
+    if(el.value === '')
+    {
+      el.classList.add('error');
+      return true;
+    }
+    return false;    
+}
+
 //function gets an input element and sets an li element to the coresponsing section of the task//
 function liGenerator( inputElement, arrayOfListElementsByClass )
 {
-    if ( inputElement.value === '' || arrayOfListElementsByClass.length === 0 ) 
+    if ( isElementEmpty(inputElement) || arrayOfListElementsByClass.length === 0 ) 
     {
-        inputElement.setAttribute('style', `border: 2px solid red`);
-
         setTimeout(() => {
              alert("Please Enter a value inside the input box, BOX CANT BE EMPTY!"); //gettin the value of current state and checkinif empty : error!   
         }, 150);
     }
     else
     {
-      inputElement.setAttribute('style', ''); // if not empty remove error style attribute
+      inputElement.classList.remove('error'); // if not empty remove error style attribute
       const userInputSection = elCreator('span', [inputElement.value], ['li-task']); //section of user input only creator
       const liEl = elCreator( 'li', [userInputSection], ['list'], {} ); //creating and inserting li el to list from user input
 
@@ -159,6 +188,11 @@ function eleDOMAppender( destintionEle, currentEle ){
     }
 }
 
+function tagElementConverter( destinationTagElementName, currentTagElement)
+{
+
+}
+
 
 //----------------------SPECIFIC FUNCTIONS----------------------//
 
@@ -166,5 +200,4 @@ function eleDOMAppender( destintionEle, currentEle ){
 
 
 //---------------------------------------------------------WEB API(S)---------------------------------------------------------------------//
-
 

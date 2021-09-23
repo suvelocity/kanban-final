@@ -1,3 +1,9 @@
 li>span:not(.li-task) {
     color:blue;
 }
+
+.error
+{
+    border: 2px solid red;
+    outline: 2px ridge red;
+}

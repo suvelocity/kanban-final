@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE TextinnerText>
+<TextinnerText lang="en">
 
     <head>
          <meta charset="UTF-8">
@@ -15,7 +15,7 @@
         <h1>Task Manager 💌</h1>
 
         <span id="search-bar-text">Search:</span>
-        <input id="search" placeholder="Search for tasks..." value=""></input>
+        <input id="search" placeholder="Search for tasks..." value="" required></input>
 
         <!-- To Do Tasks Section!-->
 
@@ -67,6 +67,106 @@
 
          </section>
 
+
+ <!----------------- (TODAY') CALENDAR ------------->
+
+         <div class="calendar">
+            <p id="monthName"></p>
+            <p id="dayName"></p>
+            <p id="dayNumber"></p>
+            <p id="year"></p>
+         </div>
+
+         <script defer>
+
+            const lang = window.navigator.language;
+            let date = new Date();
+
+            let dateNumer = date.getDate();
+            let month = date.getMonth();
+            let dayName = date.toLocaleString(lang, {weekday: 'long'});
+            let monthName = date.toLocaleString(lang, {month: 'long'});
+            let year = date.getFullYear();
+
+
+            document.getElementById('monthName').innerText = monthName;
+            document.getElementById('dayName').innerText = dayName;
+            document.getElementById('dayNumber').innerText = dateNumer;
+            document.getElementById('year').innerText = year;
+
+         </script>
+
+         <style>
+
+             *
+            {
+               margin: 0;
+               padding: 0;
+               box-sizing: border-box;
+               font-family: sans-serif;
+            } 
+            
+            body
+            {
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               min-height: 100vh;
+               background: #fff;
+            } 
+
+            .calendar
+            {
+               position: relative;
+               width: 200px;
+               background: #fff;
+               text-align: center;
+               border-radius: 8px;
+               overflow: hidden;
+               -webkit-box-reflect: below 1px linear-gradient(transparent, transparent, #0004);
+            }
+
+            .calendar #monthName
+            {
+               position: relative;
+               padding: 5px 10px;
+               background: #ff5331;
+               color:#fff;
+               font-size: 30px;
+               font-weight: 700;
+
+            }
+
+            .calendar #dayName
+            {
+               margin-top: 20px;
+               font-size: 20px;
+               font-weight: 300;
+               color:#999;
+            }
+
+            .calendar #dayNumber
+            {
+               margin-top: 0px;
+               line-height: 1em;
+               font-size: 80px;
+               font-weight: 700;
+               color:#333;
+            }
+
+            .calendar #year
+            {
+               margin-bottom: 20px;
+               font-size: 20px;
+               font-weight: 500;
+               color:#999;
+            }
+
+
+         </style>
+
+<!------- !* END OF CALENDAR *! -------->
+
     </body>
 
-</html>
+</TextinnerText>
