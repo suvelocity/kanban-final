@@ -31,7 +31,9 @@ function handleClick(event) {
 
 function handleDoubleClick(event) {
   console.log(event.target)
-  event.target.setAttribute('contenteditable', true)
+  const eventTarget = event.target
+  eventTarget.setAttribute('contenteditable', true)
+  eventTarget.addEventListener('input', handleInput)
 }
 
 function handleKeyPress(event) {
@@ -45,10 +47,16 @@ function handleKeyPress(event) {
 function handleBlur(event) {
   console.log('blur')
   event.target.setAttribute('contenteditable', false)
+  event.target.removeEventListener('input', handleInput)
+}
+
+function handleInput(event) {
+  console.log('input man')
+  captureData()
 }
 
 function handleMultipleKeys(event) {
-  const task = document.querySelector('task-box:hover')
+  const task = document.querySelector('task-box:hover').parentElement
 
   const options = {
     1: todoTasks,
@@ -215,4 +223,6 @@ window.addEventListener('keydown', handleKeyPress)
 
 mainContianer.addEventListener('dblclick', handleDoubleClick)
 
-mainContianer.addEventListener('blur', handleBlur)
+mainContianer.addEventListener('focusout', handleBlur)
+
+mainContianer.addEventListener('input', handleInput)
