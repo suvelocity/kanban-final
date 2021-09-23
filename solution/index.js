@@ -3,14 +3,14 @@ let tasks
 let localSave = localStorage.getItem("tasks")
 if (localSave!=undefined){
     tasks = JSON.parse(localSave);
-}else {
+}else {  //defining the local storage if empty.
     tasks = {
      "todo": [],
      "in-progress": [],
      "done": []
     }
 }
-function localStorageData (){
+function localStorageData (){ // updates the local storage
     localSave = JSON.stringify(tasks);
     localStorage.setItem("tasks",localSave);
 }
@@ -50,13 +50,13 @@ function addLiGeneric(event){   //A generic function to generate and add new tas
 
 function newTaskData(target ,task){
     if(target.id==="submit-add-to-do"){
-        tasks.todo.push(task)
+        tasks.todo.unshift(task)
     }
     if(target.id==="submit-add-in-progress"){
-        tasks["in-progress"].push(task)
+        tasks["in-progress"].unshift(task)
     }
     if(target.id==="submit-add-done"){
-        tasks.done.push(task)
+        tasks.done.unshift(task)
     }
 }
 
@@ -100,7 +100,7 @@ ul3.addEventListener("dblclick", editTask);
  }
 //  function that filters the li according to the value of the search input
  const input = document.getElementById('search');
-input.onkeyup = function () {
+input.onkeyup = function searchFilter () {
     let filter = input.value.toUpperCase();
     let lis = document.getElementsByTagName('li');
     for (var i = 0; i < lis.length; i++) {
