@@ -119,10 +119,20 @@ const doc = document.documentElement
 console.log(doc);
 
 doc.addEventListener("dblclick" , e =>{
-    if(e.target.className = "task"){
-        e.target.setAttribute
+    if(e.target.className === "task"){
+        e.target.focus();
+        e.target.setAttribute("contenteditable" , "true");
+        e.target.addEventListener("blur",blurFunction);
+        
     }
 });
+
+function blurFunction(e){
+    alert("eventListener works");
+    e.target.removeAttribute("contenteditable");
+    // needs to change the data in the local storage so after a refresh the chang will be saved
+
+}
 
 function publishExistingLi(){
     for(let i = 0 ; i<tasks.todo.length ; i++){
