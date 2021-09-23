@@ -10,14 +10,16 @@
     <title>Tasks manager</title>
 </head>
 <body>
-
+    
     <h1 id="page-title"> Task Manager ✔ </h1>
-        <input id="search" placeholder="search for tasks here"> <button id="submit-to-search"> search </button>
+        <input id="search" placeholder="search for tasks here"> 
+             <button id="submit-to-search"> search </button>
+     
     <br>
-
+    <div id="sections">
     <section class="section-1">
         <h3> To Do List: </h3>
-        <ul class="to-do-tasks">
+        <ul class="to-do-tasks" id="ul1">
             
         </ul>
         <input id="add-to-do-task" placeholder="add to do task">
@@ -26,7 +28,7 @@
 
     <section class="section-2">
         <h3> In Progress List: </h3>
-        <ul class="in-progress-task">
+        <ul class="in-progress-tasks" id="ul2">
             
         </ul>
         <input id="add-in-progress-task" placeholder="add in progress task">
@@ -35,12 +37,13 @@
 
     <section class="section-3">
         <h3> Done List: </h3>
-        <ul class="done-tasks">
+        <ul class="done-tasks" id="ul3">
             
         </ul>
         <input id="add-done-task" placeholder="add done task">
         <button id="submit-add-done"> add </button>
     </section>
+    </div>
    
    
 </body>
