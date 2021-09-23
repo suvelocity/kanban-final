@@ -51,26 +51,23 @@ function updateLocalSaveData(){
 
 
 //  Maniputale tasks order and sections  //
-let taskToMove
+let selectedTask
 const moveTask = (section) => {
         // Get the needed data about the task
-    const previusTaskUl = taskToMove.closest("ul")
-    const taskText = taskToMove.innerText
+    const selectedTaskText = selectedTask.innerText
         // Create the task in it's new section
-    const newTaskElem = createTask(taskText)
+    const newTaskElem = createTask(selectedTaskText)
     section.prepend(newTaskElem)
-    console.log(section, taskText)
         // Removes the task from it's previus section
-    taskToMove.parentElement.removeChild(taskToMove)
+    selectedTask.parentElement.removeChild(selectedTask)
         // Updates local storage
-    removeTaskData(taskText)
-    addNewTaskData(section, taskText)
+    removeTaskData(selectedTaskText)
+    addNewTaskData(section, selectedTaskText)
     updateLocalSaveData()
-    taskToMove = null
-
+    selectedTask = null
 }
 function moveBetweenSections({altKey, key}){
-    if (taskToMove){
+    if (selectedTask){
         if (altKey && key == 1){
             const toDoList = document.querySelector(".to-do-tasks")
             moveTask(toDoList)
@@ -87,13 +84,15 @@ function moveBetweenSections({altKey, key}){
 }
 function hoverHandler({target}){
     if (target.classList.contains("task")){
-        taskToMove = target
+        selectedTask = target
         document.addEventListener("keydown", moveBetweenSections)
-        // console.log(target)
+        document.addEventListener("dblclick", editTask)
+        selectedTask.addEventListener("blur", finishedit)
+
     }
     target.onmouseout = () => {
         document.removeEventListener("keypress", moveBetweenSections)
-        taskToMove = null
+        selectedTask = null
     }
 }
 
@@ -127,8 +126,8 @@ function deleteTask({target}) {
     updateLocalSaveData()
 }
 function createTask(task){
-    const taskDeleteButton = createElement("button", [""], ["delete-button"], {}, {click: deleteTask})
-    const newTaskElem = createElement("li", [task, taskDeleteButton], ["task"])
+    // const taskDeleteButton = createElement("button", [""], ["delete-button"], {}, {click: deleteTask}) taskDeleteButton
+    const newTaskElem = createElement("li", [task], ["task"])
     return newTaskElem
 }
 
@@ -174,3 +173,23 @@ for (const button of addButtons) {
     button.addEventListener("click", addNewTask)
 }
 document.addEventListener("mouseover", hoverHandler)
+
+
+//  Edit task handlers
+function editTask(){
+    if (selectedTask){
+        selectedTask.setAttribute("contenteditable", "true")
+        selectedTask.classList.add("editable")
+        removeTaskData(selectedTask.innerText)
+        updateLocalSaveData()
+    }
+}
+function finishedit(){  // Saves the new task in local storage
+    for (const task of document.querySelectorAll(".editable")){
+        task.removeAttribute("contenteditable")
+        task.classList.remove("editable")
+        const editedTaskUl = task.parentElement
+        addNewTaskData(editedTaskUl , task.innerText)
+        updateLocalSaveData()
+    }
+}
