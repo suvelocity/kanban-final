@@ -17,12 +17,14 @@ function localStorageData (){ // updates the local storage
 }
 
 
-
+// adding click events to the add buttons
 // to do section
 const buttonToDo = document.getElementById("submit-add-to-do");
  buttonToDo.addEventListener("click",addLiGeneric);
+//  in-progress
  const buttonInProgress = document.getElementById("submit-add-in-progress");
  buttonInProgress.addEventListener("click",addLiGeneric);
+//  done
  const buttonDone = document.getElementById("submit-add-done");
  buttonDone.addEventListener("click",addLiGeneric);
 
@@ -37,12 +39,13 @@ function addLiGeneric(event){   //A generic function to generate and add new tas
     if(inputToDo.length<1){
         alert("Cant assign an empty task ☹");
     }else{
-        const liDiv =document.createElement("div");
         const li= document.createElement("li");
+        li.addEventListener("dblclick" , editTask);
+        li.addEventListener("blur" , addChangedTask)
         li.textContent=inputToDo;
         li.classList.add("task")
         // liDiv.append(li);
-        ulToAdd.prepend(li);//appened the text we entered to the top of the ul coloumn.
+        ulToAdd.prepend(li);//enters the li we entered to the top of the ul coloumn.
         
         newTaskData(target,inputToDo);
         localStorageData();
@@ -60,6 +63,42 @@ function newTaskData(target ,task){
         tasks.done.unshift(task)
     }
 }
+function publishExistingLi(){
+    for(let i = 0 ; i<tasks.todo.length ; i++){
+        const existTask = generateListItems(tasks.todo[i],{"dblclick":editTask ,"blur":addChangedTask});
+        const liDiv =document.createElement("div");
+        const todoSectionUl=document.getElementById("todo");
+        // liDiv.append(existTask);
+        todoSectionUl.append(existTask);
+        
+    }
+    for(let i = 0 ; i<tasks["in-progress"].length ; i++){
+        const existTask = generateListItems(tasks["in-progress"][i],{"dblclick":editTask ,"blur":addChangedTask});
+        const liDiv =document.createElement("div");
+        const inProgSectionUl=document.getElementById("in-progress");
+        // liDiv.append(existTask);
+        inProgSectionUl.append(existTask);
+        
+    }
+    for(let i = 0 ; i<tasks.done.length ; i++){
+        const existTask = generateListItems(tasks.done[i],{"dblclick":editTask ,"blur":addChangedTask});
+        const liDiv =document.createElement("div");
+        const doneSectionUl=document.getElementById("done");
+        // liDiv.append(existTask);
+        doneSectionUl.append(existTask);
+    }
+}
+function generateListItems(text , eventListeners ={}){
+    const listItem = document.createElement("li");
+    listItem.setAttribute("class","task");
+    listItem.append(text);
+    const events =Object.keys(eventListeners);
+    for(let i = 0 ; i<events.length ; i++){
+        listItem.addEventListener(events[i],eventListeners[events[i]])
+    }
+    return listItem;
+}
+
 
 
 function createElement(tagName, children = [], classes = [], attributes = {}) 
@@ -81,26 +120,9 @@ function createElement(tagName, children = [], classes = [], attributes = {})
     }
     return el
 }
-// const ul1 =document.getElementById("ul1");
-// ul1.addEventListener("dblclick", editTask);
-// const ul2 =document.getElementById("ul2");
-// ul2.addEventListener("dblclick", editTask);
-// const ul3 =document.getElementById("ul3");
-// ul3.addEventListener("dblclick", editTask);
-//  function editTask(event){
-//      if(event.target.className==="task"){
-//         const currentLi = event.target.closest("li");
-//       currentLi.setAttribute("contenteditable","true");
-//       if(currentLi.blur){
-//         currentLi.removeAttribute("contenteditable","true");
-//       }
-//      }else{
 
-//      }
-      
-//  }
 //  function that filters the li according to the value of the search input
- const input = document.getElementById('search');
+const input = document.getElementById('search');
 input.onkeyup = function searchFilter () {
     let filter = input.value.toUpperCase();
     let lis = document.getElementsByTagName('li');
@@ -112,61 +134,30 @@ input.onkeyup = function searchFilter () {
             lis[i].style.display = 'none';
     }
 }
-// dblclick edit
-const wrapper = document.getElementById("wrapper")
-console.log(wrapper);
-const doc = document.documentElement
-console.log(doc);
 
-doc.addEventListener("dblclick" , e =>{
-    if(e.target.className === "task"){
-        e.target.focus();
-        e.target.setAttribute("contenteditable" , "true");
-        e.target.addEventListener("blur",blurFunction);
-        
-    }
-});
 
-function blurFunction(e){
-    alert("eventListener works");
-    e.target.removeAttribute("contenteditable");
-    // needs to change the data in the local storage so after a refresh the chang will be saved
-
+function editTask(event){ 
+    const oldTask = event.target;
+    oldTaskText = oldTask.textContent;
+    const localSavedTasks = tasks[oldTask.closest("ul").id]
+    oldTask.contentEditable="true"
+    oldTask.style.color = "red"
+    localSavedTasks[localSavedTasks.indexOf(oldTaskText)]="edit";
+    localStorage.setItem("tasks",JSON.stringify(tasks));
 }
 
-function publishExistingLi(){
-    for(let i = 0 ; i<tasks.todo.length ; i++){
-        const existTask = generateListItems(tasks.todo[i],{});
-        const liDiv =document.createElement("div");
-        const todoSectionUl=document.getElementById("ul1");
-        // liDiv.append(existTask);
-        todoSectionUl.prepend(existTask);
-        
-    }
-    for(let i = 0 ; i<tasks["in-progress"].length ; i++){
-        const existTask = generateListItems(tasks["in-progress"][i],{});
-        const liDiv =document.createElement("div");
-        const inProgSectionUl=document.getElementById("ul2");
-        // liDiv.append(existTask);
-        inProgSectionUl.prepend(existTask);
-        
-    }
-    for(let i = 0 ; i<tasks.done.length ; i++){
-        const existTask = generateListItems(tasks.done[i],{});
-        const liDiv =document.createElement("div");
-        const doneSectionUl=document.getElementById("ul3");
-        // liDiv.append(existTask);
-        doneSectionUl.prepend(existTask);
-    }
-}
-function generateListItems(text , eventListeners ={}){
-    const listItem = document.createElement("li");
-    listItem.setAttribute("class","task");
-    listItem.append(text);
-    const events =Object.keys(eventListeners);
-    for(let i = 0 ; i<events.length ; i++){
-        listItem.addEventListener(events[i],eventListeners[events[i]])
-    }
-    return listItem;
-}
 
+function addChangedTask(event){
+    const newTask = event.target;
+    newTask.contentEditable="false";
+    const localSavedTasks = tasks[newTask.closest("ul").id]
+    newTask.style.color="black";
+    if(newTask.textContent.length>1){ //if its not en empty str we replace the old task in local storage with edited one
+        localSavedTasks[localSavedTasks.indexOf("edit")]=newTask.textContent;
+    }else{//if the edited string is empty we define it to be the way it was before the change
+        localSavedTasks[localSavedTasks.indexOf("edit")]=oldTaskText
+        newTask.textContent = oldTaskText;
+        
+    }
+    localStorage.setItem("tasks",JSON.stringify(tasks));
+}

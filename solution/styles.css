@@ -5,6 +5,12 @@ body{
     width: 100%;
     background-color: #E0E0E0;
   }
+  h1{
+    font-family: 'Stick No Bills', sans-serif;
+  }
+  h2{
+    font-family: 'Stick No Bills', sans-serif;
+  }
   ul {
     transition: border-color 2s ease, all 0.1s ease;
     list-style-type:none ;

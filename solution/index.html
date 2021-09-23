@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./index.js" defer></script>
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stick+No+Bills:wght@600&display=swap" rel="stylesheet">
     <title>Tasks manager</title>
 </head>
 <body>
@@ -17,7 +20,7 @@
     <!-- to do section -->
     <section class="box" id="to-do-section">
         <h2>To do</h2> 
-        <ul id="ul1" class="to-do-tasks anyUL">
+        <ul id="todo" class="to-do-tasks anyUL">
             <!-- enter li here -->
         </ul>
         <div class="lower-of-section">
@@ -31,7 +34,7 @@
     <!-- in progress section -->
     <section  class="box" id="in-progress-section"> 
         <h2>In progress</h2>
-        <ul id="ul2" class="in-progress-tasks anyUL"></ul>
+        <ul id="in-progress" class="in-progress-tasks anyUL"></ul>
         <div class="lower-of-section">
          <input class="add-input" id="add-in-progress-task" type="text" placeholder="add in progress">
          <br>
@@ -42,7 +45,7 @@
     <!-- to do section -->
     <section  class="box" id="done-section"> 
         <h2>Done</h2>
-        <ul id="ul3" class="done-tasks anyUL"></ul>
+        <ul id="done" class="done-tasks anyUL"></ul>
         <div class="lower-of-section">
          <input class="add-input anyUL" id="add-done-task" type="text" placeholder="add done">
          <br>
