@@ -29,6 +29,11 @@ function handleClick(event) {
   }
 }
 
+function handleDoubleClick(event) {
+  console.log(event.target)
+  event.target.setAttribute('contenteditable', true)
+}
+
 function handleKeyPress(event) {
   if (document.querySelector('task-box:hover')) {
     if (event.altKey && POSSIBLE_KEYS.includes(event.key)) {
@@ -37,23 +42,22 @@ function handleKeyPress(event) {
   }
 }
 
+function handleBlur(event) {
+  console.log('blur')
+  event.target.setAttribute('contenteditable', false)
+}
+
 function handleMultipleKeys(event) {
   const task = document.querySelector('task-box:hover')
-  let list
-  switch (event.key) {
-    case '1':
-      list = todoTasks
-      break
-    case '2':
-      list = inProgressTasks
-      break
-    case '3':
-      list = doneTasks
-      break
-    default:
-      list = null
-      break
+
+  const options = {
+    1: todoTasks,
+    2: inProgressTasks,
+    3: doneTasks,
   }
+
+  const list = options[event.key]
+
   if (list) {
     moveTask(task, list)
   }
@@ -208,3 +212,7 @@ mainContianer.addEventListener('click', handleClick)
 window.addEventListener('load', loadData())
 
 window.addEventListener('keydown', handleKeyPress)
+
+mainContianer.addEventListener('dblclick', handleDoubleClick)
+
+mainContianer.addEventListener('blur', handleBlur)
