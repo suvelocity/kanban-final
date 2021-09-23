@@ -20,7 +20,8 @@ document.body.addEventListener('focusout', saveValueBlur);
 //setting variables for the document elements
 let taskDiv = document.getElementById('tasks-div')
 let taskSectionsArray = Array.from(document.querySelectorAll('.task-section'));
- let submitButtonArray = Array.from(document.getElementsByClassName('add-task'));
+let submitButtonArray = Array.from(document.getElementsByClassName('add-task'));
+let searchBar = document.getElementById('search');
  
  //localstorage loading function
  if(localStorageObjectForUpdate.todo.length > 0 || localStorageObjectForUpdate['in-progress'].length > 0 || localStorageObjectForUpdate.done.length > 0){
@@ -40,12 +41,13 @@ let taskSectionsArray = Array.from(document.querySelectorAll('.task-section'));
     var inProgressTasksUl = createElement('ul', children = [], classes = ['in-progress-tasks'], attributes = {})
     var doneTasksUl = createElement('ul', children = [], classes = ['done-tasks'], attributes = {})
 
-    document.getElementById('to-do-section').appendChild(toDoTasksUl);
-    document.getElementById('in-progress-section').appendChild(inProgressTasksUl);
-    document.getElementById('done-section').appendChild(doneTasksUl);
+    document.getElementById('to-do-container').appendChild(toDoTasksUl);
+    document.getElementById('in-progress-container').appendChild(inProgressTasksUl);
+    document.getElementById('done-container').appendChild(doneTasksUl);
  }
 //load local storage
 
+console.log
  //adding the section lists to the DOM
 
 //adding a list item functionality
@@ -58,7 +60,7 @@ function addTask(e){
             alert("You haven't entered any text");
        }else{
             let newTaskInnerItem = createElement('input', children = [], classes = ['taskItemInner'], attributes = {value: `${target.previousElementSibling.value}`, 'disabled' :''});
-            let newTask = createElement('li',children = [newTaskInnerItem], classes = ['taskItem'], attributes = {});
+            let newTask = createElement('li',children = [newTaskInnerItem], classes = ['task'], attributes = {});
             console.log(target.nextElementSibling.firstChild);
             target.nextElementSibling.firstChild.insertBefore(newTask, target.nextElementSibling.firstChild.firstChild);
 
@@ -94,7 +96,6 @@ taskDiv.addEventListener('click', addTask)
      if(target.className != 'taskItemInner'){
         return;
      }
-     console.log(e.target.tagName + 'blurred');
     e.target.setAttribute('disabled', '');
  }
  //
@@ -105,9 +106,7 @@ taskDiv.addEventListener('click', addTask)
   
       console.log(target + 'hovered');
       function innerKeyReplace(e){
-        console.log(e.altKey)
             if(e.altKey ){
-                console.log(e.key)
                 if(e.key == 1){
                     toDoTasksUl.append(target);
                 }else if(e.key == 2){
@@ -120,7 +119,6 @@ taskDiv.addEventListener('click', addTask)
                  localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
                  localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
                  localStorageObjectForUpdate.done[0] = doneTasksUl.outerHTML;
-                 console.log(localStorageObjectForUpdate);
                  localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
                  // end of local storage insertion
        }
@@ -138,7 +136,6 @@ function addHoverReplace(e){
         return
     };
     e.target.addEventListener('mouseenter', hoverReplace);
-    console.log('added hover replace')
 }
 
 //create Element function
@@ -161,6 +158,30 @@ function createElement(tagName, children = [], classes = [], attributes = {}) {
   }
 
 
+//search bar function
+function searchTask(e){
+  let value = e.target.value;
+  let toDoTaskArray = Array.from(document.querySelectorAll('.to-do-tasks > .task'));
+  let inProgressTaskArray = Array.from(document.querySelectorAll('.in-progress-tasks > .task'));
+  let doneTaskArray = Array.from(document.querySelectorAll('.done-tasks > .task'));
+  for(let li of toDoTaskArray){
+      li.hidden = false;
+      if(!li.firstChild.value.toLowerCase().includes(value.toLowerCase())){
+        li.hidden = true;
+      }
+  }
+  for(let li of inProgressTaskArray){
+    li.hidden = false;
+    if(!li.firstChild.value.toLowerCase().includes(value.toLowerCase())){
+        li.hidden = true;
+      }
+  }
+  for(let li of doneTaskArray){
+    li.hidden = false;
+    if(!li.firstChild.value.toLowerCase().includes(value.toLowerCase())){
+        li.hidden = true;
+      }
+  }
+}
 
-
-  
+searchBar.addEventListener('keyup', searchTask);
