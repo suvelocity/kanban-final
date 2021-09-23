@@ -1,35 +1,42 @@
 * {
-    padding: 0px;
-    margin: 0px;
+  padding: 0px;
+  margin: 0px;
 }
-body{
-    text-align: center;
+body {
+  text-align: center;
 }
-main{
-background-color: bisque;
-display: block;
+main {
+  background-color: bisque;
+  display: block;
 }
-section{
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 30px;
-    display: block;
-    background-color: white;
-    height: 300px;
-    width: 300px;
+section {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  display: block;
+  background-color: white;
+  height: 300px;
+  width: 300px;
 }
-ul{
-    list-style: none;
+ul {
+  list-style: none;
 }
-li{
-    display:block;
-    border: 1px solid black;
-    margin: 2px;
+li {
+  display: block;
+  border: 1px solid black;
+  margin: 2px;
 }
-li img{
-    width:15px;
-    height:15px;
+li img {
+  width: 15px;
+  height: 15px;
 }
-#selectedTask{
-    background-color: yellow;
+#selectedTask {
+  background-color: yellow;
+}
+.loader {
+  position: absolute;
+  vertical-align: middle;
+  height: 50vh;
+  width:30vw;
+
 }

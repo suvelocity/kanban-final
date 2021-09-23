@@ -13,6 +13,7 @@
 <body>
     <h2 id="page-title">To Do List</h2>
     <main>
+        <div id="loaderD"></div>
         <input type="text" id="search" placeholder="search tasks here">
         <section>
             <h3 class="task-headline">Tasks</h3>
@@ -33,6 +34,9 @@
             <input type="text" id="add-done-task" placeholder="add task">
             <button id="submit-add-done" onclick="addTask('done','add-done-task')">Add Task</button>
         </section>
+        <div id="API-ACCESS">
+            <button id="save-btn">Save</button><button id="load-btn">Load</button>
+        </div>
     </main>
 </body>
 
