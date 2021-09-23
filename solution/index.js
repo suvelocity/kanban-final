@@ -88,7 +88,6 @@ function hoverHandler({target}){
         document.addEventListener("keydown", moveBetweenSections)
         document.addEventListener("dblclick", editTask)
         selectedTask.addEventListener("blur", finishedit)
-
     }
     target.onmouseout = () => {
         document.removeEventListener("keypress", moveBetweenSections)
@@ -173,6 +172,8 @@ for (const button of addButtons) {
     button.addEventListener("click", addNewTask)
 }
 document.addEventListener("mouseover", hoverHandler)
+const searchBar = document.getElementById("search")
+searchBar.addEventListener("keydown", search)
 
 
 //  Edit task handlers
@@ -191,5 +192,31 @@ function finishedit(){  // Saves the new task in local storage
         const editedTaskUl = task.parentElement
         addNewTaskData(editedTaskUl , task.innerText)
         updateLocalSaveData()
+    }
+}
+
+//  Search
+function search({key}){
+    let searchQuery
+    const searchBarEntry = document.getElementById("search").value.toLowerCase()
+    if (key == "Backspace"){
+        searchQuery = searchBarEntry.slice(0, searchBarEntry.length-1)
+    }
+    if (key == "Space") {
+        searchQuery = searchBarEntry+" "
+    }
+    if (key.length === 1){
+        searchQuery = searchBarEntry+key
+    }
+    const tasksList = document.querySelectorAll(".task")
+    if (searchQuery !== undefined){
+        for (const task of tasksList) {
+            if (!(task.innerText.includes(searchQuery))){
+                task.classList.add("invisible")
+            }
+            else {
+                task.classList.remove("invisible")
+            }
+        }
     }
 }

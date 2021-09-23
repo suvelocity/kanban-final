@@ -37,3 +37,6 @@ h3{
 ul{
     padding-inline-start: 0;
 }
+.invisible{
+    display: none;
+}
