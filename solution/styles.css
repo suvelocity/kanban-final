@@ -35,3 +35,6 @@ ul{
 .task-section h2{
     margin-top: 0;
 }
+.dragging{
+    opacity: 0.5;
+}

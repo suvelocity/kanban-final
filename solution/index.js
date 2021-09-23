@@ -1,11 +1,13 @@
- /*
+/*
  localStorage.setItem('tasks', JSON.stringify({
     "todo": [],
     "in-progress": [],
     "done": []
       })
     ); 
-    */
+*/
+    
+
    //localStorage.clear();
     console.log(JSON.parse(localStorage.tasks).todo);
     let localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
@@ -28,6 +30,8 @@ let taskDiv = document.getElementById('tasks-div')
 let taskSectionsArray = Array.from(document.querySelectorAll('.task-section'));
 let submitButtonArray = Array.from(document.getElementsByClassName('add-task'));
 let searchBar = document.getElementById('search');
+let saveButton = document.getElementById('save-button');
+let loadButton = document.getElementById('load-button');
  
  //localstorage loading function
  if(localStorageObjectForUpdate.todo.length > 0 || localStorageObjectForUpdate['in-progress'].length > 0 || localStorageObjectForUpdate.done.length > 0){
@@ -66,7 +70,7 @@ function addTask(e){
             alert("You haven't entered any text");
        }else{
             //let newTaskInnerItem = createElement('input', children = [], classes = ['taskItemInner'], attributes = {value: `${target.previousElementSibling.value}`, 'disabled' :''});
-            let newTask = createElement('li',children = [/*newTaskInnerItem */ `${target.previousElementSibling.value}`], classes = ['task'], attributes = {});
+            let newTask = createElement('li',children = [/*newTaskInnerItem */ `${target.previousElementSibling.value}`], classes = ['task'], attributes = {'draggable': 'true'});
             console.log(target.nextElementSibling.firstChild);
             target.nextElementSibling.firstChild.insertBefore(newTask, target.nextElementSibling.firstChild.firstChild);
 
@@ -88,7 +92,6 @@ taskDiv.addEventListener('click', addTask)
  function gainFocus(e){
      let target = e.target;
      if(target.tagName === 'LI'){
-         //target.removeAttribute('disabled');
          target.setAttribute('contenteditable' , 'true');
      }
  };
@@ -108,13 +111,13 @@ taskDiv.addEventListener('click', addTask)
  function hoverReplace(e){
      let target = e.target;
   
-      console.log(target + 'hovered');
+     
       function innerKeyReplace(e){
             if(e.altKey ){
                 if(e.key == 1){
                     toDoTasksUl.insertBefore(target, toDoTasksUl.firstChild);
                 }else if(e.key == 2){
-                inProgressTasksUl.insertBefore(target, inProgressTasksUl.firstChild);
+                    inProgressTasksUl.insertBefore(target, inProgressTasksUl.firstChild);
                 }else if(e.key == 3){
                     doneTasksUl.insertBefore(target,doneTasksUl.firstChild);
                 }
@@ -124,7 +127,6 @@ taskDiv.addEventListener('click', addTask)
                  // end of local storage insertion
        }
 
-       console.log(target.parentElement.parentElement);
        target.addEventListener('mouseleave', () => {
             window.removeEventListener('keydown',innerKeyReplace);
         }); 
@@ -186,3 +188,76 @@ function searchTask(e){
 }
 
 searchBar.addEventListener('keyup', searchTask);
+
+async function saveApi(){
+    console.log('save button');
+     await fetch('https://json-bins.herokuapp.com/bin/614adb6c4021ac0e6c080c15',{
+        method: 'PUT',
+        headers :{
+            Accept: "application/json", "Content-Type": "application/json",
+        },
+        body: JSON.stringify({'tasks':{'todo':[toDoTasksUl.outerHTML], 'in-progress': [inProgressTasksUl.outerHTML], 'done' : [doneTasksUl.outerHTML]} 
+        }) 
+  })
+}
+
+async function loadApi(){
+   let loadData = await fetch('https://json-bins.herokuapp.com/bin/614adb6c4021ac0e6c080c15');
+    console.log(loadData);
+}
+
+saveButton.addEventListener('click', saveApi);
+loadButton.addEventListener('click', loadApi);
+
+
+
+
+//dragItem function
+function dragItem(e){
+    e.target.classList.add('dragging');
+}
+
+function endDrag(e){
+   e.target.classList.remove('dragging');
+   localStorageSave();
+}
+
+
+
+for(let li of Array.from(document.querySelectorAll('.task'))){
+  li.addEventListener('dragstart', dragItem);
+  li.addEventListener('dragend', endDrag);
+};
+let sections = Array.from(document.querySelectorAll('section'));
+
+sections.forEach((section) => {
+  
+    section.addEventListener('dragover', (e) => {
+        let afterElement = elementAfterDragging(section, e.clientY);
+        
+        if(afterElement == null){
+            section.lastElementChild.firstElementChild.appendChild(document.querySelector('.dragging'));
+        }else{
+            section.lastElementChild.firstElementChild.insertBefore(document.querySelector('.dragging'), afterElement);
+        }
+        /*
+        if(e.target.tagName === 'SECTION'){
+            section.lastElementChild.firstElementChild.appendChild(document.querySelector('.dragging')); 
+    }*/
+ })
+})
+
+
+function elementAfterDragging(container, y){  
+    let draggableElements = [...container.querySelectorAll('[draggable = true]:not(.dragging)')];
+    return draggableElements.reduce((closest, child)=>{
+        let box = child.getBoundingClientRect();
+        let offset = y - box.top - box.height / 2;
+        if(offset < 0 && offset > closest.offset){
+          return{offset: offset, element: child};
+        }else{
+            return closest;
+        }
+        console.log(offset);
+    }, {offset: Number.NEGATIVE_INFINITY}).element
+}
