@@ -12,7 +12,7 @@ const toDoTasksList = Array.from(document.getElementsByClassName('to-do-tasks'))
 const inProgressTasksList = Array.from(document.getElementsByClassName('in-progress-tasks'));
 const DoneTasksList = Array.from(document.getElementsByClassName('done-tasks'));
 
-// add to do task content to matchin list/s //
+// add to do task content to matchin list/s  & saving in local storage //
 addToDoButton.addEventListener('click', () => {
 
     liGenerator( toDoInput, toDoTasksList );
@@ -20,7 +20,7 @@ addToDoButton.addEventListener('click', () => {
     
 });
 
-// add in progress task content to matchin list/s //
+// add in progress task content to matchin list/s  & saving in local storage //
 addInProgressButton.addEventListener('click', () => {
 
     liGenerator( inProgressInput, inProgressTasksList );
@@ -29,7 +29,7 @@ addInProgressButton.addEventListener('click', () => {
 });
 
 
-// add done task cntent to matchin list/s //
+// add done task cntent to matchin list/s & saving in local storage //
 addDoneButton.addEventListener('click', () => {
 
     liGenerator( doneInput, DoneTasksList );
@@ -52,10 +52,27 @@ function liGenerator( inputElement, arrayOfListElements )
     else
     {
       inputElement.setAttribute('style', ''); // if not empty remove error style attribute
-      arrayOfListElements.forEach( listElement =>  eleDOMAppender( listElement , elCreator( 'li', [inputElement.value, ` [${Date()}]`], ['li-task'], {ondblclick: () => {}} ))); //sets the value of the input to the currrent state of it
+      const liEl = elCreator( 'li', [inputElement.value], ['li-task'], {} ); //creatin and insertn li el to list
+
+      const fullDate = new Date(); //date of submitting indicator
+      const date = elCreator( 'span', [ ` ${fullDate.getDate()}/${fullDate.getMonth()+1}/${fullDate.getFullYear()} `], ['date']);
+      const time = elCreator('span', [` ${fullDate.getHours()}:${fullDate.getMinutes()}:${fullDate.getSeconds()} `], ['time']);
+
+      const fulldateEl = elCreator('span', [
+         ' { ',
+        date,
+        time,
+         ' }'
+      ], ['full-date']);
+
+      eleDOMAppender(liEl, fulldateEl); //apending full date to the task list
+      
+      arrayOfListElements.forEach( listElement =>  eleDOMAppender( listElement , liEl )); //sets the value of the input to the currrent state of it
       inputElement.value = '';
     } 
 }
+
+
 
 
 
