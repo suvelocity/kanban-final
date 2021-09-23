@@ -167,19 +167,19 @@ function searchTask(e){
   let doneTaskArray = Array.from(document.querySelectorAll('.done-tasks > .task'));
   for(let li of toDoTaskArray){
       li.hidden = false;
-      if(!li.firstChild.value.toLowerCase().includes(value.toLowerCase())){
+      if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
         li.hidden = true;
       }
   }
   for(let li of inProgressTaskArray){
     li.hidden = false;
-    if(!li.firstChild.value.toLowerCase().includes(value.toLowerCase())){
+    if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
         li.hidden = true;
       }
   }
   for(let li of doneTaskArray){
     li.hidden = false;
-    if(!li.firstChild.value.toLowerCase().includes(value.toLowerCase())){
+    if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
         li.hidden = true;
       }
   }

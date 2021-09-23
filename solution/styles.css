@@ -4,6 +4,10 @@ h1{
 ul{
   list-style: none;  
 }
+.api-buttons{
+   display: flex;
+   justify-content: end;
+}
 #search{
     display: flex;
     justify-content: center;
