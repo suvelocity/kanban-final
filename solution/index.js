@@ -25,6 +25,12 @@ function handleClick(event) {
   }
 }
 
+function handleKeyPress(event) {
+  if (document.querySelector('task-box:hover') && event.altKey) {
+    console.log('alt pressed')
+  }
+}
+
 /**************** Classes ****************/
 
 /** Initializes a class for the custom element 'task-box'.
@@ -60,6 +66,11 @@ function addTaskBox(list, text) {
 
 /**************** Utility Functions ****************/
 
+/** takes a section and makes an object containig the section name and it's taskBoxes values
+ *
+ * @param {HTMLElement} section - the section element to extract data from
+ * @returns an object containing the section name as key and taskBox texts as value
+ */
 function stripData(section) {
   const list = section.querySelector('.task-list')
   const classes = [...list.classList]
@@ -76,12 +87,17 @@ function stripData(section) {
   return keyValuePair
 }
 
+/** Gets a taskBox and extracts the text from it.
+ *
+ * @param {HTMLElement} taskBox
+ * @returns the text from the taskBox
+ */
 function stripTaskBox(taskBox) {
   const text = taskBox.querySelector('div').textContent
   return text
 }
 
-function extractTaskText() {}
+function listenToKeyboard(event) {}
 
 /**************** Storage Functions ****************/
 
@@ -133,6 +149,9 @@ function parseData(data) {
   })
 }
 
+/**
+ *  Checks if localStorage contains any related data. If not, stores a template data object.
+ */
 function assertDataNotEmpty() {
   if (!localStorage.getItem('tasks')) {
     captureData()
@@ -144,5 +163,8 @@ function assertDataNotEmpty() {
 //TODO: replace all single quotes (') with double quotes ("")
 
 mainContianer.addEventListener('click', handleClick)
+// mainContianer.addEventListener('mouseover', handleHover)
 
 window.addEventListener('load', loadData())
+
+window.addEventListener('keydown', handleKeyPress)
