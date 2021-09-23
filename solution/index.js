@@ -40,7 +40,8 @@ customElements.define('task-box', TaskBox)
 
 function addTaskBox(list, text) {
   const taskBox = document.createElement('task-box')
-  list.append(taskBox)
+  // list.append(taskBox)
+  list.insertBefore(taskBox, list.firstChild)
   console.log(taskBox)
   taskBox.querySelector('div').textContent = text
 }
@@ -86,6 +87,9 @@ function parseData(data) {
     const sectionElement = document.querySelector(`.${listName}`)
     const listElement = sectionElement.querySelector('.task-list')
     const textArray = obj[Object.keys(obj)]
+    //reverse if for creating each taskBox in the order they appeared last.
+    //this could be fixed if we reverse ahead the order in which they are stored by. so this is a temp fix.
+    textArray.reverse()
     textArray.forEach((item) => {
       console.log(`${listElement},${item} `)
       addTaskBox(listElement, item)
@@ -99,3 +103,5 @@ function parseData(data) {
 mainContianer.addEventListener('click', handleClick)
 
 window.addEventListener('load', loadData())
+
+//Where we left oof: we just got local storage to work.
