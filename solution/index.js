@@ -22,6 +22,7 @@ const POSSIBLE_KEYS = ['1', '2', '3']
 function handleClick(event) {
   if (event.target.className.includes('submit-task')) {
     const list = event.target.parentElement.querySelector('ul')
+    assertInputNotEmpty(list)
     const taskText = event.target.parentElement.querySelector('input').value
     addTaskBox(list, taskText)
     captureData()
@@ -188,6 +189,13 @@ function assertDataNotEmpty() {
   if (!localStorage.getItem('tasks')) {
     captureData()
     console.log('no local data found. creating new data item.')
+  }
+}
+
+function assertInputNotEmpty(list) {
+  const input = list.parentElement.querySelector('input')
+  if (input.value === '') {
+    throw 'you must enter a value'
   }
 }
 
