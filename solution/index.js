@@ -40,8 +40,10 @@ customElements.define('task-box', TaskBox)
 
 function addTaskBox(list, text) {
   const taskBox = document.createElement('task-box')
-  // list.append(taskBox)
-  list.insertBefore(taskBox, list.firstChild)
+  const listItem = document.createElement('li')
+  listItem.classList.add('task')
+  listItem.append(taskBox)
+  list.insertBefore(listItem, list.firstChild)
   console.log(taskBox)
   taskBox.querySelector('div').textContent = text
 }
@@ -49,7 +51,11 @@ function addTaskBox(list, text) {
 function captureData() {
   const sections = [...document.querySelectorAll('section')]
   const resultsArray = sections.map(stripData)
-  storeLocally(resultsArray)
+  const dataObject = {}
+  resultsArray.forEach((item) => {
+    Object.assign(dataObject, item)
+  })
+  storeLocally(dataObject)
 }
 
 /**Stores the data captured in localStorage.
@@ -77,16 +83,20 @@ function stripTaskBox(taskBox) {
 }
 
 function loadData() {
+  assertDataNotEmpty()
   const data = JSON.parse(localStorage.getItem('tasks'))
   parseData(data)
 }
 
 function parseData(data) {
-  data.forEach((obj) => {
-    const listName = Object.keys(obj) + '-section'
+  console.log(data)
+  const propsArr = Object.entries(data)
+  console.log(propsArr)
+  propsArr.forEach((prop) => {
+    const listName = prop[0] + '-section'
     const sectionElement = document.querySelector(`.${listName}`)
     const listElement = sectionElement.querySelector('.task-list')
-    const textArray = obj[Object.keys(obj)]
+    const textArray = prop[1]
     //reverse if for creating each taskBox in the order they appeared last.
     //this could be fixed if we reverse ahead the order in which they are stored by. so this is a temp fix.
     textArray.reverse()
@@ -97,6 +107,13 @@ function parseData(data) {
   })
 }
 
+function assertDataNotEmpty() {
+  if (!localStorage.getItem('tasks')) {
+    captureData()
+    console.log('no local data found. creating new data item.')
+  }
+}
+
 /**************** Event Listeners ****************/
 //TODO: replace all single quotes (') with double quotes ("")
 
@@ -104,4 +121,12 @@ mainContianer.addEventListener('click', handleClick)
 
 window.addEventListener('load', loadData())
 
-//Where we left oof: we just got local storage to work.
+/*
+i'm currently storing the data in the form of: 3 objects inside 1 array.
+the requested form is actually:
+3 proprties inside one object.
+it should look like this in local storage:
+key                     value
+tasks                   {todo: ['task1','task2'], in-progress: ['ahla','janana'], done: ['shoko', 'bimbo']}
+
+*/
