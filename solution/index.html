@@ -15,20 +15,20 @@
     <main>
         <div id="loaderD"></div>
         <input type="text" id="search" placeholder="search tasks here">
-        <section>
+        <section id="generalSection">
             <h3 class="task-headline">Tasks</h3>
             <ul id="general-task-table" class="to-do-tasks"></ul>
             <input type="text" id="add-to-do-task" placeholder="add task">
             <button id="submit-add-to-do" onclick="addTask('todo','add-to-do-task')">Add Task</button>
         </section>
-        <section>
+        <section id="ongoingSection">
             <h3 class="task-headline">On-Going Task</h3>
             <ul id="ongoing-task-table" class="in-progress-tasks"></ul>
             <input type="text" id="add-in-progress-task" placeholder="add task">
             <button id="submit-add-in-progress" onclick="addTask('in-progress','add-in-progress-task')">Add
                 Task</button>
         </section>
-        <section>
+        <section id="doneSection">
             <h3 class="task-headline">Finished Tasks</h3>
             <ul id="finished-task-table" class="done-tasks"></ul>
             <input type="text" id="add-done-task" placeholder="add task">

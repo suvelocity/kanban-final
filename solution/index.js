@@ -1,9 +1,12 @@
 'use strict'
 let taskObj, resultObj;
+let oldinnerTaskText;
 const spaceAtEndRegex = /[\s]*$/g;
+
 const addEventListenerToDeleteButton = () => {
     const deleteButtons = document.querySelectorAll('.deleteButton');
     deleteButtons.forEach(element => {
+
         element.addEventListener("click", function () {
             deleteTask(element.parentElement.parentElement.getElementsByClassName("task")[0].innerText)
         }
@@ -12,50 +15,60 @@ const addEventListenerToDeleteButton = () => {
     );
 }
 
+
 const addEventListenerToTasks = () => {
     const taskLi = document.querySelectorAll('.task');
     taskLi.forEach(element => {
-        element.addEventListener("dblclick", function () {
-            let oldinnerTaskText = element.getElementsByClassName("TaskTitle")[0].innerText;
-            element.getElementsByClassName("TaskTitle")[0].contentEditable = true;
-            element.getElementsByClassName("TaskTitle")[0].onblur = function () {
-                let newinnerTaskText = element.getElementsByClassName("TaskTitle")[0].innerText.replace(spaceAtEndRegex, '');
-                deleteNChangeTask(oldinnerTaskText, newinnerTaskText);
-                localStorage.setItem("tasks", JSON.stringify(taskObj));
-            }
-        })
+
+        element.addEventListener("dragstart", function (e) {
+            e.dataTransfer.setData("titleText", element.innerText);
+        });
+        // element.addEventListener("dragover", function (e) {
+        // });
+
         element.addEventListener("click", function () {
             try { document.querySelector("#selectedTask").id = ""; }
             catch { element.id = "selectedTask"; }
             element.id = "selectedTask";
-            window.addEventListener("keydown", function presskey (e) {
+            window.addEventListener("keydown", function presskey(e) {
                 if (e.key === "Alt") {
-                    window.addEventListener("keydown", function preesnumber (e) {
+                    window.addEventListener("keydown", function preesnumber(e) {
                         if (e.key === "1") {
-                            window.removeEventListener("keydown",preesnumber);
-                            window.removeEventListener("keydown",presskey);
+                            window.removeEventListener("keydown", preesnumber);
+                            window.removeEventListener("keydown", presskey);
                             let innerTaskText = element.innerText;
                             deleteNAddToOtherTask("todo", innerTaskText);
                         }
                         else if (e.key === "2") {
-                            window.removeEventListener("keydown",preesnumber);
-                            window.removeEventListener("keydown",presskey);
+                            window.removeEventListener("keydown", preesnumber);
+                            window.removeEventListener("keydown", presskey);
                             let innerTaskText = element.innerText;
                             deleteNAddToOtherTask("in-progress", innerTaskText);
                         }
                         else if (e.key === "3") {
-                            window.removeEventListener("keydown",preesnumber);
-                            window.removeEventListener("keydown",presskey);
+                            window.removeEventListener("keydown", preesnumber);
+                            window.removeEventListener("keydown", presskey);
                             let innerTaskText = element.innerText;
                             deleteNAddToOtherTask("done", innerTaskText);
                         }
                     });
                 }
             })
+        });
+
+        element.getElementsByClassName("TaskTitle")[0].addEventListener("blur", function Changeinside() {
+            let newinnerTaskText = element.getElementsByClassName("TaskTitle")[0].innerText.replace(spaceAtEndRegex, '');;
+            deleteNChangeTask(oldinnerTaskText, newinnerTaskText);
         })
+        element.addEventListener("dblclick", function () {
+            oldinnerTaskText = element.getElementsByClassName("TaskTitle")[0].innerText;
+            element.getElementsByClassName("TaskTitle")[0].contentEditable = true;
+        })
+
     }
     )
 }
+
 
 const addTask = (taskType, id) => {
     const taskValue = document.getElementById(id).value.replace(spaceAtEndRegex, '');
@@ -68,40 +81,43 @@ const addTask = (taskType, id) => {
 const postTasks = () => {
     let generalString = ``, ongoingString = ``, finishedString = ``;
     for (let key of taskObj.todo) {
-        generalString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+        generalString += `<li class="task" draggable="true"><span class="TaskTitle">${key}</span></li>`
     }
     document.getElementById("general-task-table").innerHTML = generalString;
 
     for (let key of taskObj["in-progress"]) {
-        ongoingString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+        ongoingString += `<li class="task" draggable="true"><span class="TaskTitle">${key}</span></li>`
     }
     document.getElementById("ongoing-task-table").innerHTML = ongoingString;
 
     for (let key of taskObj.done) {
-        finishedString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+        finishedString += `<li class="task" draggable="true"><span class="TaskTitle">${key}</span></li>`
     }
     document.getElementById("finished-task-table").innerHTML = finishedString;
-    addEventListenerToTasks();
-    addEventListenerToDeleteButton();
     localStorage.setItem("tasks", JSON.stringify(taskObj));
+    addEventListenerToDeleteButton();
+    addEventListenerToTasks();
 }
 
 const postTasksforquery = () => {
     let query = document.getElementById("search").value;
     searchByQuery(query);
+    if (!searchByQuery(query)) {
+        return postTasks();
+    }
     let generalString = ``, ongoingString = ``, finishedString = ``;
     for (let key of resultObj.todo) {
-        generalString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+        generalString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"></button></li>`
     }
     document.getElementById("general-task-table").innerHTML = generalString;
 
     for (let key of resultObj["in-progress"]) {
-        ongoingString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+        ongoingString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"></button></li>`
     }
     document.getElementById("ongoing-task-table").innerHTML = ongoingString;
 
     for (let key of resultObj.done) {
-        finishedString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"><img src="./Images/XRED.ico"></button></li>`
+        finishedString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"></button></li>`
     }
     document.getElementById("finished-task-table").innerHTML = finishedString;
     addEventListenerToTasks();
@@ -125,8 +141,7 @@ const deleteNChangeTask = (oldTaskText, newTaskText) => {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
             if (taskObj[taskarray][i] == oldTaskText) {
                 taskObj[taskarray].splice(i, 1);
-                taskObj[taskarray].unshift(newTaskText)
-                localStorage.setItem("tasks", JSON.stringify(taskObj));
+                taskObj[taskarray].unshift(newTaskText);
             }
         }
     }
@@ -145,6 +160,9 @@ const deleteTask = (innerTextOfTitle) => {
 }
 
 const searchByQuery = (query) => {
+    if (!query) {
+        return undefined
+    }
     const queryRegex = new RegExp(`${query}`, 'i');
     resultObj = {
         todo: [],
@@ -175,7 +193,7 @@ const searchByQuery = (query) => {
 const getDataFromAPI = async () => {
     document.getElementById("loaderD").innerHTML = `<img src="./Images/loading.gif" alt="loader" class="loader" id="loader">`;
     const response = await fetch("https://json-bins.herokuapp.com/bin/614ad65e4021ac0e6c080c06");
-    if(!response.ok){
+    if (!response.ok) {
         alert(response.status);
     }
     const responseObj = await response.json();
@@ -187,25 +205,49 @@ const getDataFromAPI = async () => {
 
 const postDataToAPI = async () => {
     document.getElementById("loaderD").innerHTML = `<img src="./Images/loading.gif" alt="loader" class="loader" id="loader">`;
-    const tasksobjtoAPI  = {tasks: taskObj} ;
+    const tasksobjtoAPI = { tasks: taskObj };
     const response = await fetch("https://json-bins.herokuapp.com/bin/614ad65e4021ac0e6c080c06", {
         method: "PUT",
         headers: {
-        //     "Access-Control-Allow-Origin": "origin-list",
             "Content-Type": "application/json",
-            "Accept" : "application/json",
+            "Accept": "application/json",
         },
         body: JSON.stringify(tasksobjtoAPI),
     });
     document.getElementById("loaderD").innerHTML = ``;
-    if(!response.ok){
+    if (!response.ok) {
         alert(response.status);
+    }
+}
+
+const stopDropZone = (e) => {
+    e.preventDefault();
+}
+const addDropZone = (e) => {
+    const innerTaskText = e.dataTransfer.getData("titleText");
+    e.preventDefault();
+    console.log(e)
+    if (e.target.id === "doneSection") {
+        deleteNAddToOtherTask("done", innerTaskText)
+    }
+    else if (e.target.id === "ongoingSection") {
+        deleteNAddToOtherTask("in-progress", innerTaskText)
+    }
+    else if (e.target.id === "generalSection") {
+        deleteNAddToOtherTask("todo", innerTaskText)
     }
 }
 
 document.getElementById("search").addEventListener("keyup", postTasksforquery);
 document.getElementById("load-btn").addEventListener("click", getDataFromAPI);
 document.getElementById("save-btn").addEventListener("click", postDataToAPI);
+document.getElementById("doneSection").addEventListener("drop", addDropZone);
+document.getElementById("ongoingSection").addEventListener("drop", addDropZone);
+document.getElementById("generalSection").addEventListener("drop", addDropZone);
+document.getElementById("doneSection").addEventListener("dragover", stopDropZone);
+document.getElementById("ongoingSection").addEventListener("dragover", stopDropZone);
+document.getElementById("generalSection").addEventListener("dragover", stopDropZone);
+
 if (localStorage.getItem("tasks")) {
     taskObj = JSON.parse(localStorage.getItem("tasks"));
     postTasks();
@@ -219,3 +261,7 @@ else {
     postTasks();
     localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
+
+{/* <img src="./Images/XRED.ico">
+<img src="./Images/XRED.ico">
+<img src="./Images/XRED.ico"></img> */}
