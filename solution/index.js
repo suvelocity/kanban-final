@@ -1,5 +1,5 @@
 const divSections = document.getElementById('sections')
-
+const search = document.getElementById('search')
 //checks if there is a local storage, if not creates one
 if (localStorage.getItem('tasks') === null) {
     const tasks = {
@@ -14,6 +14,8 @@ generateTasks()//generates all tasks in the localStorage
 divSections.addEventListener('click', addTasks)// adding the addTasks to the click eventlistener 
 divSections.addEventListener('dblclick', changeTask)
 divSections.addEventListener('keydown', moveTask)
+search.addEventListener('input', searchTask)
+
 
 function addTasks(e) {
     const target = e.target
@@ -29,7 +31,7 @@ function addTasks(e) {
                 //if input empty an alert pop up
                 else {
                     tasksObj.todo.push(toDoTask)
-                    ul1.append(task) //add the text to the list
+                    todo.append(task) //add the text to the list
                 }
                 break
             case 'submit-add-in-progress':
@@ -38,7 +40,7 @@ function addTasks(e) {
                 //if input empty an alert pop up
                 else {
                     tasksObj["in-progress"].push(inProgressTask)
-                    ul2.append(task) //add the text to the list
+                    document.getElementById("in-progress").append(task) //add the text to the list
                 }
                 break
             case 'submit-add-done':
@@ -47,7 +49,7 @@ function addTasks(e) {
                 //if input empty an alert pop up
                 else {
                     tasksObj.done.push(doneTask)
-                    ul3.append(task) //add the text to the list
+                    done.append(task) //add the text to the list
                 }
                 break
         }
@@ -58,17 +60,17 @@ function generateTasks() {
     for (let i of tasksObj.todo) {
         const task = makeTaskElement()
         task.innerHTML = i
-        ul1.append(task)
+        todo.append(task)
     }
     for (let i of tasksObj["in-progress"]) {
         const task = makeTaskElement()
         task.innerHTML = i
-        ul2.append(task)
+        document.getElementById("in-progress").append(task)
     }
     for (let i of tasksObj.done) {
         const task = makeTaskElement()
         task.innerHTML = i
-        ul3.append(task)
+        done.append(task)
     }
 }
 
@@ -87,13 +89,13 @@ function changeTask(e) {
         newInput.addEventListener('blur', () => {
             task.innerText = newInput.value
             switch (task.parentElement.id) {
-                case "ul1":
+                case "todo":
                     listType = tasksObj.todo
                     break
-                case "ul2":
+                case "in-progress":
                     listType = tasksObj['in-progress']
                     break
-                case "ul3":
+                case "done":
                     listType = tasksObj.done
                     break
             }
@@ -109,40 +111,50 @@ function moveTask(event) {
     if (task.className !== 'task') return
     const newTask = makeTaskElement(task.innerText)
     switch (task.parentElement.id) {
-        case "ul1":
+        case "todo":
             tasksObj.todo = tasksObj.todo.filter(a => a !== newTask.textContent)
             break
-        case "ul2":
+        case "in-progress":
             tasksObj['in-progress'] = tasksObj['in-progress'].filter(a => a !== newTask.textContent)
             break
-        case "ul3":
+        case "done":
             tasksObj.done = tasksObj.done.filter(a => a !== newTask.textContent)
             break
     }
 
     if (event.key === '1' && event.altKey) {
-        ul1.append(newTask)
+        todo.append(newTask)
         task.remove()
         tasksObj.todo.push(newTask.textContent)
     }
     if (event.key === '2' && event.altKey) {
-        ul2.append(newTask)
+        document.getElementById("in-progress").append(newTask)
         task.remove()
         tasksObj['in-progress'].push(newTask.textContent)
     }
     if (event.key === '3' && event.altKey) {
-        ul3.append(newTask)
+        done.append(newTask)
         task.remove()
         tasksObj.done.push(newTask.textContent)
     }
     localStorage.setItem('tasks', JSON.stringify(tasksObj))
 }
+function searchTask() {
+    let tasks = document.getElementsByClassName('task')
+    const length = tasks.length
+    for (let i = 0; i < length; i++) {
+        tasks[0].remove()
+    }
+    for (const taskType in tasksObj) {
+        for (const task of tasksObj[taskType]) {
+            if (task.includes(search.value)) {
+                const newTask = makeTaskElement(task)
+                document.getElementById(taskType).append(newTask)
+            }
+        }
+    }
 
-
-
-
-
-
+}
 function makeTaskElement(text) {
     const task = document.createElement("li")
     task.setAttribute('tabindex', '0')
