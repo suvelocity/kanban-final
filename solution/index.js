@@ -4,6 +4,7 @@
 const KEY_1 = 49;
 const KEY_2 = 50;
 const KEY_3 = 51;
+const URL_API = "https://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3";
 
 //==========================
 // ===== Global Vars =======
@@ -27,7 +28,7 @@ if(localStorage.getItem('tasks') === null){
         "in-progress": [],
         "done": []
     }
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem('tasks', JSON.stringify(tasks));        
 }
 loadTasksToPage("");
 
@@ -54,7 +55,13 @@ function onClickHandler(event){
             case "submit-add-done":
                 inputValue = getTextFromInputId("add-done-task");
                 AddToSection(inputValue, "done");  
-                break;                                  
+                break;  
+            case "save-btn":
+                saveTasksOnApi();
+                break;
+            case "load-btn":
+                loadTasksFromApi();
+                break;                                
         }   
         // if(target.dataset.important === 'false'){
         //     const tasksJSON = getTasksJSON();
@@ -74,18 +81,54 @@ function onClickHandler(event){
         //     }
         //     localStorage.setItem('tasks', JSON.stringify(tasksJSON));  
         // }
+        
+        
         loadTasksToPage(searchInput.value);   
     }    
 }  
 
+async function saveTasksOnApi(){
+    const taskManagerDataString = localStorage.getItem('tasks');   
+    //console.log(getTasksJSON());          
+    await fetch("https://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3", {
+        method: "PUT", 
+        headers: {        
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },        
+        body: JSON.stringify({"tasks": taskManagerDataString}),
+    })
+    console.log("Saved");
+}
+
+async function loadTasksFromApi(){
+    const response = await fetch( URL_API, {
+        headers: {            
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        method: "GET",        
+    });
+    if(!response.ok){
+        //Error
+    }
+
+    let tasksData = await response.json();
+    console.log(tasksData.tasks);
+    localStorage.clear();
+    localStorage.setItem("tasks", tasksData.tasks);
+    loadTasksToPage('');
+    console.log("Load");
+}
+
 function onKeyPressLiHandler(event){    
     console.log("down");
     pressed.add(event.keyCode);
-    let arrayOfKeys = [KEY_1, KEY_2, KEY_3];
-    //event.repeat = false;
+    let arrayOfKeys = [KEY_1, KEY_2, KEY_3];    
     if(event === undefined){
         return;
     }
+    // Check key down
     for (let key = 0; key < arrayOfKeys.length; key++) {
         if(event.altKey && pressed.has(arrayOfKeys[key])){
             event.preventDefault();
@@ -106,18 +149,10 @@ function onKeyPressLiHandler(event){
             else if(arrayOfKeys[key] === KEY_3){
                 AddToSection(target.textContent, 'done'); 
             }  
-            loadTasksToPage(searchInput.textContent);          
-            console.log("Alt + " + key);
+            loadTasksToPage(searchInput.textContent);                      
         }
         
-    }
-    
-    // if (!pressed.has(KEY_1) && !event.altKey) {
-    //     return;
-    // }
-    // else{
-    //     console.log("HERE");
-    // }
+    }    
     pressed.clear();
 }
 
@@ -162,7 +197,7 @@ function blurEditTask(event){
 *   key: String, where to add (to-do, in-prograss, done);
 */
 function AddToSection(taskName, key){
-    const taskManagerDataJSON = getTasksJSON();
+    const taskManagerDataJSON = getTasksJSON();    
     const arrayOfSection = taskManagerDataJSON[key];    
     arrayOfSection.unshift(taskName);    
     localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));         
@@ -203,7 +238,7 @@ function createTaskUl(query, key, classes){
         let taskLowCased = task.toLowerCase();
         let queryLowCased =  query.toLowerCase();
         if(taskLowCased.includes(queryLowCased)){                      
-            //let importantButton = createElement("button", [], ["important-button"]); 
+            //let deleteButton = createElement("button", ["❌"], ["delete-button"]); 
             liArray.push(createElement("li", [task], ["task"], {"data-section": key, 'tabIndex': '0'}, {'keydown': (event) => {onKeyPressLiHandler(event)}}));                                 
         }        
     }

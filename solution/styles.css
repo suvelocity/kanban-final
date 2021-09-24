@@ -10,6 +10,7 @@ header{
 }
 .head-div{
     text-align: center;
+    width: 100%;
 }
 .section-div{
     margin-top: 1%;
@@ -22,7 +23,7 @@ header{
 .task{
     color: black;
     text-align: left;
-    list-style-type: none;
+    list-style-type:decimal;
     margin-top: 7px;
     margin-right: 8%;
     padding: 7px 7px;
@@ -52,7 +53,7 @@ header{
     border: 1px solid gray;
     width: 25%;
     margin-top: 25px;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 }
 .search-input:focus{
     outline: none;
@@ -81,8 +82,8 @@ header{
     background-color: lightseagreen;
     box-shadow: 3px 3px 5px #aaaaaa;
 }
-.important-button{
-    text-align: left;       
+.delete-button{
+    text-align: right;       
     margin-right: 2%;
     font-weight: 600;
     background-color:blueviolet;
@@ -99,4 +100,12 @@ header{
 }
 .regular-task{
     border-color: black;
+}
+.save-button{
+    padding: 10px 10px;
+    margin-bottom: 20px;
+}
+.load-button{
+    padding: 10px 10px;
+    margin-bottom: 20px;
 }
