@@ -13,6 +13,7 @@ const URL_API = "https://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3";
 let editTextValue = "";
 let searchInput = document.querySelector("#search");
 let pressed = new Set();
+let errorLabel = document.querySelector("#error-label");
 
 // ============================
 // ====== Main run ============
@@ -97,7 +98,9 @@ async function saveTasksOnApi(){
             "Content-Type": "application/json",
         },        
         body: JSON.stringify({"tasks": taskManagerDataString}),
-    })
+    }).catch((error) =>{
+        alert("Save Error!" + error);
+    });
     console.log("Saved");
 }
 
@@ -110,9 +113,8 @@ async function loadTasksFromApi(){
         method: "GET",        
     });
     if(!response.ok){
-        //Error
+        alert("Load Error! => " + response.status)
     }
-
     let tasksData = await response.json();
     console.log(tasksData.tasks);
     localStorage.clear();
@@ -132,10 +134,12 @@ function onKeyPressLiHandler(event){
     for (let key = 0; key < arrayOfKeys.length; key++) {
         if(event.altKey && pressed.has(arrayOfKeys[key])){
             event.preventDefault();
+
             let target = event.target;             
             const taskManagerDataJSON = getTasksJSON(); 
             const sectionArray = taskManagerDataJSON[target.dataset.section];
             let index = sectionArray.indexOf(target.textContent);
+
             //Deletes selected task and update
             sectionArray.splice(index, 1);
             localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
@@ -185,10 +189,22 @@ function blurEditTask(event){
     // gets dataset (key in tasks)
     let key = target.dataset.section;
     const arrayOfSection = taskManagerDataJSON[key];
-    let taskBeforeEditIndex = arrayOfSection.indexOf(editTextValue);
-    arrayOfSection[taskBeforeEditIndex] = textAfterEdit;    
-    localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));    
-    loadTasksToPage(searchInput.textContent);
+    if(textAfterEdit === ""){
+        errorLabelDisplay(true, "Cant edit, the task is empty!");    
+        loadTasksToPage(searchInput.textContent);
+    }
+    else if(checkDuplicateTask(textAfterEdit)){
+        errorLabelDisplay(true, "Cant edit, task is already exsits!"); 
+        loadTasksToPage(searchInput.textContent);
+    }
+    else{
+        let taskBeforeEditIndex = arrayOfSection.indexOf(editTextValue);
+        arrayOfSection[taskBeforeEditIndex] = textAfterEdit;    
+        localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));    
+        loadTasksToPage(searchInput.textContent);
+        errorLabelDisplay(false);
+    }
+    
 }
 
 /* 
@@ -199,8 +215,17 @@ function blurEditTask(event){
 function AddToSection(taskName, key){
     const taskManagerDataJSON = getTasksJSON();    
     const arrayOfSection = taskManagerDataJSON[key];    
-    arrayOfSection.unshift(taskName);    
-    localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));         
+    if(taskName === ""){
+        errorLabelDisplay(true, "Cant add, the task is empty!");    
+    }
+    else if(checkDuplicateTask(taskName)){
+        errorLabelDisplay(true, "Cant add, task is already exsits!"); 
+    }
+    else{
+        arrayOfSection.unshift(taskName);    
+        localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON)); 
+        errorLabelDisplay(false);
+    }         
 }
 
 // ===> gets id of input - return its value (as string) <===
@@ -250,6 +275,37 @@ function createTaskUl(query, key, classes){
 function getTasksJSON(){
     const taskManagerDataString = localStorage.getItem('tasks');
     return JSON.parse(taskManagerDataString);
+}
+
+// ===> get task - return true if task exists already <===
+function checkDuplicateTask(taskToCheck){
+    const taskManagerDataJSON = getTasksJSON();
+    let tasksArray = Object.values(taskManagerDataJSON);    
+    let duplicateTask = tasksArray.flat().find((task) => task === taskToCheck);    
+    if(duplicateTask === undefined){
+        return false;
+    }
+    else{
+        // Exsits
+        return true;
+    }
+}
+
+function errorLabelDisplay(visible, text = ""){
+    if(errorLabel.classList.contains("hidden")){
+        errorLabel.classList.remove("hidden");
+    }
+    else if(errorLabel.classList.contains("visible")){
+        errorLabel.classList.remove("visible");
+    }    
+    if(visible){
+        errorLabel.classList.add("visible");
+        errorLabel.textContent = text;
+    }
+    else{
+        errorLabel.classList.add("hidden");
+        errorLabel.textContent = "";
+    }
 }
 
 

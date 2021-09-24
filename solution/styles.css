@@ -109,3 +109,22 @@ header{
     padding: 10px 10px;
     margin-bottom: 20px;
 }
+.error{
+    color: white;
+    background-color: red;
+    width: 20%;
+    text-align: center;
+    font-size: 14px;
+    padding: 10px 100px 10px 100px;
+    margin-bottom: 10px;      
+}
+.hidden{
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s linear 600ms, opacity 600ms;
+}
+.visible{
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s linear 0s, opacity 600ms;
+}
