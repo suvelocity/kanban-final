@@ -1,10 +1,11 @@
-
- localStorage.setItem('tasks', JSON.stringify({
-    "todo": [],
-    "in-progress": [],
-    "done": []
-      })
-    ); 
+ if(!localStorage){
+    localStorage.setItem('tasks', JSON.stringify({
+        "todo": [],
+        "in-progress": [],
+        "done": []
+          })
+        );
+}  
 
 
     ///localStorage.clear();
@@ -35,7 +36,7 @@ let saveButton = document.getElementById('save-button');
 let loadButton = document.getElementById('load-button');
  
  //localstorage loading function
- if(localStorageObjectForUpdate.todo.length[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null){
+ if(localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null){
     let toDoSection = document.getElementById('to-do-container');
     let inProgressContainer = document.getElementById('in-progress-container');
     let donContainer = document.getElementById('done-container');
@@ -216,6 +217,7 @@ async function saveApi(){
         headers :{
             Accept: "application/json", "Content-Type": "application/json",
         },
+        //body: JSON.stringify({'tasks':{'todo':[], 'in-progress': [], 'done' : []} 
         body: JSON.stringify({'tasks':{'todo':[toDoTasksUl.outerHTML], 'in-progress': [inProgressTasksUl.outerHTML], 'done' : [doneTasksUl.outerHTML]} 
         }) 
   })
@@ -232,9 +234,19 @@ async function loadApi(){
     let inProgressContainer = document.getElementById('in-progress-container');
     let donContainer = document.getElementById('done-container');
     //
-    toDoSection.innerHTML = toDoTasksUlAPI;
-    inProgressContainer.innerHTML = inProgressTasksUlAPI;
-    donContainer.innerHTML = doneTasksUlAPI;
+    if(toDoTasksUlAPI){
+        toDoSection.innerHTML = toDoTasksUlAPI;
+    }
+    if(inProgressTasksUlAPI){
+        inProgressContainer.innerHTML = inProgressTasksUlAPI;
+    }
+    if(doneTasksUlAPI){
+        donContainer.innerHTML = doneTasksUlAPI;
+    }
+
+    console.log(toDoTasksUlAPI);
+    console.log(inProgressTasksUlAPI);
+    console.log(doneTasksUlAPI);
 
     toDoTasksUl = toDoSection.firstChild;
     inProgressTasksUl = inProgressContainer.firstChild;

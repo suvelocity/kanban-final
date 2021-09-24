@@ -110,7 +110,7 @@ input{
     transition: all 0.3s ease;
 }
 
-.api-button{
+.api-button,.add-task{
    width: 70px;
    height: 35px;
    color: white;
@@ -125,4 +125,17 @@ input{
     box-shadow: inset 70px 0 0 0 yellow;
 }
 
+.add-task{
+    width: 55px;
+    height: 28px;
+    color: white;
+    background-color: rgb(128, 0, 70);
+    border-radius: 4px;
+    transition: ease-out 0.3s;
+    outline: none;
+    box-shadow: inset 0 0 0 0 yellow;
+}
 
+.add-task:hover{
+    box-shadow: inset 70px 0 0 0 rgb(7, 148, 190);
+}
