@@ -169,38 +169,6 @@ function addChangedTask(event){
     }
     localStorage.setItem("tasks",JSON.stringify(tasks));
 }
-function movingTasksHandler(event){
-    const hoveredLi =document.querySelector("li:hover");
-if(hoveredLi){
-    if(event.altkey && event.keycode > 48 &&event.keycode<52){
-        alert("wtf");
-        const liContent = hoveredLi.textContent;
-        const key = event.keycode-48;
-        const sameUlId =hoveredLi.closest("ul").id;
-        if(matchNumToUlId(key)!== sameUlId){
-
-        }
-    }
-}
-}
-
-// function matchNumToUlId(key){ //function to switch the number (1-3) to the ul.id
-//     if(key===1){
-//         const ulId="todo";
-//     }
-//     if(key === 2) {
-//         const ulId ="in-progress";
-//     }
-//     if(key ===3){
-//         const ulId="done";
-//     }
-//     return ulId;
-// }
-
- function addTask(liContent , newSection){
-    const newLi=document.createElement("li")
- }
-//  note for my self ( תעשה פונקציות להורדה מרשימה ישנה ופונקציה להוספה לרשימה חדשה , מחר יום חדש)
 
 
 // document.addEventListener("keydown" , event =>altkeyPreesed(event));
@@ -243,7 +211,8 @@ function changeUL(newUlId){
         hoverdElement.remove()
         changeULLocalStorage(newUlId);  
     }
-   function changeULLocalStorage(newUlId){
+}
+function changeULLocalStorage(newUlId){
     const liContent =hoverdElement.textContent
     const newUl = document.getElementById(newUlId);
     const oldUl = document.getElementById(passedUlId)
@@ -261,24 +230,32 @@ function changeUL(newUlId){
         
     }
     if(oldUlId ==="in-progress"){
-        alert("inprog")
+        let toAdd = liContent
+        let index=tasks["in-progress"].indexOf(liContent);
+        tasks["in-progress"].splice(index,1);
+        tasks[newUlId].unshift(toAdd);
+        localStorageData();
+
     }
     if(oldUlId === "done"){
-       alert("done")
-    }
+        let toAdd = liContent
+        let index=tasks.done.indexOf(liContent);
+        tasks.done.splice(index,1);
+        tasks[newUlId].unshift(toAdd);
+        localStorageData();
+
    }
 
     
 }
+
 function mouseoverFunc(event){
-    
-        hoverdElement=event.target;
-    }
+    hoverdElement=event.target;
+}
    
 
 function mouseout(event){
     if(event.target.className="task"){
         hoverdElement=null;
     }
-    
 }
