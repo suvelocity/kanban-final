@@ -4,20 +4,32 @@
 }
 body {
   text-align: center;
+  background: url('./Images/BackGroundGif.svg');
+  background-size: cover;
+  font-family: Georgia, serif;
 }
 main {
-  background-color: bisque;
   display: block;
 }
 section {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 30px;
-  display: block;
+  display: inline-block;
+  height: 40vh;
+  width: 20vw;
+  margin: 30px;
   border-radius: 30px;
-  background-color: white;
-  height: 300px;
-  width: 300px;
+  background-color: rgba(255, 255, 255, 0.849);
+  overflow: hidden;
+}
+@media screen and (max-width: 600px) {
+  body{
+    background-size: auto;
+  }
+  section{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60vw;
+  }
 }
 ul {
   list-style: none;
@@ -35,22 +47,33 @@ li img {
   height: 15px;
   cursor: pointer;
 }
-.deleteButton{
+#page-title{
+  font-size: 72px;
+  background: -webkit-linear-gradient(#4c5630,green,#b3c430);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#doneSection li {
+  text-decoration: line-through;
+  color: gray;
+}
+.deleteButton {
   position: absolute;
   left: 5px;
   top: 2px;
 }
-.checkButton{
+.checkButton {
   position: absolute;
   right: 5px;
   top: 2px;
 }
 #selectedTask {
-  background-color: yellow;
+  background-color: rgb(116, 231, 116);
+}
+#loaderDiv {
+  position: absolute;
 }
 .loader {
-  position: absolute;
-  vertical-align: middle;
-  height: 50vh;
   width: 30vw;
+  height: auto;
 }

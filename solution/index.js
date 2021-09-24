@@ -1,38 +1,35 @@
 'use strict'
-let taskObj, resultObj;
-let oldinnerTaskText;
+let taskObj, queryObj;
 const spaceAtEndRegex = /[\s]*$/g;
 
 const addEventListenerToButtons = () => {
+
     const deleteButtons = document.querySelectorAll('.deleteButton');
     deleteButtons.forEach(element => {
-
         element.addEventListener("click", function () {
             deleteTask(element.parentElement.parentElement.getElementsByClassName("task")[0].innerText)
-        }
-        )
-    }
-    );
+        })
+    });
+
     const checkButtons = document.querySelectorAll('.checkButton');
     checkButtons.forEach(element => {
         element.addEventListener("click", function () {
-            deleteNAddToOtherTask("done", element.parentElement.parentElement.getElementsByClassName("task")[0].innerText);
-        }
-        )
-    }
-    );
+            ReplaceTaskType("done", element.parentElement.parentElement.getElementsByClassName("task")[0].innerText);
+        })
+    });
 }
 
 
 const addEventListenerToTasks = () => {
+    let oldinnerTaskText;
+
     const taskLi = document.querySelectorAll('.task');
     taskLi.forEach(element => {
-
+        // store data when the drag start of the innerText to implement in the new Task type
         element.addEventListener("dragstart", function (e) {
             e.dataTransfer.setData("titleText", element.innerText);
         });
-        // element.addEventListener("dragover", function (e) {
-        // });
+
 
         element.addEventListener("click", function () {
             try { document.querySelector("#selectedTask").id = ""; }
@@ -42,98 +39,106 @@ const addEventListenerToTasks = () => {
                 if (e.key === "Alt") {
                     window.addEventListener("keydown", function preesnumber(e) {
                         if (e.key === "1") {
-                            window.removeEventListener("keydown", preesnumber);
-                            window.removeEventListener("keydown", presskey);
                             let innerTaskText = element.innerText;
-                            deleteNAddToOtherTask("todo", innerTaskText);
+                            ReplaceTaskType("todo", innerTaskText);
                         }
                         else if (e.key === "2") {
-                            window.removeEventListener("keydown", preesnumber);
-                            window.removeEventListener("keydown", presskey);
                             let innerTaskText = element.innerText;
-                            deleteNAddToOtherTask("in-progress", innerTaskText);
+                            ReplaceTaskType("in-progress", innerTaskText);
                         }
                         else if (e.key === "3") {
-                            window.removeEventListener("keydown", preesnumber);
-                            window.removeEventListener("keydown", presskey);
                             let innerTaskText = element.innerText;
-                            deleteNAddToOtherTask("done", innerTaskText);
+                            ReplaceTaskType("done", innerTaskText);
                         }
+                        // Removing Event so the task place wont change again when typing 1/2/3
+                        window.removeEventListener("keydown", preesnumber);
+                        window.removeEventListener("keydown", presskey);
                     });
                 }
             })
         });
-
-        element.addEventListener("blur", function Changeinside() {
-            let newinnerTaskText = element.innerText.replace(spaceAtEndRegex, '');
-            console.log(newinnerTaskText);
-            deleteNChangeTask(oldinnerTaskText, newinnerTaskText);
-        })
         element.addEventListener("dblclick", function () {
             oldinnerTaskText = element.getElementsByClassName("TaskTitle")[0].innerText;
             element.contentEditable = true;
-        })
+        });
 
-    }
-    )
+        element.addEventListener("blur", function Changeinside() {
+            let newinnerTaskText = element.innerText.replace(spaceAtEndRegex, '');
+            ChangeTaskText(oldinnerTaskText, newinnerTaskText);
+        });
+    })
 }
 
 
-const addTask = (taskType, id) => {
-    const taskValue = document.getElementById(id).value.replace(spaceAtEndRegex, '');
-    if (!document.getElementById(id).value.replace(/\s/g, '')) { return alert('enter Valid Task') }
-    document.getElementById(id).value = "";
+const addTask = (taskType, idOfInput) => {
+    const taskValue = document.getElementById(idOfInput).value.replace(spaceAtEndRegex, '');
+    if (!document.getElementById(idOfInput).value.replace(/\s/g, '')) { return alert('enter Valid Task') } //return the function if user dont enter anything
+    document.getElementById(idOfInput).value = ""; //reset the input
     taskObj[taskType].unshift(taskValue);
     postTasks();
 }
-
+// postTasks function takes the taskObj adn "print" it to the DOM
 const postTasks = () => {
     let generalString = ``, ongoingString = ``, finishedString = ``;
     for (let key of taskObj.todo) {
         generalString += `<li class="task" draggable="true"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
     }
-    document.getElementById("general-task-table").innerHTML = generalString;
-
     for (let key of taskObj["in-progress"]) {
         ongoingString += `<li class="task" draggable="true"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></button></li>`
     }
-    document.getElementById("ongoing-task-table").innerHTML = ongoingString;
-
     for (let key of taskObj.done) {
         finishedString += `<li class="task" draggable="true"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></button></li>`
     }
+    document.getElementById("general-task-table").innerHTML = generalString;
+    document.getElementById("ongoing-task-table").innerHTML = ongoingString;
     document.getElementById("finished-task-table").innerHTML = finishedString;
-    localStorage.setItem("tasks", JSON.stringify(taskObj));
     addEventListenerToButtons();
     addEventListenerToTasks();
+    localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
-
+// like postTasks but to searched text, and it dont save to local file
 const postTasksforquery = () => {
     let query = document.getElementById("search").value;
     searchByQuery(query);
-    if (!searchByQuery(query)) {
+    if (!searchByQuery(query)) { //if query is empty it just do postTasks function.
         return postTasks();
     }
     let generalString = ``, ongoingString = ``, finishedString = ``;
-    for (let key of resultObj.todo) {
+    for (let key of queryObj.todo) {
         generalString += `<li class="task"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
     }
-    document.getElementById("general-task-table").innerHTML = generalString;
-
-    for (let key of resultObj["in-progress"]) {
+    for (let key of queryObj["in-progress"]) {
         ongoingString += `<li class="task"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
     }
-    document.getElementById("ongoing-task-table").innerHTML = ongoingString;
-
-    for (let key of resultObj.done) {
+    for (let key of queryObj.done) {
         finishedString += `<li class="task"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
     }
+    document.getElementById("general-task-table").innerHTML = generalString;
+    document.getElementById("ongoing-task-table").innerHTML = ongoingString;
     document.getElementById("finished-task-table").innerHTML = finishedString;
     addEventListenerToTasks();
     addEventListenerToButtons();
 }
 
-const deleteNAddToOtherTask = (WantedTypeOfTask, innerTaskText) => {
+const searchByQuery = (query) => {
+    if (!query) { return undefined }
+    const queryRegex = new RegExp(`${query}`, 'i');
+    queryObj = {
+        todo: [],
+        "in-progress": [],
+        done: []
+    };
+    for (let tasktype in taskObj) {
+        for (let i = 0; i < taskObj[tasktype].length; i++) {
+            if (queryRegex.test(taskObj[tasktype][i])) {
+                queryObj[tasktype].push(taskObj[tasktype][i]);
+            }
+        }
+    };
+return queryObj;
+}
+
+const ReplaceTaskType = (WantedTypeOfTask, innerTaskText) => {
     for (let taskarray in taskObj) {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
             if (taskObj[taskarray][i] == innerTaskText) {
@@ -145,7 +150,7 @@ const deleteNAddToOtherTask = (WantedTypeOfTask, innerTaskText) => {
     postTasks();
 }
 
-const deleteNChangeTask = (oldTaskText, newTaskText) => {
+const ChangeTaskText = (oldTaskText, newTaskText) => {
     for (let taskarray in taskObj) {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
             if (taskObj[taskarray][i] == oldTaskText) {
@@ -168,53 +173,22 @@ const deleteTask = (innerTextOfTitle) => {
     postTasks();
 }
 
-const searchByQuery = (query) => {
-    if (!query) {
-        return undefined
-    }
-    const queryRegex = new RegExp(`${query}`, 'i');
-    resultObj = {
-        todo: [],
-        "in-progress": [],
-        done: []
-    };
-    for (let i = 0; i < taskObj.todo.length; i++) {
-        if (queryRegex.test(taskObj.todo[i])) {
-            resultObj.todo.push(taskObj.todo[i]);
-            continue;
-        }
-    }
-    for (let i = 0; i < taskObj["in-progress"].length; i++) {
-        if (queryRegex.test(taskObj["in-progress"][i])) {
-            resultObj["in-progress"].push(taskObj["in-progress"][i]);
-            continue;
-        }
-    }
-    for (let i = 0; i < taskObj.done.length; i++) {
-        if (queryRegex.test(taskObj.done[i])) {
-            resultObj.done.push(taskObj.done[i]);
-            continue;
-        }
-    }
-    return resultObj;
-}
 
 const getDataFromAPI = async () => {
-    document.getElementById("loaderD").innerHTML = `<img src="./Images/loading.gif" alt="loader" class="loader" id="loader">`;
+    document.getElementById("loaderDiv").innerHTML = `<img src="./Images/loading.gif" alt="loader" class="loader" id="loader">`; // Loader Set
     const response = await fetch("https://json-bins.herokuapp.com/bin/614ad65e4021ac0e6c080c06");
     if (!response.ok) {
-        alert(response.status);
+        alert(`Error ${response.status} happen when trying to send data to server`);
     }
     const responseObj = await response.json();
     taskObj = responseObj.tasks;
-    localStorage.setItem("tasks", JSON.stringify(taskObj));
-    document.getElementById("loaderD").innerHTML = ``;
+    document.getElementById("loaderDiv").innerHTML = ``; // Loader reset
     postTasks();
 }
 
 const postDataToAPI = async () => {
-    document.getElementById("loaderD").innerHTML = `<img src="./Images/loading.gif" alt="loader" class="loader" id="loader">`;
-    const tasksobjtoAPI = { tasks: taskObj };
+    document.getElementById("loaderDiv").innerHTML = `<img src="./Images/loading.gif" alt="loader" class="loader" id="loader">`; 
+    const tasksobjtoAPI = { tasks: taskObj }; // the only way the server get the data
     const response = await fetch("https://json-bins.herokuapp.com/bin/614ad65e4021ac0e6c080c06", {
         method: "PUT",
         headers: {
@@ -223,40 +197,40 @@ const postDataToAPI = async () => {
         },
         body: JSON.stringify(tasksobjtoAPI),
     });
-    document.getElementById("loaderD").innerHTML = ``;
+    document.getElementById("loaderDiv").innerHTML = ``;
     if (!response.ok) {
-        alert(response.status);
+        alert(`Error ${response.status} happen when trying to send data to server`);
     }
 }
 
-const stopDropZone = (e) => {
+const makeDropZone = (e) => {
     e.preventDefault();
 }
-const addDropZone = (e) => {
+const DropFunc = (e) => {
     const innerTaskText = e.dataTransfer.getData("titleText");
     e.preventDefault();
-    console.log(e)
     if (e.target.id === "doneSection") {
-        deleteNAddToOtherTask("done", innerTaskText)
+        ReplaceTaskType("done", innerTaskText)
     }
     else if (e.target.id === "ongoingSection") {
-        deleteNAddToOtherTask("in-progress", innerTaskText)
+        ReplaceTaskType("in-progress", innerTaskText)
     }
     else if (e.target.id === "generalSection") {
-        deleteNAddToOtherTask("todo", innerTaskText)
+        ReplaceTaskType("todo", innerTaskText)
     }
 }
-
+// Event listeners so all the pernament Elements
 document.getElementById("search").addEventListener("keyup", postTasksforquery);
 document.getElementById("load-btn").addEventListener("click", getDataFromAPI);
 document.getElementById("save-btn").addEventListener("click", postDataToAPI);
-document.getElementById("doneSection").addEventListener("drop", addDropZone);
-document.getElementById("ongoingSection").addEventListener("drop", addDropZone);
-document.getElementById("generalSection").addEventListener("drop", addDropZone);
-document.getElementById("doneSection").addEventListener("dragover", stopDropZone);
-document.getElementById("ongoingSection").addEventListener("dragover", stopDropZone);
-document.getElementById("generalSection").addEventListener("dragover", stopDropZone);
+document.getElementById("doneSection").addEventListener("drop", DropFunc);
+document.getElementById("ongoingSection").addEventListener("drop", DropFunc);
+document.getElementById("generalSection").addEventListener("drop", DropFunc);
+document.getElementById("doneSection").addEventListener("dragover", makeDropZone);
+document.getElementById("ongoingSection").addEventListener("dragover", makeDropZone);
+document.getElementById("generalSection").addEventListener("dragover", makeDropZone);
 
+//if user has localStorage File it postTasks to it, if he hasn't i create for him 
 if (localStorage.getItem("tasks")) {
     taskObj = JSON.parse(localStorage.getItem("tasks"));
     postTasks();
@@ -270,7 +244,3 @@ else {
     postTasks();
     localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
-
-{/* <img src="./Images/XRED.ico">
-<img src="./Images/XRED.ico">
-<img src="./Images/XRED.ico"></img> */}
