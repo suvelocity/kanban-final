@@ -2,16 +2,15 @@
     margin: auto;
 }
 #main{
-    border: 1px solid black;
     margin: 0px 10px;
-    display: flex;
     position: relative;
-    justify-content:
-    center; align-items:
-    center; height: 50vh;
+    justify-content:space-evenly; 
+    height: 50vh;
     display: flex;
     flex-wrap: nowrap;
+     align-items: flex-start
 }
+
 
 h3 {
     position: relative;
@@ -31,15 +30,18 @@ ul {
 #toDo{
     text-align: center;
     border: 1px solid black;
-    padding: 10px;
+    
 }
+
 #in-Progress{
     text-align: center;
     border: 1px solid black;
-    padding: 10px;
+    
 }
+
 #done{
     text-align: center;
     border: 1px solid black;
-    padding: 10px;
+    
 }
+

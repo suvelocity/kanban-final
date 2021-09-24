@@ -1,7 +1,7 @@
 let Tasks = {"todo":[],"in-progress":[],"done":[]};
       
   
-const add= (idToAdd) =>{
+const add = (idToAdd) =>{
     
     let currValue = document.getElementById(`${idToAdd}-input`).value;
     // if input dont have value
@@ -68,12 +68,24 @@ const add= (idToAdd) =>{
     window.onkeydown = (event) =>{
         var key = event.key 
            if(mouseHover && key === "1" && onAlt){
+            Li.setAttribute('id', `todo-${Tasks['todo'].length+1}`);
+            inputLi.setAttribute("id",`todo-${Tasks['todo'].length+1}` + '-input');
             document.getElementsByClassName('todo-tasks')[0].append(Li);
+            document.getElementsByClassName('todo-tasks')[0].append(inputLi);
+
            }else if (mouseHover && key === "2"&& onAlt){
+            Li.setAttribute('id', `in-progress-${Tasks['in-progress'].length+1}`);
+            inputLi.setAttribute("id",`in-progress-${Tasks['in-progress'].length+1}` + '-input');
             document.getElementsByClassName('in-progress-tasks')[0].append(Li);
+            document.getElementsByClassName('in-progress-tasks')[0].append(inputLi);
+
            }else if(mouseHover && key === "3"&& onAlt){
+            Li.setAttribute('id', `done-${Tasks['done'].length+1}`);
+            inputLi.setAttribute("id",`done-${Tasks['done'].length+1}` + '-input');
             document.getElementsByClassName('done-tasks')[0].append(Li);
+            document.getElementsByClassName('done-tasks')[0].append(inputLi);
            }
+        }
         // document.getElementsByClassName('todo-tasks')[0].append(Li);     
     //     Li.setAttribute('id', `in-progress-${Tasks['in-progress'].length}`);
     //     inputLi.setAttribute("id",`in-progress-${Tasks['in-progress'].length}` + '-input');
@@ -85,25 +97,49 @@ const add= (idToAdd) =>{
     //    console.log(Tasks);
 }
 const search = () =>{
-let input = document.getElementById('myinput');
-let filter = input.value;
-const returnLi = {"todo":[],"in-progress":[],"done":[]};
-returnLi.done = Tasks.done.filter(currValue => {
-    let isFound = false;
-    Object.values()
-});
-
-const ul = document.getElementById('done-tasks');
-let lengthOfE = Tasks.done.length
-for(i = 0; i < lengthOfE; i++){
-    let li =Tasks['done'].getElementsByTagName('li')[i];
     
-    let txtValue = li.textContent || li.innerText;
-    if(txtValue.toUpperCase().indexOf(filter) > -1){
-        li[i].style.display = "";
-    }else {
-        li[i].style.display = "none";
-    }
-    }
+let input = document.getElementById('myinput');
+let filtered = input.value;
+let returnLi = {"todo":[],"in-progress":[],"done":[]};
+let mapper = {0:'todo',1:'in-progress',2:'done'}
+
+for(let i = 0; i < 3;++i){
+    returnLi[mapper[i]] = Tasks[mapper[i]].filter(LiValue => {
+        let isFound = false;
+        Object.values(LiValue).forEach(currValue =>{
+           if(currValue.toLowerCase().match(filtered)){
+            isFound = true;
+           } 
+        });
+        return isFound;
+    });
+    returnLi[mapper[i]] = Tasks[mapper[i]].filter(currLi =>{
+        let result = currLi.match(filtered);
+        console.log(result)
+        console.log(document.getElementsByTagName('li'));
+        if(result !== document.getElementsByTagName('li')[i].data && result === null){
+            console.log(result)
+            document.getElementsByTagName('li')[i].style.visibility = 'hidden'
+        }
+        if(filtered === ''){
+            document.getElementsByTagName('li')[i].style.visibility = 'visible';
+        }
+    })
+    
 }
+
+
+// const ul = document.getElementById('done-tasks');
+// let lengthOfE = Tasks.done.length
+// for(i = 0; i < lengthOfE; i++){
+//     let li =Tasks['done'].getElementsByTagName('li')[i];
+    
+//     let txtValue = li.textContent || li.innerText;
+//     if(txtValue.toUpperCase().indexOf(filter) > -1){
+//         li[i].style.display = "";
+//     }else {
+//         li[i].style.display = "none";
+//     }
+    // }
 }
+
