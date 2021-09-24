@@ -202,7 +202,7 @@ function updateTask(dataKey,newTaskText){
                 sectionUl.prepend(newTaskEl)
                 }
     }
-    // +search.key
+    
 function searchTask(search){
     let searchText=search.target.value
     searchText=searchText.toLowerCase()

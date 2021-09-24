@@ -1,9 +1,21 @@
+*{
+    font-family: Arial, Helvetica, sans-serif;
+}
+body{
+    background-image: url(https://media-exp1.licdn.com/dms/image/C5612AQG8rz-SZoGxVA/article-cover_image-shrink_600_2000/0/1520218877106?e=1637798400&v=beta&t=sgxSLJw7B-iDtc3MKCzuZvF00BGz9cw7jBYVh2z5dfo);
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* background-position:center; */
+
+}
 section {
      border:1px solid black; overflow: hidden;
-     float: left;
-     margin-right: 30px;
-      margin-left: 30px;      
-    
+     float: left;   
+     margin-right: 29px;
+      margin-left: 100px;  
+      background-color:wheat; 
+      border-radius: 10px;   
+      box-shadow: 7px 7px 7px red;
     }
 
     div section{
@@ -16,7 +28,9 @@ section {
         text-align:center;
         list-style: none;
         margin-right: 5em;
+        margin-left: 2em;
         margin-bottom: 10px;
+        background-color: lightgray;
     }
     button,input{
         margin-bottom: 10px;
@@ -30,8 +44,15 @@ section {
         /* justify-content: center; */
         display: flex;
         text-align: center;
-        margin-left: 32%;
+        margin-left: 40%;
         margin-bottom: 60px;
-        
+        font-weight: bold;
+    }
+    #page-title{   
+        color:rgba(226, 223, 59, 0.986);
+        font-size:50px;
+        text-shadow: 7px 7px  rgb(39, 5, 133);
+        text-align: center;
+        margin-right: 8%;
     }
     
