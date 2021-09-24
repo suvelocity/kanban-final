@@ -14,7 +14,7 @@
  function createElement(tagName, children = [], classes = [], attributes = {}, parentId) {
     //Create element
     const el = document.createElement(tagName);
-
+    el
     // Children
     for(const child of children) {
       el.append(child);
@@ -84,7 +84,8 @@ function eventHandler(e){
         //Add task : done 
         case "a3":
             addTask(e, doneInput);
-        break;     
+        break;
+        //Task element edit     
     }
 };
 
@@ -133,12 +134,35 @@ function targetTypeId(targetId){
     return targetId;
 };
 
+//Random ID generator between 1-100
+function randomId(){
+    return Math.floor(Math.random() * 101);
+  };
+
+//Task identification
+function attachId(element){
+    let newId = randomId();
+    element.id = "task" + newId;
+};
+
 //Add task
 function addTask(e, input){
-    siblingId = e.target.parentElement.previousElementSibling.id;
-    task = input.value;
+    //Get the relevant list
+    const siblingId = e.target.parentElement.previousElementSibling.id;
+    const task = input.value;
+    //Empty string input Error
     if(task == ""){ alert("invalid Id");
     throw new Error("Invalid input");
     }
-    createTaskElement(task, siblingId);
-}
+    //Clear input
+    input.value = "";
+    //Create task with a random ID
+    let element = createTaskElement(task, siblingId);
+    attachId(element);
+    //Save to local storage
+    
+    return element;  
+};
+
+
+
