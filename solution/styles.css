@@ -2,14 +2,32 @@
   padding: 0px;
   margin: 0px;
 }
+html[data-theme='light']{  
+  --bg: #fff;
+  --bg-panel: rgba(255, 255, 255, 0.9);
+  --color-text: #333333;
+}
+
+html[data-theme='dark'] {
+  --bg: #333333;
+  --bg-panel: rgba(34, 32, 32, 0.9);
+
+  --color-text: #B5B5B5;
+}
+
 body {
   text-align: center;
+  font-family: Georgia, serif;
+  background-color: var(--bg);
+  color: var(--color-text)
+}
+
+main {
+  position: relative;
+  height: 100%;
   background: url('./Images/BackGroundGif.svg');
   background-size: cover;
-  font-family: Georgia, serif;
-}
-main {
-  display: block;
+  height: 100vh;
 }
 section {
   display: inline-block;
@@ -17,18 +35,19 @@ section {
   width: 20vw;
   margin: 30px;
   border-radius: 30px;
-  background-color: rgba(255, 255, 255, 0.849);
+  background-color: var(--bg-panel);
   overflow: hidden;
 }
 @media screen and (max-width: 600px) {
-  body{
-    background-size: auto;
-  }
   section{
     display: block;
     margin-left: auto;
     margin-right: auto;
     width: 60vw;
+  }
+  main{
+    height: inherit;
+
   }
 }
 ul {
@@ -59,7 +78,7 @@ li img {
 }
 .deleteButton {
   position: absolute;
-  left: 5px;
+  right: 25px;
   top: 2px;
 }
 .checkButton {
@@ -68,12 +87,43 @@ li img {
   top: 2px;
 }
 #selectedTask {
-  background-color: rgb(116, 231, 116);
+  background-color: var(--color-text);
+  color: var(--bg);
+}
+#API-ACCESS{
+  position: absolute;
+  bottom: 0px;
+  right: 0;
+  left: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+#search{
+  display: block;
+  margin: 10px auto 10px auto;
 }
 #loaderDiv {
-  position: absolute;
+position: absolute;
+left: 0; 
+right: 0; 
+margin-left: auto; 
+margin-right: auto;
 }
 .loader {
-  width: 30vw;
+  width: 15vw;
   height: auto;
+}
+#ThemeChanger{
+  cursor: pointer;
+  position: absolute;
+  padding: 1rem;
+  left:0%;
+  border-right: 3px solid var(--color-text);
+  border-bottom: 3px solid var(--color-text);
+  border-radius: 0px 0px 20px 0px;
+  margin-bottom: 10px;
+  font-size:1rem;
+  color: var(--bg);
+  background-color: var(--color-text);
 }

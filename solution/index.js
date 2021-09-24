@@ -244,3 +244,25 @@ else {
     postTasks();
     localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
+
+// Dark/Light Theme Change
+document.getElementById("ThemeChanger").addEventListener("click", function(){
+    let theme = localStorage.getItem('data-theme');
+    if(theme == "light"){
+    document.documentElement.setAttribute("data-theme", "dark");
+    localStorage.setItem("data-theme", "dark");
+}
+else{
+    document.documentElement.setAttribute("data-theme", "light");
+    localStorage.setItem("data-theme", "light"); 
+}
+})
+// remember youre last Theme
+if (localStorage.getItem("data-theme")=="light") {
+    document.documentElement.setAttribute("data-theme", "light");
+    localStorage.setItem("data-theme", "light");
+}
+else {
+    document.documentElement.setAttribute("data-theme", "dark");
+    localStorage.setItem("data-theme", "dark");
+}

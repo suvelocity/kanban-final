@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -12,11 +12,13 @@
 </head>
 
 <body>
-    <h2 id="page-title">To Do War</h2>
-        <h4>Win the day</h4>
     <main>
+    <h6 id="ThemeChanger">Change Theme</h6>
+        <h2 id="page-title">Tasks manager</h2>
+        <h4>Win the day</h4>
         <div id="loaderDiv"></div> 
         
+        <input type="text" id="search" placeholder="search tasks here">
         <section id="generalSection">
             <h3 class="task-headline">Tasks</h3>
             <ul id="general-task-table" class="to-do-tasks"></ul>
@@ -37,8 +39,7 @@
                 <button id="submit-add-done" onclick="addTask('done','add-done-task')">Add Task</button>
             </section>
             <div id="API-ACCESS">
-            <input type="text" id="search" placeholder="search tasks here">
-            <button id="save-btn">Save</button><button id="load-btn">Load</button>
+            <p>transfer data to API <button id="save-btn">Save</button><button id="load-btn">Load</button></p>
         </div>
     </main>
 </body>
