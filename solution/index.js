@@ -1,11 +1,15 @@
+            ////////////////////////
+            //    Local srorage   //
+            ////////////////////////
+
 //  Initialazing Data //
-let data
+let taskObj
 let localSave = localStorage.getItem("tasks")
 if (localSave){
-    data = JSON.parse(localSave)
+    taskObj = JSON.parse(localSave)
 }
 else {
-    data = {
+    taskObj = {
     "todo": [],
     "in-progress": [],
     "done": []
@@ -16,39 +20,113 @@ else {
 const addNewTaskData = (ul, task) => {
     
     if (ul.classList.contains("to-do-tasks")){
-        data.todo.push(task)
+        taskObj.todo.push(task)
     }
     if (ul.classList.contains("in-progress-tasks")){
-        data["in-progress"].push(task)
+        taskObj["in-progress"].push(task)
     }
     if (ul.classList.contains("done-tasks")){
-        data.done.push(task)
+        taskObj.done.push(task)
     }
-    return data
 }
 const removeTaskData = (taskToDelete) => {
-    for (const task of data.todo){
+    for (const task of taskObj.todo){
         if (task == taskToDelete) {
-            data.todo.splice(data.todo.indexOf(task), 1)
+            taskObj.todo.splice(taskObj.todo.indexOf(task), 1)
         }
     }
-    for (const task of data["in-progress"]){
+    for (const task of taskObj["in-progress"]){
         if (task == taskToDelete) {
-            data["in-progress"].splice(data["in-progress"].indexOf(task), 1)
+            taskObj["in-progress"].splice(taskObj["in-progress"].indexOf(task), 1)
         }
     }
-    for (const task of data.done){
+    for (const task of taskObj.done){
         if (task == taskToDelete) {
-            data.done.splice(data.done.indexOf(task), 1)
+            taskObj.done.splice(taskObj.done.indexOf(task), 1)
         }
     }
-    return data
 }
 function updateLocalSaveData(){
-    localSave = JSON.stringify(data)
+    localSave = JSON.stringify(taskObj)
     localStorage.setItem("tasks", localSave)
 }
 
+            ////////////////////////
+            //        DOM         //
+            ////////////////////////
+
+
+
+//  Create and delete elements  //
+const createElement = (tag, content = [], clss = [], attr = {}, eventListener = {}) => {
+    const newElem = document.createElement(tag)
+    for (let child of content){
+        if (typeof child === "string"){
+            newElem.innerText = child
+        }
+        else {
+            newElem.appendChild(child)
+        }
+    }
+    for (let c of clss){
+        newElem.classList.add(`${c}`)
+    }
+    for (let [att, value] of Object.entries(attr)){
+        newElem.setAttribute(`${att}`, `${value}`)
+    }
+    for (let [event, opperator] of Object.entries(eventListener)){
+        newElem.addEventListener(`${event}`, opperator)
+    }
+    return newElem
+}
+
+function createTask(task){
+    // const taskDeleteButton = createElement("button", [""], ["delete-button"], {}, {click: deleteTask}) taskDeleteButton
+    const newTaskElem = createElement("li", [task], ["task"])
+    return newTaskElem
+}
+function deleteTask({target}) {
+    const elementToDelete = target.closest("li")
+    elementToDelete.parentElement.removeChild(elementToDelete)
+    removeTaskData(elementToDelete.innerText)
+    updateLocalSaveData()
+}
+
+function addNewTask({target}){
+    const section = target.closest("section")
+    const newTask = section.querySelector("input").value
+    if (newTask == "" ) {
+        alert("OOPS! can't add empty task")
+        return
+    }
+    const newTaskElem = createTask(newTask)
+    const sectionUl = section.querySelector("ul")
+    sectionUl.prepend(newTaskElem)
+    section.querySelector("input").value = ""
+    addNewTaskData(sectionUl, newTask)
+    updateLocalSaveData()
+}
+
+//  Initializing DOM  //
+function generateLists(){
+    for (const task of taskObj.todo) {
+        const toDoList = document.querySelectorAll(".to-do-tasks")[0]
+        const newTask = createTask(task)
+        toDoList.appendChild(newTask)
+    }
+    for (const task of taskObj["in-progress"]) {
+        const inProgressList = document.querySelectorAll(".in-progress-tasks")[0]
+        const newTask = createTask(task)
+        inProgressList.appendChild(newTask)
+    }
+    for (const task of taskObj.done) {
+        const doneList = document.querySelectorAll(".done-tasks")[0]
+        const newTask = createTask(task)
+        doneList.appendChild(newTask)
+    }
+}
+
+generateLists()
 
 //  Maniputale tasks order and sections  //
 let selectedTask
@@ -82,6 +160,21 @@ function moveBetweenSections({altKey, key}){
         }
     }
 }
+
+            ////////////////////////
+            //  Event  listeners  //
+            ////////////////////////
+          
+//  Adding event listeners  //
+const addButtons = document.querySelectorAll(".new-task-button")
+for (const button of addButtons) {
+    button.addEventListener("click", addNewTask)
+}
+document.addEventListener("mouseover", hoverHandler)
+const searchBar = document.getElementById("search")
+searchBar.addEventListener("keydown", search)
+
+// Handelers
 function hoverHandler({target}){
     if (target.classList.contains("task")){
         selectedTask = target
@@ -95,88 +188,11 @@ function hoverHandler({target}){
     }
 }
 
-//  Create and delete elements  //
-const createElement = (tag, content = [], clss = [], attr = {}, eventListener = {}) => {
-    const newElem = document.createElement(tag)
-    for (let child of content){
-        if (typeof child === "string"){
-            newElem.innerText = child
-        }
-        else {
-            newElem.appendChild(child)
-        }
-    }
-    for (let c of clss){
-        newElem.classList.add(`${c}`)
-    }
-    for (let [att, value] of Object.entries(attr)){
-        newElem.setAttribute(`${att}`, `${value}`)
-    }
-    for (let [event, opperator] of Object.entries(eventListener)){
-        newElem.addEventListener(`${event}`, opperator)
-    }
-    return newElem
-}
+            //////////////////////////////////
+            //  features and functionality  //
+            //////////////////////////////////
 
-function deleteTask({target}) {
-    const elementToDelete = target.closest("li")
-    elementToDelete.parentElement.removeChild(elementToDelete)
-    removeTaskData(elementToDelete.innerText)
-    updateLocalSaveData()
-}
-function createTask(task){
-    // const taskDeleteButton = createElement("button", [""], ["delete-button"], {}, {click: deleteTask}) taskDeleteButton
-    const newTaskElem = createElement("li", [task], ["task"])
-    return newTaskElem
-}
-
-function addNewTask({target}){
-    const section = target.closest("section")
-    const newTask = section.querySelector("input").value
-    if (newTask == "" ) {
-        alert("OOPS! can't add empty task")
-        return
-    }
-    const newTaskElem = createTask(newTask)
-    const sectionUl = section.querySelector("ul")
-    sectionUl.prepend(newTaskElem)
-    section.querySelector("input").value = ""
-    addNewTaskData(sectionUl, newTask)
-    updateLocalSaveData()
-}
-
-//  Initializing DOM  //
-function generateLists(){
-    for (const task of data.todo) {
-        const toDoList = document.querySelectorAll(".to-do-tasks")[0]
-        const newTask = createTask(task)
-        toDoList.appendChild(newTask)
-    }
-    for (const task of data["in-progress"]) {
-        const inProgressList = document.querySelectorAll(".in-progress-tasks")[0]
-        const newTask = createTask(task)
-        inProgressList.appendChild(newTask)
-    }
-    for (const task of data.done) {
-        const doneList = document.querySelectorAll(".done-tasks")[0]
-        const newTask = createTask(task)
-        doneList.appendChild(newTask)
-    }
-}
-
-generateLists()
-
-//  Adding event listeners  //
-const addButtons = document.querySelectorAll(".new-task-button")
-for (const button of addButtons) {
-    button.addEventListener("click", addNewTask)
-}
-document.addEventListener("mouseover", hoverHandler)
-const searchBar = document.getElementById("search")
-searchBar.addEventListener("keydown", search)
-
-
-//  Edit task handlers
+//  Edit tasks
 function editTask(){
     if (selectedTask){
         selectedTask.setAttribute("contenteditable", "true")
@@ -195,7 +211,7 @@ function finishedit(){  // Saves the new task in local storage
     }
 }
 
-//  Search
+//  Search tasks
 function search({key}){
     let searchQuery
     const searchBarEntry = document.getElementById("search").value.toLowerCase()
@@ -220,3 +236,5 @@ function search({key}){
         }
     }
 }
+
+// cloud storage
