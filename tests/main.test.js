@@ -229,7 +229,7 @@ describe(projectName, () => {
     expect(newText).not.toBe(prevText)
   })
 
-  test('User should be able to search between tasks', async () => {
+  test.skip('User should be able to search between tasks', async () => {
     const handleSearch = async (val) => {
       await page.$eval(searchInput, (el) => (el.value = ''))
       await page.type(searchInput, val)

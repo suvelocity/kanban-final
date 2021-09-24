@@ -13,6 +13,7 @@ let tasksObj = JSON.parse(localStorage.getItem('tasks'))
 generateTasks()//generates all tasks in the localStorage
 divSections.addEventListener('click', addTasks)// adding the addTasks to the click eventlistener 
 divSections.addEventListener('dblclick', changeTask)
+divSections.addEventListener('keydown', moveTask)
 
 function addTasks(e) {
     const target = e.target
@@ -20,34 +21,33 @@ function addTasks(e) {
         const toDoTask = document.getElementById('add-to-do-task').value
         const inProgressTask = document.getElementById('add-in-progress-task').value
         const doneTask = document.getElementById('add-done-task').value
-        const li = document.createElement('li')
-        li.setAttribute('class', 'task')
+        const task = makeTaskElement()
         switch (target.id) {
             case 'submit-add-to-do':
-                li.textContent = toDoTask
+                task.textContent = toDoTask
                 if (toDoTask === '') alert('add some content please')
                 //if input empty an alert pop up
                 else {
                     tasksObj.todo.push(toDoTask)
-                    ul1.append(li) //add the text to the list
+                    ul1.append(task) //add the text to the list
                 }
                 break
             case 'submit-add-in-progress':
-                li.textContent = inProgressTask
+                task.textContent = inProgressTask
                 if (inProgressTask === '') alert('add some content please')
                 //if input empty an alert pop up
                 else {
                     tasksObj["in-progress"].push(inProgressTask)
-                    ul2.append(li) //add the text to the list
+                    ul2.append(task) //add the text to the list
                 }
                 break
             case 'submit-add-done':
-                li.textContent = doneTask
+                task.textContent = doneTask
                 if (doneTask === '') alert('add some content please')
                 //if input empty an alert pop up
                 else {
                     tasksObj.done.push(doneTask)
-                    ul3.append(li) //add the text to the list
+                    ul3.append(task) //add the text to the list
                 }
                 break
         }
@@ -56,20 +56,17 @@ function addTasks(e) {
 }
 function generateTasks() {
     for (let i of tasksObj.todo) {
-        const task = document.createElement("li")
-        task.setAttribute("class", "task")
+        const task = makeTaskElement()
         task.innerHTML = i
         ul1.append(task)
     }
     for (let i of tasksObj["in-progress"]) {
-        const task = document.createElement("li")
-        task.setAttribute("class", "task")
+        const task = makeTaskElement()
         task.innerHTML = i
         ul2.append(task)
     }
     for (let i of tasksObj.done) {
-        const task = document.createElement("li")
-        task.setAttribute("class", "task")
+        const task = makeTaskElement()
         task.innerHTML = i
         ul3.append(task)
     }
@@ -81,29 +78,76 @@ function changeTask(e) {
     const task = e.target
     if (task.className === 'task') {
         let newInput = document.createElement('input')
-        newInput.setAttribute('id', 'chageTaskInput')
+        // newInput.setAttribute('id','chageTaskInput')
         const oldcontent = task.textContent
-        newInput.value = task.textContent
+        newInput.value = oldcontent
         task.innerText = ''
-        let abc = []
+        let listType = []
         task.append(newInput)
-        newInput.focus()
         newInput.addEventListener('blur', () => {
-            task.innerHTML = newInput.value
+            task.innerText = newInput.value
             switch (task.parentElement.id) {
                 case "ul1":
-                    abc = tasksObj.todo
+                    listType = tasksObj.todo
                     break
                 case "ul2":
-                    abc = tasksObj['in-progress']
+                    listType = tasksObj['in-progress']
                     break
                 case "ul3":
-                    abc = tasksObj.done
+                    listType = tasksObj.done
                     break
             }
-            abc[abc.findIndex(a => a === oldcontent)] = newInput.value
+            listType[listType.findIndex(a => a === oldcontent)] = task.innerText
             localStorage.setItem('tasks', JSON.stringify(tasksObj))
         })
     }
+}
+
+function moveTask(event) {
+    if (!(event.key === '1' && event.altKey || event.key === '2' && event.altKey || event.key === '3' && event.altKey)) return
+    let task = event.target
+    if (task.className !== 'task') return
+    const newTask = makeTaskElement(task.innerText)
+    switch (task.parentElement.id) {
+        case "ul1":
+            tasksObj.todo = tasksObj.todo.filter(a => a !== newTask.textContent)
+            break
+        case "ul2":
+            tasksObj['in-progress'] = tasksObj['in-progress'].filter(a => a !== newTask.textContent)
+            break
+        case "ul3":
+            tasksObj.done = tasksObj.done.filter(a => a !== newTask.textContent)
+            break
+    }
+
+    if (event.key === '1' && event.altKey) {
+        ul1.append(newTask)
+        task.remove()
+        tasksObj.todo.push(newTask.textContent)
+    }
+    if (event.key === '2' && event.altKey) {
+        ul2.append(newTask)
+        task.remove()
+        tasksObj['in-progress'].push(newTask.textContent)
+    }
+    if (event.key === '3' && event.altKey) {
+        ul3.append(newTask)
+        task.remove()
+        tasksObj.done.push(newTask.textContent)
+    }
+    localStorage.setItem('tasks', JSON.stringify(tasksObj))
+}
+
+
+
+
+
+
+function makeTaskElement(text) {
+    const task = document.createElement("li")
+    task.setAttribute('tabindex', '0')
+    task.setAttribute('class', 'task')
+    task.textContent = text
+    return task
 }
 
