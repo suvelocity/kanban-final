@@ -6,14 +6,21 @@ body{
     background-color: #E0E0E0;
   }
   h1{
-    font-family: 'Stick No Bills', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
   }
   h2{
-    font-family: 'Stick No Bills', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
+    text-align: center;
   }
   ul {
     transition: border-color 2s ease, all 0.1s ease;
     list-style-type:none ;
+    font-family: 'Nunito', sans-serif;
+    
+  }
+  li{
+    position: relative;
+    right: 30px;
   }
   .to-do-tasks {
     border-top: 5px solid #FFB300;

@@ -1,5 +1,8 @@
 
 let tasks
+let hoverdElement=null;
+let passedUlId = null;
+let altpressed = false;
 let localSave = localStorage.getItem("tasks")
 if (localSave!=undefined){
     tasks = JSON.parse(localSave);
@@ -31,6 +34,8 @@ const buttonToDo = document.getElementById("submit-add-to-do");
 
 
 
+
+
 function addLiGeneric(event){   //A generic function to generate and add new tasks (li's).
     const target=event.target;
     const section = event.target.closest("section");
@@ -50,6 +55,7 @@ function addLiGeneric(event){   //A generic function to generate and add new tas
         newTaskData(target,inputToDo);
         localStorageData();
     }
+    section.querySelector(".add-input").value="";
 }
 
 function newTaskData(target ,task){
@@ -65,7 +71,7 @@ function newTaskData(target ,task){
 }
 function publishExistingLi(){
     for(let i = 0 ; i<tasks.todo.length ; i++){
-        const existTask = generateListItems(tasks.todo[i],{"dblclick":editTask ,"blur":addChangedTask});
+        const existTask = generateListItems(tasks.todo[i],{"dblclick":editTask ,"blur":addChangedTask,"mouseover":mouseoverFunc , "mouseout": mouseout});
         const liDiv =document.createElement("div");
         const todoSectionUl=document.getElementById("todo");
         // liDiv.append(existTask);
@@ -73,7 +79,7 @@ function publishExistingLi(){
         
     }
     for(let i = 0 ; i<tasks["in-progress"].length ; i++){
-        const existTask = generateListItems(tasks["in-progress"][i],{"dblclick":editTask ,"blur":addChangedTask});
+        const existTask = generateListItems(tasks["in-progress"][i],{"dblclick":editTask ,"blur":addChangedTask ,"mouseover":mouseoverFunc ,"mouseout": mouseout });
         const liDiv =document.createElement("div");
         const inProgSectionUl=document.getElementById("in-progress");
         // liDiv.append(existTask);
@@ -81,7 +87,7 @@ function publishExistingLi(){
         
     }
     for(let i = 0 ; i<tasks.done.length ; i++){
-        const existTask = generateListItems(tasks.done[i],{"dblclick":editTask ,"blur":addChangedTask});
+        const existTask = generateListItems(tasks.done[i],{"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout});
         const liDiv =document.createElement("div");
         const doneSectionUl=document.getElementById("done");
         // liDiv.append(existTask);
@@ -125,13 +131,15 @@ function createElement(tagName, children = [], classes = [], attributes = {})
 const input = document.getElementById('search');
 input.onkeyup = function searchFilter () {
     let filter = input.value.toUpperCase();
-    let lis = document.getElementsByTagName('li');
-    for (var i = 0; i < lis.length; i++) {
-        var name = lis[i].innerHTML;
-        if (name.toUpperCase().indexOf(filter) == 0) 
-            lis[i].style.display = 'list-item';
+    let li = document.getElementsByTagName('li');
+    let filterArr=filter.split()
+    for (var i = 0; i < li.length; i++) {
+        var name = li[i].innerHTML;
+        // (name.toUpperCase().includes(indexOf(filter)))
+        if (name.toUpperCase.includes(filter)) 
+            li[i].style.display = 'list-item';
         else
-            lis[i].style.display = 'none';
+            li[i].style.display = 'none';
     }
 }
 
@@ -160,4 +168,117 @@ function addChangedTask(event){
         
     }
     localStorage.setItem("tasks",JSON.stringify(tasks));
+}
+function movingTasksHandler(event){
+    const hoveredLi =document.querySelector("li:hover");
+if(hoveredLi){
+    if(event.altkey && event.keycode > 48 &&event.keycode<52){
+        alert("wtf");
+        const liContent = hoveredLi.textContent;
+        const key = event.keycode-48;
+        const sameUlId =hoveredLi.closest("ul").id;
+        if(matchNumToUlId(key)!== sameUlId){
+
+        }
+    }
+}
+}
+
+// function matchNumToUlId(key){ //function to switch the number (1-3) to the ul.id
+//     if(key===1){
+//         const ulId="todo";
+//     }
+//     if(key === 2) {
+//         const ulId ="in-progress";
+//     }
+//     if(key ===3){
+//         const ulId="done";
+//     }
+//     return ulId;
+// }
+
+ function addTask(liContent , newSection){
+    const newLi=document.createElement("li")
+ }
+//  note for my self ( תעשה פונקציות להורדה מרשימה ישנה ופונקציה להוספה לרשימה חדשה , מחר יום חדש)
+
+
+// document.addEventListener("keydown" , event =>altkeyPreesed(event));
+document.addEventListener("keydown",event => altkeyPreesed(event));
+document.addEventListener("keyup",event => moveTaskUl(event));
+document.addEventListener("keydown", event => taskChangeUl(event));
+
+function altkeyPreesed(event){
+    if(event.keyCode===18){
+        altpressed=true;
+    }
+}
+function moveTaskUl(event){
+    altpressed=false;
+}
+
+function taskChangeUl(event){
+    if(altpressed&& event.key ==="1"){
+        changeUL("todo");
+
+    }
+    if(altpressed&& event.key ==="2"){
+        changeUL("in-progress");
+    }
+    if(altpressed&& event.key ==="3"){
+        changeUL("done");
+    }
+    
+}
+function changeUL(newUlId){
+    
+    const newUl = document.getElementById(newUlId);
+    passedUlId = hoverdElement.closest("ul").id;
+    if(hoverdElement===null){
+        alert("null");
+    }else{
+        const newLi = generateListItems(hoverdElement.textContent,{"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout})
+        newLi.textContent=hoverdElement.textContent;
+        newUl.prepend(newLi);
+        hoverdElement.remove()
+        changeULLocalStorage(newUlId);  
+    }
+   function changeULLocalStorage(newUlId){
+    const liContent =hoverdElement.textContent
+    const newUl = document.getElementById(newUlId);
+    const oldUl = document.getElementById(passedUlId)
+    const oldUlId = oldUl.id;
+    
+    
+    if(oldUlId === "todo"){
+        // tasks.todo = tasks.todo.filter(x => x !== liContent)
+        let toAdd = liContent
+        let index=tasks.todo.indexOf(liContent);
+        tasks.todo.splice(index,1);
+        tasks[newUlId].unshift(toAdd);
+        localStorageData();
+
+        
+    }
+    if(oldUlId ==="in-progress"){
+        alert("inprog")
+    }
+    if(oldUlId === "done"){
+       alert("done")
+    }
+   }
+
+    
+}
+function mouseoverFunc(event){
+    
+        hoverdElement=event.target;
+    }
+   
+
+function mouseout(event){
+    if(event.target.className="task"){
+        hoverdElement=null;
+    }
+    
 }
