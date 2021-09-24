@@ -15,16 +15,36 @@ let searchInput = document.querySelector("#search");
 let pressed = new Set();
 let errorLabel = document.querySelector("#error-label");
 let contextMenu = document.querySelector("#context-menu");
-let taskNameToManipulateContextmenu;
+let SelectedTaskName;
+let SelectedTaskSection;
+let SelectedTaskImportance;
+
+let addToDoButton = document.querySelector("#submit-add-to-do", );
+let addInProgressButton = document.querySelector("#submit-add-in-progress");
+let addDoneButton = document.querySelector("#submit-add-done");
+let saveButton = document.querySelector("#save-btn");
+let loadButton = document.querySelector("#load-btn");
 
 // ============================
 // ====== Main run ============
 // ============================
 
-document.addEventListener('click', onClickHandler);
+addToDoButton.addEventListener('click', onAddClickHandler);
+addInProgressButton.addEventListener('click', onAddClickHandler);
+addDoneButton.addEventListener('click', onAddClickHandler);
+saveButton.addEventListener('click', onSaveClickHandler);
+loadButton.addEventListener('click', onLoadClickHandler);
 document.addEventListener("dblclick", onDoubleClick);
-document.addEventListener('keyup', onKeyUpHandler);
-//localStorage.clear();
+searchInput.addEventListener('keyup', onKeyUpHandler);
+
+LoadPageFromServer();
+
+async function LoadPageFromServer() {
+    await getServerTasks();
+    reloadTasksPage(searchInput.value);  
+} 
+
+
 if(localStorage.getItem('tasks') === null){
     const tasks = {
         "todo": [],
@@ -34,105 +54,48 @@ if(localStorage.getItem('tasks') === null){
     }
     localStorage.setItem('tasks', JSON.stringify(tasks));        
 }
-loadTasksToPage("");
 
+// ==================================
+// ====== Event Function ============
+// ==================================
 
-// ============================
-// ====== Function ============
-// ============================
-function onClickHandler(event){
-    const target = event.target;    
-    let inputValue;    
-    if(target.tagName === "HTML"){
-        return;
-    }
-    if(target.tagName === "BUTTON"){             
-        switch (target.id){
-            case "submit-add-to-do":
-                inputValue = getTextFromInputId("add-to-do-task");            
-                AddToSection(inputValue, "todo");    
-                break;
-            case "submit-add-in-progress":
-                inputValue = getTextFromInputId("add-in-progress-task");
-                AddToSection(inputValue, "in-progress"); 
-                break;
-            case "submit-add-done":
-                inputValue = getTextFromInputId("add-done-task");
-                AddToSection(inputValue, "done");  
-                break;  
-            case "save-btn":
-                saveTasksOnApi();
-                break;
-            case "load-btn":
-                loadTasksFromApi();
-                break;                                
-        }   
-        // if(target.dataset.important === 'false'){
-        //     const tasksJSON = getTasksJSON();
-        //     for(let task of tasksJSON[target.parentNode.dataset.section]){
-        //         if(task === target.parentNode.innerText){
-        //             task.important = true;
-        //         }
-        //     }
-        //     localStorage.setItem('tasks', JSON.stringify(tasksJSON));  
-        // }                     
-        // else if(target.dataset.important === 'true'){
-        //     const tasksJSON = getTasksJSON();
-        //     for(let task of tasksJSON[target.parentNode.dataset.section]){
-        //         if(task === target.parentNode.innerText){
-        //             task.important = false;
-        //         }
-        //     }
-        //     localStorage.setItem('tasks', JSON.stringify(tasksJSON));  
-        // }
-        
-        
-        loadTasksToPage(searchInput.value);   
-    }    
-}  
-
-async function saveTasksOnApi(){
-    const taskManagerDataString = localStorage.getItem('tasks');   
-    //console.log(getTasksJSON());          
-    const respons = await fetch("https://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3", {
-        method: "PUT", 
-        headers: {        
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },        
-        body: JSON.stringify({"tasks": taskManagerDataString}),
-    })
-    if(!respons.ok){
-        alert("Save Error! => " + respons.status + " " + respons.statusText)    
-    }
-    else{
-        alert("saved!");
-    }
-    
+function onAddClickHandler(event){
+    const target = event.target;   
+    switch (target.id){
+        case "submit-add-to-do":
+            inputValue = getTextFromInputId("add-to-do-task");            
+            AddToSection(inputValue, "todo");    
+            break;
+        case "submit-add-in-progress":
+            inputValue = getTextFromInputId("add-in-progress-task");
+            AddToSection(inputValue, "in-progress"); 
+            break;
+        case "submit-add-done":
+            inputValue = getTextFromInputId("add-done-task");
+            AddToSection(inputValue, "done");  
+            break;  
+    }   
+    reloadTasksPage(searchInput.value);
 }
 
-async function loadTasksFromApi(){
-    const response = await fetch( URL_API, {
-        headers: {            
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-        method: "GET",        
-    });
-    if(!response.ok){
-        alert("Load Error! => " + response.status + " " + response.statusText)
-    }
-    else{
-        let tasksData = await response.json();
-        console.log(tasksData.tasks);
-        localStorage.clear();
-        localStorage.setItem("tasks", tasksData.tasks);
-        loadTasksToPage('');
-        alert("loaded");
-    }    
+function onSaveClickHandler(){ 
+    putServerTasks(); 
+    reloadTasksPage(searchInput.value);  
 }
 
-function onKeyPressLiHandler(event){    
+async function onLoadClickHandler(){   
+    await getServerTasks();
+    reloadTasksPage(searchInput.value); 
+}
+
+function onKeyUpHandler(event){       
+    if (event.target.id === "search"){
+        let searchQuery = document.getElementById("search").value    
+        reloadTasksPage(searchQuery);
+    }    
+}    
+
+function onTaskKeyDownHandler(event){    
     console.log("down");
     pressed.add(event.keyCode);
     let arrayOfKeys = [KEY_1, KEY_2, KEY_3];    
@@ -145,7 +108,7 @@ function onKeyPressLiHandler(event){
             event.preventDefault();
 
             let target = event.target;             
-            const taskManagerDataJSON = getTasksJSON(); 
+            const taskManagerDataJSON = getLocalStorageTasks(); 
             const sectionArray = taskManagerDataJSON[target.dataset.section];
             let index = sectionArray.indexOf(target.textContent);
 
@@ -162,19 +125,12 @@ function onKeyPressLiHandler(event){
             else if(arrayOfKeys[key] === KEY_3){
                 AddToSection(target.textContent, 'done'); 
             }  
-            loadTasksToPage(searchInput.textContent);                      
+            reloadTasksPage(searchInput.textContent);                      
         }
         
     }    
     pressed.clear();
 }
-
-function onKeyUpHandler(event){       
-    if (event.target.id === "search"){
-        let searchQuery = document.getElementById("search").value    
-        loadTasksToPage(searchQuery);
-    }    
-}    
 
 // ===> double click on task event <===
 function onDoubleClick(event){
@@ -191,7 +147,7 @@ function onDoubleClick(event){
 // ===> after edit - save changes <===
 function blurEditTask(event){   
 
-    const taskManagerDataJSON = getTasksJSON();
+    const taskManagerDataJSON = getLocalStorageTasks();
     let textAfterEdit = event.target.textContent;
     let target = event.target;
 
@@ -199,13 +155,10 @@ function blurEditTask(event){
     let key = target.dataset.section;
     const arrayOfSection = taskManagerDataJSON[key];
     if(textAfterEdit === ""){
-        errorLabelDisplay(true, "Cant edit, the task is empty!");    
-        loadTasksToPage(searchInput.textContent);
+        displayError(true, "Cant edit, the task is empty!");    
+        reloadTasksPage(searchInput.textContent);
     }
-    else if(checkDuplicateTask(textAfterEdit)){
-        errorLabelDisplay(true, "Cant edit, task is already exsits!"); 
-        loadTasksToPage(searchInput.textContent);
-    }
+    
     else{
         let taskBeforeEditIndex = arrayOfSection.indexOf(editTextValue);
         arrayOfSection[taskBeforeEditIndex] = textAfterEdit; 
@@ -215,15 +168,17 @@ function blurEditTask(event){
             taskManagerDataJSON["Importent"].unshift(textAfterEdit);
         }
         localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));    
-        loadTasksToPage(searchInput.textContent);
-        errorLabelDisplay(false);
+        reloadTasksPage(searchInput.textContent);
+        displayError(false);
     }
     
 }
 
 function contextMenuTask(event){
     event.preventDefault();          
-    taskNameToManipulateContextmenu = event.target.textContent;     
+    SelectedTaskName = event.target.textContent;  
+    SelectedTaskSection = event.target.dataset.section;
+    SelectedTaskImportance = event.target.dataset.importent;
     
     const { clientX: mouseX, clientY: mouseY } = event;
     
@@ -236,62 +191,102 @@ function contextMenuTask(event){
 
 }
 
-function clickOnContextMenu(event, taskName){
-    const taskManagerDataJSON = getTasksJSON();
-    if(event.target.offsetParent != contextMenu){
-        contextMenu.classList.remove("visible");
+function clickOnContextMenu(event){
+    const tasksObject = getLocalStorageTasks();
+    if (event.target.offsetParent == contextMenu){ 
+        switch(event.target.dataset.type  ){
+            case "Importent": {
+                if(SelectedTaskImportance == false){
+                    tasksObject["Importent"].unshift(SelectedTaskName);
+                    localStorage.setItem('tasks', JSON.stringify(tasksObject));
+                    reloadTasksPage(searchInput.value);  
+                }         
+            }
+            case "Regular": {
+                if(SelectedTaskImportance == true){
+                    tasksObject["Importent"].splice(importentTaskIndex, 1);
+                    localStorage.setItem('tasks', JSON.stringify(tasksObject));
+                    reloadTasksPage(searchInput.value);  
+                }     
+            }
+            case "Delete": {
+                if(confirm("Are you sure you want to delete " + SelectedTaskName + " task?")){
+                    deleteTask();
+                    reloadTasksPage(searchInput.value);  
+                }      
+            }
+        }               
     }
-    else if(event.target.dataset.type === "Importent"){        
-        let importentTaskIndex = taskManagerDataJSON["Importent"].indexOf(taskNameToManipulateContextmenu);
-        // Dont add 2 importent tasks with the same name
-        if(importentTaskIndex === -1){
-            taskManagerDataJSON["Importent"].unshift(taskNameToManipulateContextmenu);
-            localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
-            loadTasksToPage(searchInput.value);  
-        }   
-        contextMenu.classList.remove("visible"); 
-        document.removeEventListener("click", clickOnContextMenu);   
+    contextMenu.classList.remove("visible");
+    document.removeEventListener("click", clickOnContextMenu);    
+}
+
+// ==================================
+// ====== Server Function ============
+// ==================================
+async function putServerTasks(){
+    const taskManagerDataString = localStorage.getItem('tasks');   
+    //console.log(getTasksJSON());          
+    const respons = await fetch(URL_API, {
+        method: "PUT", 
+        headers: {        
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },        
+        body: JSON.stringify({"tasks": taskManagerDataString}),
+    })
+    if(!respons.ok){
+        alert("Server Error: " + respons.status + " " + respons.statusText);   
     }
-    else if(event.target.dataset.type === "Regular"){        
-        let importentTaskIndex = taskManagerDataJSON["Importent"].indexOf(taskNameToManipulateContextmenu);
-        // Delete task from important array
-        if(importentTaskIndex !== -1){
-            taskManagerDataJSON["Importent"].splice(importentTaskIndex, 1);
-            localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
-            loadTasksToPage(searchInput.value);  
-        }
-        contextMenu.classList.remove("visible");
-        document.removeEventListener("click", clickOnContextMenu);  
+    else{
+        alert("Tasks information was saved successfully!");
     }
-    else if(event.target.dataset.type === "Delete"){
-        if(confirm("Are you sure you want to delete " + taskNameToManipulateContextmenu + " task?")){
-            deleteTask(taskNameToManipulateContextmenu);
-            loadTasksToPage(searchInput.value);  
-        }
-        contextMenu.classList.remove("visible");
-        document.removeEventListener("click", clickOnContextMenu);  
+    
+}
+
+async function getServerTasks(){
+    const response = await fetch( URL_API, {
+        headers: {            
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        method: "GET",        
+    });
+    if(!response.ok){
+        alert("Load Error! => " + response.status + " " + response.statusText)
+    }
+    else{
+        //recieve tasks from server, update local storage   
+        let tasksData = await response.json();        
+        localStorage.clear();
+        localStorage.setItem("tasks", tasksData.tasks);                
     }    
 }
+
+
+// ==================================
+// ======  Functions ============
+// ==================================
 
 /* 
 *   ===> Adding task to LocalStorage <===
 *   taskName: String
 *   key: String, where to add (to-do, in-prograss, done);
 */
+
 function AddToSection(taskName, key){
-    const taskManagerDataJSON = getTasksJSON();    
-    const arrayOfSection = taskManagerDataJSON[key];    
+    const tasksObject = getLocalStorageTasks();    
+    const pSectionTasksArray = tasksObject[key];    
     if(taskName === ""){
-        errorLabelDisplay(true, "Cant add, the task is empty!");    
+        displayError(true, "Add failed, task is empty.");    
+        return;
     }
-    else if(checkDuplicateTask(taskName)){
-        errorLabelDisplay(true, "Cant add, task is already exsits!"); 
-    }
-    else{
-        arrayOfSection.unshift(taskName);    
-        localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON)); 
-        errorLabelDisplay(false);
-    }         
+    
+    //pass input validation tests
+    //update tasks and store in local storage
+    pSectionTasksArray.unshift(taskName);    
+    localStorage.setItem('tasks', JSON.stringify(tasksObject)); 
+    displayError(false);    
 }
 
 // ===> gets id of input - return its value (as string) <===
@@ -303,102 +298,107 @@ function getTextFromInputId(id){
     return inputValue;
 }
 
-// load tasks from API
-function loadTasksToPage(query){    
+// refresh page according to local storage filtered by the query (search) text
+function reloadTasksPage(query){    
     let todoDiv = document.querySelector("#div-to-do-tasks");
     todoDiv.innerHTML = "";     
-    let todo_Ul = createTaskUl(query, "todo", ["to-do-tasks"]);
+    let todo_Ul = createTaskList(query, "todo", ["to-do-tasks"]);
     todoDiv.append(todo_Ul);
 
     let inProgressDiv = document.querySelector("#div-in-progress-tasks");
     inProgressDiv.innerHTML = "";
-    let inProgress_Ul = createTaskUl(query, "in-progress", ["in-progress-tasks"]);
+    let inProgress_Ul = createTaskList(query, "in-progress", ["in-progress-tasks"]);
     inProgressDiv.append(inProgress_Ul);
 
     let doneDiv = document.querySelector("#div-done-tasks");
     doneDiv.innerHTML = "";
-    let done_Ul = createTaskUl(query, "done", ["done-tasks"]);
+    let done_Ul = createTaskList(query, "done", ["done-tasks"]);
     doneDiv.append(done_Ul);
     
 }
 
 // ===> Creating UL element from key in "task" <===
-function createTaskUl(query, key, classes){
-    const taskManagerDataJSON = getTasksJSON();
-    let liArray = [];     
-    for(let task of taskManagerDataJSON[key]){         
-        let taskLowCased = task.toLowerCase();
-        let queryLowCased =  query.toLowerCase();
-        let classImportance = "regular-task"; 
-        if(taskLowCased.includes(queryLowCased)){             
-            let importentTask = taskManagerDataJSON["Importent"].indexOf(task);            
-            let attributs = {
-                "data-section": key, 
-                'tabIndex': '0'
-            }  
-            let listeners = {
-                'keydown': (event) => {onKeyPressLiHandler(event)},
-                'contextmenu': (event) => {contextMenuTask(event)},
-            } 
+//filter case insensative
+function createTaskList(filter, key, css_classes){
+    const tasksObject = getLocalStorageTasks();
+    let li_Array = [];     
+    let tabindex = 0;
+    let taskImportantFlag = false;
+    let classImportance = "regular-task"; 
+    for(let task of tasksObject[key]){         
+        let taskLowerCase = task.toLowerCase();
+        let filterLowerCase =  filter.toLowerCase();
+        if(taskLowerCase.includes(filterLowerCase)){  
+            //task matched filter add to list
+            let importentTask = tasksObject["Importent"].indexOf(task); 
             if(importentTask !== -1){
                 classImportance = "important-task";
-            }                                          
-            liArray.push(createElement("li", [task], [classImportance, "task"], attributs, listeners));  
+                taskImportantFlag = true;
+            }                   
+            let attributs = {
+                "data-section": key, 
+                "data-importent": taskImportantFlag,
+                'tabIndex': tabindex
+            }  
+            let listeners = {
+                'keydown': (event) => {onTaskKeyDownHandler(event)},
+                'contextmenu': (event) => {contextMenuTask(event)},
+                'click': (event) => {onTaskClickHandler(event)},
+                'dblclick': (event) => {onTaskDBClickHandler(event)},
+            } 
+                                              
+            li_Array.push(createElement("li", [task], [classImportance, "task"], attributs, listeners));
+            //reset before next Items
+            tabindex++; 
+            taskImportantFlag = false; 
             classImportance =  "regular-task";                        
         }        
     }
-    let ul = createElement("ul", liArray, [...classes]);  
-    return ul; 
+    
+    return createElement("ul", li_Array, [...css_classes]);  
+}
+function onTaskClickHandler(event){
+    return;
+
+}
+function onTaskDBClickHandler(event){
+    return;
+
 }
 
 // ===> returns JSON of tasks <===
-function getTasksJSON(){
-    const taskManagerDataString = localStorage.getItem('tasks');
-    return JSON.parse(taskManagerDataString);
+function getLocalStorageTasks(){
+    return JSON.parse(localStorage.getItem('tasks'));
 }
 
-// ===> get task - return true if task exists already <===
-function checkDuplicateTask(taskToCheck){
-    const taskManagerDataJSON = getTasksJSON();
-    let tasksArray = Object.values(taskManagerDataJSON);    
-    let duplicateTask = tasksArray.flat().find((task) => task === taskToCheck);    
-    if(duplicateTask === undefined){
-        return false;
-    }
-    else{
-        // Exsits
-        return true;
-    }
-}
 
 // Display an error on screen
-function errorLabelDisplay(visible, text = ""){
+function displayError(visible, text = ""){
+    //check current state
+    errorLabel.textContent = text;
     if(errorLabel.classList.contains("hidden")){
-        errorLabel.classList.remove("hidden");
+        if(visible){
+            errorLabel.classList.remove("hidden");
+            errorLabel.classList.add("visible");
+        }    
     }
-    else if(errorLabel.classList.contains("visible")){
-        errorLabel.classList.remove("visible");
+    else {
+        if(!visible){
+            errorLabel.classList.remove("visible");
+            errorLabel.classList.add("hidden");
+        }    
     }    
-    if(visible){
-        errorLabel.classList.add("visible");
-        errorLabel.textContent = text;
-    }
-    else{
-        errorLabel.classList.add("hidden");
-        errorLabel.textContent = "";
-    }
 }
 
-// Deletes task from tasks
-function deleteTask(taskName){
-    const taskManagerDataJSON = getTasksJSON();
-    for(let section in taskManagerDataJSON){        
-        let taskIndex = taskManagerDataJSON[section].indexOf(taskName);  
-        if(taskIndex !== -1){
-            taskManagerDataJSON[section].splice(taskIndex, 1);
-        }              
-    }
-    localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));   
+// Deletes selected task from tasks
+function deleteTask(){
+    const tasksObject = getLocalStorageTasks();
+        
+    let taskIndex = tasksObject[SelectedTaskSection].indexOf(SelectedTaskName);  
+    if(taskIndex !== -1){
+        tasksObject[SelectedTaskSection].splice(taskIndex, 1);
+    }              
+    localStorage.setItem('tasks', JSON.stringify(tasksObject));   
 }
 
 function createElement(tagName, children = [], classes = [], attributes = {}, eventListeners = {}) {
