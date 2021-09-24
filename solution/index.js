@@ -6,9 +6,10 @@
       })
     ); 
 */
-    
 
-   //localStorage.clear();
+    //localStorage.clear();
+
+
     console.log(JSON.parse(localStorage.tasks).todo);
     let localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
 
@@ -16,7 +17,7 @@
 document.body.addEventListener('mouseover' ,addHoverReplace);
 document.body.addEventListener('dblclick',gainFocus);
 document.body.addEventListener('focusout', saveValueBlur);
-
+//local storage save function
 function localStorageSave(){
     localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
     localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
@@ -34,7 +35,7 @@ let saveButton = document.getElementById('save-button');
 let loadButton = document.getElementById('load-button');
  
  //localstorage loading function
- if(localStorageObjectForUpdate.todo.length > 0 || localStorageObjectForUpdate['in-progress'].length > 0 || localStorageObjectForUpdate.done.length > 0){
+ if(localStorageObjectForUpdate.todo.length[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null){
     let toDoSection = document.getElementById('to-do-container');
     let inProgressContainer = document.getElementById('in-progress-container');
     let donContainer = document.getElementById('done-container');
@@ -78,9 +79,11 @@ function addTask(e){
               localStorageSave();
               // end of local storage insertion
 
+              newTask.addEventListener('dragstart', dragItem);
+              newTask.addEventListener('dragend', endDrag);
+
             target.previousElementSibling.value = '';
              
-            console.log(toDoTasksUl);
        }
     }
 }
@@ -161,7 +164,7 @@ function createElement(tagName, children = [], classes = [], attributes = {}) {
   }
 
 
-//search bar function
+//search bar functions
 function searchTask(e){
   let value = e.target.value;
   let toDoTaskArray = Array.from(document.querySelectorAll('.to-do-tasks > .task'));
@@ -187,8 +190,23 @@ function searchTask(e){
   }
 }
 
+searchBar.addEventListener('focus', () => {
+   let placeholder = document.querySelector('.placeholder');
+   let label = document.querySelector('.placeholder-label');
+   placeholder.style = 'transform: translateY(-150%); color:blue; font-size:12px';
+   label.style = 'border-bottom: solid 3px blue;'
+})
+searchBar.addEventListener('blur', () => {
+    if(searchBar.value === ''){
+        let placeholder = document.querySelector('.placeholder');
+        let label = document.querySelector('.placeholder-label');
+        placeholder.style = 'transform: translateY(0%); color:black; font-size:16px';
+        label.style = 'border-bottom: solid 1px black;'
+    }
+})
+//
 searchBar.addEventListener('keyup', searchTask);
-
+//API functions
 async function saveApi(){
     console.log('save button');
      await fetch('https://json-bins.herokuapp.com/bin/614adb6c4021ac0e6c080c15',{
@@ -202,13 +220,36 @@ async function saveApi(){
 }
 
 async function loadApi(){
-   let loadData = await fetch('https://json-bins.herokuapp.com/bin/614adb6c4021ac0e6c080c15');
-    console.log(loadData);
+   await fetch('https://json-bins.herokuapp.com/bin/614adb6c4021ac0e6c080c15').then(response => response.json())
+   .then(data => {
+    toDoTasksUlAPI = data.tasks.todo[0];
+    inProgressTasksUlAPI = data.tasks['in-progress'][0];
+    doneTasksUlAPI = data.tasks.done[0];
+    //
+    let toDoSection = document.getElementById('to-do-container');
+    let inProgressContainer = document.getElementById('in-progress-container');
+    let donContainer = document.getElementById('done-container');
+    //
+    toDoSection.innerHTML = toDoTasksUlAPI;
+    inProgressContainer.innerHTML = inProgressTasksUlAPI;
+    donContainer.innerHTML = doneTasksUlAPI;
+
+    toDoTasksUl = toDoSection.firstChild;
+    inProgressTasksUl = inProgressContainer.firstChild;
+    doneTasksUl = donContainer.firstChild;
+
+    localStorageSave();
+
+    for(let li of Array.from(document.querySelectorAll('.task'))){
+        li.addEventListener('dragstart', dragItem);
+        li.addEventListener('dragend', endDrag);
+      };
+   });
 }
 
 saveButton.addEventListener('click', saveApi);
 loadButton.addEventListener('click', loadApi);
-
+//
 
 
 
@@ -236,14 +277,14 @@ sections.forEach((section) => {
         let afterElement = elementAfterDragging(section, e.clientY);
         
         if(afterElement == null){
+            console.log(document.querySelector('.dragging'));
+            console.log('over element');
             section.lastElementChild.firstElementChild.appendChild(document.querySelector('.dragging'));
         }else{
+            console.log(section.lastElementChild.firstElementChild)
+            console.log('over element')
             section.lastElementChild.firstElementChild.insertBefore(document.querySelector('.dragging'), afterElement);
         }
-        /*
-        if(e.target.tagName === 'SECTION'){
-            section.lastElementChild.firstElementChild.appendChild(document.querySelector('.dragging')); 
-    }*/
  })
 })
 

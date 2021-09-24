@@ -1,8 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Gemunu+Libre:wght@300&display=swap');
+
+body{
+    font-family: 'Gemunu Libre', sans-serif;
+}
 h1{
     text-align: center;
 }
-ul{
+.to-do-tasks, .in-progress-tasks, .done-tasks{
   list-style: none;  
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+li{
+    width: 180px;
+    height: 15px;
+    padding: 4px;
+    margin-top: 5px;
+    margin-left: 0;
+    margin-right: 0;
+    border: solid 1px black;
+    border-radius: 8%;
 }
 .api-buttons{
    display: flex;
@@ -16,7 +35,7 @@ ul{
     margin-bottom: 50px;
 }
 
-#tasks-div{
+.main-div{
     display: flex;
     justify-content: center;
 }
@@ -38,3 +57,48 @@ ul{
 .dragging{
     opacity: 0.5;
 }
+
+input{
+    border: none;
+    appearance: none;
+    background-color: rgb(240,240,240);
+    height:30px;
+    width: 200px;
+    border-radius: 3px;
+    outline: none;
+    margin:0;
+}
+
+.search-bar{
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    width: 220px;
+    height: 30px;
+}
+#search{
+    display: inline;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+.search-bar label{
+    content: "";
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+    border-bottom: solid 1px black;
+    transition: all 0.3s ease;
+}
+
+.placeholder{
+    position: absolute;
+    bottom: 5px;
+    left: 0%;
+    transition: all 0.3s ease;
+}
+
+
