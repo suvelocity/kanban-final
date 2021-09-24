@@ -136,10 +136,11 @@ input.onkeyup = function searchFilter () {
     for (var i = 0; i < li.length; i++) {
         var name = li[i].innerHTML;
         // (name.toUpperCase().includes(indexOf(filter)))
-        if (name.toUpperCase.includes(filter)) 
+        if (name.toUpperCase().includes(filter)) {
             li[i].style.display = 'list-item';
-        else
+        }else{
             li[i].style.display = 'none';
+        }
     }
 }
 
