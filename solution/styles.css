@@ -4,9 +4,40 @@ body{
     align-items: center;
 }
 
-div{
+header{
     display: flex;
     flex-direction: row;
+    width: 100vw;
+    justify-content: space-between;
+    margin: 10px;
+    position: fixed;
+}
+h1{
+    display: flex;  
+    align-self: flex-start;
+    margin: 5px 0 0 20px;
+    /* padding: 5px 0 0 20px; */
+}
+#search{
+    display: flex;
+    height: 30px;
+    width: 300px;
+    margin: 10px 0 0  0;
+}
+.API-storage-button{
+    margin: 10px -20px 0  0;
+    height: 30px;
+    width: 70px;
+    margin-right: 20px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+
+#kanban{
+    display: flex;
+    flex-direction: row;
+    margin: 70px 0 0 0;
 }
 section{
     margin: 10px 10px 10px 10px;
@@ -40,3 +71,24 @@ ul{
 .invisible{
     display: none;
 }
+
+#loading{
+    display: none;
+    position: fixed;
+    margin: 0 0 0 450px;
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db; 
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    visibility: hidden;
+}
+#loading.display{
+    display: flex;
+    visibility: visible;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

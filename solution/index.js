@@ -128,6 +128,16 @@ function generateLists(){
 
 generateLists()
 
+// Clear tasks
+function clearTasks(){
+    const tasksElems = document.querySelectorAll(".task")
+    for (const taskElem of tasksElems){
+        taskElem.parentElement.removeChild(taskElem)
+        removeTaskData(taskElem.innerText)
+        updateLocalSaveData()
+    }
+}
+
 //  Maniputale tasks order and sections  //
 let selectedTask
 const moveTask = (section) => {
@@ -165,7 +175,7 @@ function moveBetweenSections({altKey, key}){
             //  Event  listeners  //
             ////////////////////////
           
-//  Adding event listeners  //
+//  Asigning event listeners  //
 const addButtons = document.querySelectorAll(".new-task-button")
 for (const button of addButtons) {
     button.addEventListener("click", addNewTask)
@@ -173,6 +183,10 @@ for (const button of addButtons) {
 document.addEventListener("mouseover", hoverHandler)
 const searchBar = document.getElementById("search")
 searchBar.addEventListener("keydown", search)
+const saveButton = document.getElementById("save-btn")
+saveButton.addEventListener("click", storeTasks)
+const loadButton = document.getElementById("load-btn")
+loadButton.addEventListener("click", loadTasks)
 
 // Handelers
 function hoverHandler({target}){
@@ -237,4 +251,32 @@ function search({key}){
     }
 }
 
-// cloud storage
+// API storage
+async function storeTasks(){
+    const tasks = taskObj
+    const pushToCloud = await fetch("https://json-bins.herokuapp.com/bin/614ad8b24021ac0e6c080c0b", {
+        method: "PUT",
+        headers: {
+            Accept: "application/json", 
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({tasks})
+    })
+    const saved = await pushToCloud.json()
+    console.log(saved.tasks)
+}
+
+async function loadTasks(){
+    const loader = document.getElementById("loading")
+    loader.classList.add("display")
+    const tasksRequest = await fetch("https://json-bins.herokuapp.com/bin/614ad8b24021ac0e6c080c0b")
+    if (!tasksRequest.ok) {
+        alert(`Failed! Error ${response.status}: ${response.statusText}`);
+    }
+    const loaded = await tasksRequest.json()
+    clearTasks()
+    taskObj = loaded.tasks
+    generateLists()
+    updateLocalSaveData()
+    loader.classList.remove("display")
+}
