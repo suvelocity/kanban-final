@@ -7,3 +7,55 @@ li>span:not(.li-task) {
     border: 2px solid red;
     outline: 2px ridge red;
 }
+
+.hidden
+{
+    overflow: hidden;
+}
+
+li .li-task
+{
+    cursor: pointer;
+}
+
+li .li-task[contenteditable = "true"] /* style f editable content outline*/
+{
+    outline-style:none;
+    
+}
+
+li .li-task.hover:hover
+{
+    color: yellow;
+    font-weight:700;
+    font-size: 10px;
+    text-decoration: underline overline;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.no_selection
+{
+    user-select: none; /* standard syntax */
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    background-color: transparent;
+}
+
+.no_selection::selection /* remove element selection backgroun color when doublclicked */
+{
+    background-color: transparent;
+}
+
+::selection
+{
+    background-color:rgb(235, 233, 112);
+}
+
+ul
+{
+    list-style-type:decimal;
+}
