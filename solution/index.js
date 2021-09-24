@@ -265,14 +265,11 @@ const loadButton =document.getElementById("loadBT")
     rightDiv.append(loader);
     try {
         const response = await fetch("https://json-bins.herokuapp.com/bin/614aeca14021ac0e6c080c6d", {
-            method:"PUT",
+            method:"GET",
+            mode: "cors",
             headers:{
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-                
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify(localtasks)
         },)
     } catch (error) {
         console.log("ERROR : Incorrect text type");
@@ -280,3 +277,23 @@ const loadButton =document.getElementById("loadBT")
     alert("ERROR : something went wrong");
     }
  }
+
+//  save button
+const saveButton =document.getElementById("saveBT")
+ saveButton.onclick = async function(){
+     const tasks = localSave;
+     const response = fetch("https://json-bins.herokuapp.com/bin/614aeca14021ac0e6c080c6d" ,
+     {
+        method:"PUT",
+        mode:"cors",
+            headers:
+            {
+                "Content-Type": "application/json"
+            },  
+            body:JSON.stringify({tasks}),  
+
+     }).then(response=> response.json())
+       .then(data =>console.log(data))
+    
+ }
+    

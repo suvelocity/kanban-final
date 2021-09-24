@@ -27,13 +27,18 @@ body{
   }
 /* id selectors */
 #upper-section{
-    margin-bottom: 35px;
+    margin-bottom: 20px;
+    margin-left: 5px;
 }
 #page-title{
     display: inline;
 }
 #search{
-    margin-left: 35%;
+    margin-left: 23rem;
+}
+#logoBlack{
+    width: 75px;
+    height: 75px;
 }
 /* classs selectors */
 .to-do-tasks {
@@ -45,11 +50,6 @@ body{
   .done-tasks {
     border-top: 5px solid #34c916;
   }
-  /* .liDiv{
-      border: 1px solid black;
-      border-radius: 5px;
-      box-shadow: rgba(3, 102, 214, 0.3) 1px 1px 1px 3px;
-  } */
   .task{
       color: black;
       font-size: 16px;
