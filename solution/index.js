@@ -195,7 +195,10 @@ function eventHandler(e){
             generateTasksDom();
         //Task element edit     
     }
-    //console.log(e.target.id);
+    //Double click event on task
+    if(eventType(e.type) === "b" && e.target.className === "task"){
+        editByDblClick(e.target);
+    };
 };
 
 //Event type identifier
@@ -310,6 +313,45 @@ function addTask(e, input){
     input.value = "";
     return taskElement;  
 };
+    
+//Edit a task's value in tasks by its ID
+function editTaskValue(taskId, newValue){
+    for(let task of Tasks.todo){
+        if(taskId === task.id){
+            task.task = newValue;
+        }
+    }
+    for(let task of Tasks["in-progress"]){
+        if(taskId === task.id){
+            task.task = newValue;
+        }
+    }
+    for(let task of Tasks.done){
+        if(taskId === task.id){
+            task.task = newValue;
+        }
+    }
+};
+
+//Edit task content
+function editByDblClick(taskElement){
+    let input = document.createElement("input");
+    let taskId = taskElement.id;
+    input.value = taskElement.innerText;
+    //When input loses focus its value is transferd to the task element
+    input.onblur = () => {
+        taskElement.innerText = input.value;
+        //Edits the task's value in the Task object
+        editTaskValue(taskId, input.value);
+        //Storing the change in the local storage
+        saveTasksToStorage();
+    }
+    //Replacing the existent task with the input on dbl-click
+    taskElement.innerText="";
+    taskElement.appendChild(input);
+	input.focus();
+    console.log(Tasks);
+};   
 
 
 
