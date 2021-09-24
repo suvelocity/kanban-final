@@ -1,13 +1,13 @@
-/*
+
  localStorage.setItem('tasks', JSON.stringify({
     "todo": [],
     "in-progress": [],
     "done": []
       })
     ); 
-*/
 
-    //localStorage.clear();
+
+    ///localStorage.clear();
 
 
     console.log(JSON.parse(localStorage.tasks).todo);
@@ -96,6 +96,7 @@ taskDiv.addEventListener('click', addTask)
      let target = e.target;
      if(target.tagName === 'LI'){
          target.setAttribute('contenteditable' , 'true');
+         target.style.backgroundColor = 'rgba(50,50,200,0.5)';
      }
  };
 
@@ -106,6 +107,7 @@ taskDiv.addEventListener('click', addTask)
         return;
      }
      target.setAttribute('contenteditable', 'false');
+     target.style.backgroundColor = 'rgba(0,0,0,0)';
     localStorageSave();
  }
  //
