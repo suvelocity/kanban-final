@@ -64,13 +64,14 @@ const addEventListenerToTasks = () => {
             })
         });
 
-        element.getElementsByClassName("TaskTitle")[0].addEventListener("blur", function Changeinside() {
-            let newinnerTaskText = element.getElementsByClassName("TaskTitle")[0].innerText.replace(spaceAtEndRegex, '');;
+        element.addEventListener("blur", function Changeinside() {
+            let newinnerTaskText = element.innerText.replace(spaceAtEndRegex, '');
+            console.log(newinnerTaskText);
             deleteNChangeTask(oldinnerTaskText, newinnerTaskText);
         })
         element.addEventListener("dblclick", function () {
             oldinnerTaskText = element.getElementsByClassName("TaskTitle")[0].innerText;
-            element.getElementsByClassName("TaskTitle")[0].contentEditable = true;
+            element.contentEditable = true;
         })
 
     }
