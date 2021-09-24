@@ -40,6 +40,43 @@
     return el;
   }
 
+//Random ID generator between 1-100
+function randomId(){
+    return Math.floor(Math.random() * 101);
+  };
+  //ID check
+  function idCheck(taskId){
+    let indicator = 0;
+    for(let task of Tasks.todo){
+       if(task.id.slice(4) == taskId){
+           indicator++;
+       }
+    }
+    for(let task of Tasks["in-progress"]){
+        if(task.id.slice(4) == taskId){
+            indicator++;
+        }
+     }
+     for(let task of Tasks.done){
+        if(task.id.slice(4) == taskId){
+            indicator++;
+        }
+     }
+     if(indicator === 0){
+         return true;
+     }
+     return false;
+};
+
+//Task identification
+function attachId(element){
+    let newId = randomId();
+    while(!idCheck(newId)){
+        newId = randomId();
+    }
+    element.id = "task" + newId;
+};
+
 //A function that creates a task element (<li>) with "task" class, and places it in the correct tasks-list
 function createTaskElement(task, listId){
     return createElement("li", [task], ["task"], {}, listId);
@@ -55,14 +92,82 @@ function addMultipleEventListener(element, events, handler) {
   };
 
 
+// -------------- Storage -------------- \\
+let Tasks = {
+    //To Do Tasks - Array
+    "todo": [],
+    //In Progress Tasks - Array
+    "in-progress": [],
+    //Done Tasks - Array
+    "done": []
+};
+
+//Save to storage
+function saveTasksToStorage() {
+   const storedTasks = JSON.stringify(Tasks);
+   localStorage.setItem("tasks", storedTasks);
+};
+
+//Get from storage
+function getStoredTasks(){
+    let storedTasks = localStorage.getItem("tasks");
+    storedTasks = JSON.parse(storedTasks);
+    return storedTasks;
+};
+
+//Check saved storage if empty save the default Tasks object
+function checkTasksStorage(){
+   let tasks = getStoredTasks();
+   if(tasks === null){
+    saveTasksToStorage();
+   }
+}
+
 
 
 // -------------- DOM -------------- \\
+
 //Elements
 const mainContainer = document.getElementById("main-container");
 const toDoInput = document.getElementById("add-to-do-task");
 const inProgressInput = document.getElementById("add-in-progress-task");
 const doneInput = document.getElementById("add-done-task");
+
+//Creates a task object
+function createTaskObject(taskElementId, task){
+    const taskObject = {
+        id: taskElementId,
+        task: task
+    }
+    return taskObject;
+};
+
+//Creates a task element and places it in the correct list element
+function createAndPlace(task, arrayList){
+    const parentListId = relevantListElement(arrayList);
+    const taskElement = createTaskElement(task.task, parentListId);
+    taskElement.id = task.id;
+    return taskElement;
+};
+
+checkTasksStorage();
+
+//Loads the Tasks object with stored values
+Tasks = getStoredTasks();
+
+//Generate Tasks DOM from local storage
+function generateTasksDom(){
+    for(let task of Tasks.todo){
+        createAndPlace(task, "todo");
+    }
+    for(let task of Tasks["in-progress"]){
+        createAndPlace(task, "in-progress");
+    }
+    for(let task of Tasks.done){
+        createAndPlace(task, "done");
+    }
+};
+
 
 //Event listeners
 addMultipleEventListener(mainContainer, ["click", "dblclick", "mousedown", "mouseup", "blur", "focus", "keydown"], eventHandler);
@@ -85,8 +190,12 @@ function eventHandler(e){
         case "a3":
             addTask(e, doneInput);
         break;
+        //Load DOM from local storage
+        case "a4":
+            generateTasksDom();
         //Task element edit     
     }
+    //console.log(e.target.id);
 };
 
 //Event type identifier
@@ -130,19 +239,52 @@ function targetTypeId(targetId){
         case "submit-add-done":
             targetId = 3;
             break;
+        case "load-local":
+            targetId = 4;
     }
     return targetId;
 };
 
-//Random ID generator between 1-100
-function randomId(){
-    return Math.floor(Math.random() * 101);
-  };
+function createTaskObject(taskElementId, task){
+    const taskObject = {
+        id: taskElementId,
+        task: task
+    }
+    return taskObject;
+};
 
-//Task identification
-function attachId(element){
-    let newId = randomId();
-    element.id = "task" + newId;
+//Find relevant list array in Tasks from list element
+function relevantListArray(parentListId){
+    let listArray;
+    switch(parentListId){
+        case "to-do-tasks":
+            listArray = "todo";
+            break;
+        case "in-progress-tasks":
+            listArray = "in-progress";
+            break;
+        case "done-tasks":
+            listArray = "done";
+            break;
+    }
+    return listArray;
+};
+
+//Find relevant list element from Array in Tasks
+function relevantListElement(listArray) {
+    let parentListId;
+    switch(listArray){
+        case "todo":
+            parentListId = "to-do-tasks";
+            break;
+        case "in-progress":
+            parentListId = "in-progress-tasks";
+            break;
+        case "done":
+            parentListId = "done-tasks";
+            break;
+    }
+    return parentListId;
 };
 
 //Add task
@@ -154,15 +296,22 @@ function addTask(e, input){
     if(task == ""){ alert("invalid Id");
     throw new Error("Invalid input");
     }
+    //Create task with a random ID and place it in the correct list
+    const taskElement = createTaskElement(task, siblingId);
+    attachId(taskElement);
+    //Create object
+    const taskObject = createTaskObject(taskElement.id, task);
+    //Push to the relevant array in "Tasks" object
+    const listArray = relevantListArray(siblingId);
+    Tasks[listArray].push(taskObject);
+    //Save to local storage
+    saveTasksToStorage();
     //Clear input
     input.value = "";
-    //Create task with a random ID
-    let element = createTaskElement(task, siblingId);
-    attachId(element);
-    //Save to local storage
-    
-    return element;  
+    return taskElement;  
 };
+
+
 
 
 
