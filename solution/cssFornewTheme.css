@@ -2,7 +2,9 @@
 
 body{
     font-family: 'Dancing Script', cursive;
-    background-image: url(new\ theme\ second\ photo.jpg);
+    background-image: url(new\ theme\ third\ photo.jpg);
+    background-repeat: no-repeat;
+    background-size: 100%;
     color: rgb(56, 126, 167);
 }
 h1{
@@ -142,3 +144,37 @@ input{
 .add-task:hover{
     box-shadow: inset 70px 0 0 0 rgb(7, 148, 190);
 }
+
+/*
+#new-theme-btn{
+    display: flex;
+    justify-self: center;
+    margin-left: auto;
+    margin-right: auto;
+};
+*/
+
+#new-theme-btn{
+    display: flex;
+    justify-self: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 15px 30px;
+    color: #2196f3;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    font-size: 10px;
+    overflow: hidden;
+    transition: 0.2s;
+}
+
+
+
+#new-theme-btn:hover {
+    color: #255784;
+    background: #2196f3;
+    box-shadow: 0 0 10px #2196f3, 0 0 40px #2196f3, 0 0 80px #2196f3;
+    transition-delay: 0/5s;
+}
+

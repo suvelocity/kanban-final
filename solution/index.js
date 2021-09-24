@@ -218,7 +218,7 @@ async function saveApi(){
             Accept: "application/json", "Content-Type": "application/json",
         },
         //body: JSON.stringify({'tasks':{'todo':[], 'in-progress': [], 'done' : []} 
-        body: JSON.stringify({'tasks':{'todo':[toDoTasksUl.outerHTML], 'in-progress': [inProgressTasksUl.outerHTML], 'done' : [doneTasksUl.outerHTML]} 
+        body: JSON.stringify({'tasks':{'todo':[toDoTasksUl.outerHTML], 'in-progress': [inProgressTasksUl.outerHTML], 'done' : [doneTasksUl.outerHTML]}
         }) 
   })
 }

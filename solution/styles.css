@@ -139,3 +139,11 @@ input{
 .add-task:hover{
     box-shadow: inset 70px 0 0 0 rgb(7, 148, 190);
 }
+
+#new-theme-btn{
+    display: flex;
+    justify-self: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
