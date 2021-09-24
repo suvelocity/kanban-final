@@ -2,6 +2,8 @@
 
 body{
     font-family: 'Gemunu Libre', sans-serif;
+    background-image: url(milky-way-2695569_960_720.jpg);
+    color: rgb(167, 56, 56);
 }
 h1{
     text-align: center;
@@ -22,6 +24,13 @@ li{
     margin-right: 0;
     border: solid 1px black;
     border-radius: 8%;
+}
+section{
+    background-color: rgba(240, 240, 240, 0.7);
+    border-radius: 8%;
+}
+h2{
+    text-align: center;
 }
 .api-buttons{
    display: flex;
@@ -99,6 +108,21 @@ input{
     bottom: 5px;
     left: 0%;
     transition: all 0.3s ease;
+}
+
+.api-button{
+   width: 70px;
+   height: 35px;
+   color: white;
+   background-color: teal;
+   border-radius: 4px;
+   transition: ease-out 0.3s;
+   outline: none;
+   box-shadow: inset 0 0 0 0 yellow;
+}
+
+.api-button:hover{
+    box-shadow: inset 70px 0 0 0 yellow;
 }
 
 
