@@ -14,6 +14,8 @@ let editTextValue = "";
 let searchInput = document.querySelector("#search");
 let pressed = new Set();
 let errorLabel = document.querySelector("#error-label");
+let contextMenu = document.querySelector("#context-menu");
+let taskNameToManipulateContextmenu;
 
 // ============================
 // ====== Main run ============
@@ -27,7 +29,8 @@ if(localStorage.getItem('tasks') === null){
     const tasks = {
         "todo": [],
         "in-progress": [],
-        "done": []
+        "done": [],
+        "Importent": []
     }
     localStorage.setItem('tasks', JSON.stringify(tasks));        
 }
@@ -38,7 +41,7 @@ loadTasksToPage("");
 // ====== Function ============
 // ============================
 function onClickHandler(event){
-    const target = event.target;
+    const target = event.target;    
     let inputValue;    
     if(target.tagName === "HTML"){
         return;
@@ -91,17 +94,21 @@ function onClickHandler(event){
 async function saveTasksOnApi(){
     const taskManagerDataString = localStorage.getItem('tasks');   
     //console.log(getTasksJSON());          
-    await fetch("https://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3", {
+    const respons = await fetch("https://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3", {
         method: "PUT", 
         headers: {        
             "Accept": "application/json",
             "Content-Type": "application/json",
         },        
         body: JSON.stringify({"tasks": taskManagerDataString}),
-    }).catch((error) =>{
-        alert("Save Error!" + error);
-    });
-    console.log("Saved");
+    })
+    if(!respons.ok){
+        alert("Save Error! => " + respons.status + " " + respons.statusText)    
+    }
+    else{
+        alert("saved!");
+    }
+    
 }
 
 async function loadTasksFromApi(){
@@ -113,14 +120,16 @@ async function loadTasksFromApi(){
         method: "GET",        
     });
     if(!response.ok){
-        alert("Load Error! => " + response.status)
+        alert("Load Error! => " + respons.status + " " + respons.statusText)
     }
-    let tasksData = await response.json();
-    console.log(tasksData.tasks);
-    localStorage.clear();
-    localStorage.setItem("tasks", tasksData.tasks);
-    loadTasksToPage('');
-    console.log("Load");
+    else{
+        let tasksData = await response.json();
+        console.log(tasksData.tasks);
+        localStorage.clear();
+        localStorage.setItem("tasks", tasksData.tasks);
+        loadTasksToPage('');
+        alert("loaded");
+    }    
 }
 
 function onKeyPressLiHandler(event){    
@@ -165,8 +174,7 @@ function onKeyUpHandler(event){
         let searchQuery = document.getElementById("search").value    
         loadTasksToPage(searchQuery);
     }    
-}
-    
+}    
 
 // ===> double click on task event <===
 function onDoubleClick(event){
@@ -181,7 +189,8 @@ function onDoubleClick(event){
 }
 
 // ===> after edit - save changes <===
-function blurEditTask(event){        
+function blurEditTask(event){   
+
     const taskManagerDataJSON = getTasksJSON();
     let textAfterEdit = event.target.textContent;
     let target = event.target;
@@ -199,12 +208,64 @@ function blurEditTask(event){
     }
     else{
         let taskBeforeEditIndex = arrayOfSection.indexOf(editTextValue);
-        arrayOfSection[taskBeforeEditIndex] = textAfterEdit;    
+        arrayOfSection[taskBeforeEditIndex] = textAfterEdit; 
+        let importentTaskIndex = taskManagerDataJSON["Importent"].indexOf(editTextValue);
+        if(importentTaskIndex !== -1){
+            taskManagerDataJSON["Importent"].splice(importentTaskIndex, 1);
+            taskManagerDataJSON["Importent"].unshift(textAfterEdit);
+        }
         localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));    
         loadTasksToPage(searchInput.textContent);
         errorLabelDisplay(false);
     }
     
+}
+
+function contextMenuTask(event){
+    event.preventDefault();          
+    taskNameToManipulateContextmenu = event.target.textContent;     
+    
+    const { clientX: mouseX, clientY: mouseY } = event;
+    
+    contextMenu.style.top = `${mouseY}px`;
+    contextMenu.style.left = `${mouseX}px`;
+    
+    contextMenu.classList.add("visible");
+
+    document.addEventListener("click", clickOnContextMenu);
+
+}
+
+function clickOnContextMenu(event, taskName){
+    if(event.target.offsetParent != contextMenu){
+        contextMenu.classList.remove("visible");
+    }
+    else if(event.target.dataset.type === "Importent"){
+        const taskManagerDataJSON = getTasksJSON();
+        let importentTaskIndex = taskManagerDataJSON["Importent"].indexOf(taskNameToManipulateContextmenu);
+        // Dont add 2 importent tasks with the same name
+        if(importentTaskIndex === -1){
+            taskManagerDataJSON["Importent"].unshift(taskNameToManipulateContextmenu);
+            localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
+            loadTasksToPage(searchInput.value);  
+        }   
+        contextMenu.classList.remove("visible"); 
+        document.removeEventListener("click", clickOnContextMenu);   
+    }
+    else if(event.target.dataset.type === "Regular"){
+        const taskManagerDataJSON = getTasksJSON();
+        let importentTaskIndex = taskManagerDataJSON["Importent"].indexOf(taskNameToManipulateContextmenu);
+        if(importentTaskIndex !== -1){
+            taskManagerDataJSON["Importent"].splice(importentTaskIndex, 1);
+            localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
+            loadTasksToPage(searchInput.value);  
+        }
+        contextMenu.classList.remove("visible");
+        document.removeEventListener("click", clickOnContextMenu);  
+    }
+    else if(event.target.dataset.type === "Delete"){
+        console.log("del");
+    }    
 }
 
 /* 
@@ -262,9 +323,22 @@ function createTaskUl(query, key, classes){
     for(let task of taskManagerDataJSON[key]){         
         let taskLowCased = task.toLowerCase();
         let queryLowCased =  query.toLowerCase();
-        if(taskLowCased.includes(queryLowCased)){                      
-            //let deleteButton = createElement("button", ["❌"], ["delete-button"]); 
-            liArray.push(createElement("li", [task], ["task"], {"data-section": key, 'tabIndex': '0'}, {'keydown': (event) => {onKeyPressLiHandler(event)}}));                                 
+        let classImportance = "regular-task"; 
+        if(taskLowCased.includes(queryLowCased)){             
+            let importentTask = taskManagerDataJSON["Importent"].indexOf(task);            
+            let attributs = {
+                "data-section": key, 
+                'tabIndex': '0'
+            }  
+            let listeners = {
+                'keydown': (event) => {onKeyPressLiHandler(event)},
+                'contextmenu': (event) => {contextMenuTask(event)},
+            } 
+            if(importentTask !== -1){
+                classImportance = "important-task";
+            }                                          
+            liArray.push(createElement("li", [task], [classImportance, "task"], attributs, listeners));  
+            classImportance =  "regular-task";                        
         }        
     }
     let ul = createElement("ul", liArray, [...classes]);  
