@@ -9,13 +9,13 @@ body{
 
 }
 section {
-     border:1px solid black; overflow: hidden;
+     overflow: hidden;
      float: left;   
      margin-right: 29px;
       margin-left: 100px;  
       background-color:wheat; 
       border-radius: 10px;   
-      box-shadow: 7px 7px 7px red;
+      box-shadow: 1px 1px 70px red, 0 0 70px blue;
     }
 
     div section{
@@ -34,7 +34,10 @@ section {
     }
     button,input{
         margin-bottom: 10px;
-        margin-left: 5px;
+        margin-left: 10px;
+    }
+    input{
+        margin-left: 30px;
     }
     label{
         justify-content: center;
