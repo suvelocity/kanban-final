@@ -12,24 +12,31 @@
     <title>Tasks manager</title>
 </head>
 <body onload="checkName()">
-    <header><div class="twelve" style="margin-right:10%;">
-        <h1 id="page-title"></h1>
-    </div></header>
+    <header>
+        <div class="twelve" style="margin-right:10%;">
+            <h1 id="page-title"></h1>
+            <div class="form__group search">
+                <input type="text" style="margin-left: 0px;" class="form__input" id="search" placeholder="Search task" required="" />
+                <label for="search" class="form__label">Search task</label>
+                <button onclick="createTask(event)" id="searchButton" type="button" class="submit btn btn-primary">Click me!    </button>
+            </div>  
+        </div>
+    </header>
     <main style="display: flex;">
         <section class="box" id="1">
             <h4 class="display-4">To do</h4>
-            <ul class="to-do-tasks">
+            <ul class="to-do-tasks" id="todo">
             </ul>
             <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
             <div class="form__group">
-              <input type="text" class="form__input" id="add-to-do-task" placeholder="Enter new task" required="" />
+              <input type="text"  class="form__input" id="add-to-do-task" placeholder="Enter new task" required="" />
               <label for="add-to-do-task" class="form__label">Enter new task</label>
             </div>        
             <button onclick="createTask(event)" id="submit-add-to-do" type="button" class="submit btn btn-primary">Add to To Do list</button>
         </section>
         <section class="box" id="2">
             <h4 class="display-4">In progress</h4>
-            <ul class="in-progress-tasks">
+            <ul class="in-progress-tasks" id="in-progress">
             </ul>
             <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
             <div class="form__group">
@@ -39,8 +46,8 @@
             <button id="submit-add-in-progress" onclick="createTask(event)" type="button" class="submit btn btn-primary">Add to In progress list</button>
         </section>
         <section class="box" id="3">
-            <h4 class="display-4">In progress</h4>
-            <ul class="done-tasks">
+            <h4 class="display-4">Done tasks</h4>
+            <ul class="done-tasks" id="done">
             </ul>
             <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
             <div class="form__group">
@@ -78,4 +85,7 @@
     <span class="visually-hidden">Next</span>
   </button>
 </div>
-</header> 
+</header> -->
+
+
+
