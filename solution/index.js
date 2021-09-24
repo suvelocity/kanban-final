@@ -3,12 +3,20 @@ let taskObj, resultObj;
 let oldinnerTaskText;
 const spaceAtEndRegex = /[\s]*$/g;
 
-const addEventListenerToDeleteButton = () => {
+const addEventListenerToButtons = () => {
     const deleteButtons = document.querySelectorAll('.deleteButton');
     deleteButtons.forEach(element => {
 
         element.addEventListener("click", function () {
             deleteTask(element.parentElement.parentElement.getElementsByClassName("task")[0].innerText)
+        }
+        )
+    }
+    );
+    const checkButtons = document.querySelectorAll('.checkButton');
+    checkButtons.forEach(element => {
+        element.addEventListener("click", function () {
+            deleteNAddToOtherTask("done", element.parentElement.parentElement.getElementsByClassName("task")[0].innerText);
         }
         )
     }
@@ -81,21 +89,21 @@ const addTask = (taskType, id) => {
 const postTasks = () => {
     let generalString = ``, ongoingString = ``, finishedString = ``;
     for (let key of taskObj.todo) {
-        generalString += `<li class="task" draggable="true"><span class="TaskTitle">${key}</span></li>`
+        generalString += `<li class="task" draggable="true"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
     }
     document.getElementById("general-task-table").innerHTML = generalString;
 
     for (let key of taskObj["in-progress"]) {
-        ongoingString += `<li class="task" draggable="true"><span class="TaskTitle">${key}</span></li>`
+        ongoingString += `<li class="task" draggable="true"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></button></li>`
     }
     document.getElementById("ongoing-task-table").innerHTML = ongoingString;
 
     for (let key of taskObj.done) {
-        finishedString += `<li class="task" draggable="true"><span class="TaskTitle">${key}</span></li>`
+        finishedString += `<li class="task" draggable="true"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></button></li>`
     }
     document.getElementById("finished-task-table").innerHTML = finishedString;
     localStorage.setItem("tasks", JSON.stringify(taskObj));
-    addEventListenerToDeleteButton();
+    addEventListenerToButtons();
     addEventListenerToTasks();
 }
 
@@ -107,21 +115,21 @@ const postTasksforquery = () => {
     }
     let generalString = ``, ongoingString = ``, finishedString = ``;
     for (let key of resultObj.todo) {
-        generalString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"></button></li>`
+        generalString += `<li class="task"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
     }
     document.getElementById("general-task-table").innerHTML = generalString;
 
     for (let key of resultObj["in-progress"]) {
-        ongoingString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"></button></li>`
+        ongoingString += `<li class="task"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
     }
     document.getElementById("ongoing-task-table").innerHTML = ongoingString;
 
     for (let key of resultObj.done) {
-        finishedString += `<li class="task"><span class="TaskTitle">${key}</span><button class="deleteButton"></button></li>`
+        finishedString += `<li class="task"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
     }
     document.getElementById("finished-task-table").innerHTML = finishedString;
     addEventListenerToTasks();
-    addEventListenerToDeleteButton();
+    addEventListenerToButtons();
 }
 
 const deleteNAddToOtherTask = (WantedTypeOfTask, innerTaskText) => {
