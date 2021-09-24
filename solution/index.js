@@ -1,4 +1,4 @@
-
+// global variables 
 let tasks
 let hoverdElement=null;
 let passedUlId = null;
@@ -172,7 +172,7 @@ function addChangedTask(event){
 }
 
 
-// document.addEventListener("keydown" , event =>altkeyPreesed(event));
+// functions to mangae the moving task between ul functionality.(until 258);
 document.addEventListener("keydown",event => altkeyPreesed(event));
 document.addEventListener("keyup",event => moveTaskUl(event));
 document.addEventListener("keydown", event => taskChangeUl(event));
@@ -219,7 +219,6 @@ function changeULLocalStorage(newUlId){
     const oldUl = document.getElementById(passedUlId)
     const oldUlId = oldUl.id;
     
-    
     if(oldUlId === "todo"){
         // tasks.todo = tasks.todo.filter(x => x !== liContent)
         let toAdd = liContent
@@ -244,19 +243,40 @@ function changeULLocalStorage(newUlId){
         tasks.done.splice(index,1);
         tasks[newUlId].unshift(toAdd);
         localStorageData();
-
    }
-
-    
 }
 
 function mouseoverFunc(event){
     hoverdElement=event.target;
-}
-   
+} 
 
 function mouseout(event){
     if(event.target.className="task"){
         hoverdElement=null;
     }
 }
+const loadButton =document.getElementById("loadBT")
+ loadButton.onclick = async function(){
+    let localtasks = localStorage.getItem("tasks");
+    // adding loader
+    const rightDiv = document.getElementById("rightDiv");
+    const loader = document.createElement("div");
+    loader.classList.add("loader"); 
+    rightDiv.append(loader);
+    try {
+        const response = await fetch("https://json-bins.herokuapp.com/bin/614aeca14021ac0e6c080c6d", {
+            method:"PUT",
+            headers:{
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+                
+            },
+            body: JSON.stringify(localtasks)
+        },)
+    } catch (error) {
+        console.log("ERROR : Incorrect text type");
+        loader.hidden=true;
+    alert("ERROR : something went wrong");
+    }
+ }

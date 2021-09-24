@@ -54,7 +54,7 @@ body{
       color: black;
       font-size: 16px;
       /* should be on the div */
-      border: 1px solid rgb(255, 255, 255);
+      border: 1px solid FCF8F3;
       border-radius: 5px;
       box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
       margin: 10px 5px 10px 0;
@@ -103,7 +103,7 @@ body{
     padding: 8px 20px;
     margin: 0px 3px 6px;
     text-align: center;
-    border: 2px solid rgb(255, 255, 255);
+    border: 2px solid #FEFBF3;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 3px;
     text-decoration: none;
     color: rgb(7, 7, 12);
@@ -137,7 +137,7 @@ body{
 
 
 .addBT-fill {
-    background: rgb(255, 255, 255);
+    background: #FEFBF3;
     color: rgb(0, 0, 0);
     transition: all 0.3s ease 0s;
 } 
@@ -145,7 +145,7 @@ body{
 
 .addBT-fill:hover {
     background: transparent;
-    color: rgb(255, 255, 255);
+    color: FCF8F3;
     transition: all 0.3s ease 0s;
 } 
 
@@ -153,7 +153,7 @@ body{
 .addBT-fill::after {
     position: absolute;
     content: "";
-    background: rgb(255, 255, 255);
+    background: #FEFBF3;
     transition-duration: 0.3s;
     z-index: -1;
     inset: 0px auto auto 0px;
@@ -166,3 +166,33 @@ body{
 .addBT-fill:hover::after {
     width: 0px;
 } 
+
+/* api buttons */
+.apiBT{
+display: inline;
+position: relative;
+left: 40px;
+bottom: 20px;
+}
+/* loader css */
+.loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #0c2536;
+    width: 40px;
+    height: 40px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+    margin: auto;
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
