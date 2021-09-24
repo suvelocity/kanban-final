@@ -329,3 +329,14 @@ document.addEventListener('keydown', (e) => {
 
 })
 
+//change theme event
+let themeButton = document.getElementById('new-theme-btn');
+let cssLink = document.head.querySelector('link');
+themeButton.addEventListener('click', (e) => {
+    console.log(cssLink.href);
+    if(cssLink.href === 'http://127.0.0.1:5500/solution/styles.css'){
+        cssLink.setAttribute('href', './cssFornewTheme.css');
+    }else{
+        cssLink.setAttribute('href', './styles.css');
+    }
+})

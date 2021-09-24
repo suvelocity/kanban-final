@@ -2,8 +2,8 @@
 
 body{
     font-family: 'Dancing Script', cursive;
-    background-image: url(milky-way-2695569_960_720.jpg);
-    color: rgb(167, 56, 56);
+    background-image: url(new\ theme\ background\ image.jpg);
+    color: rgb(56, 126, 167);
 }
 h1{
     text-align: center;
@@ -27,7 +27,7 @@ li{
 }
 section{
     background-color: rgba(240, 240, 240, 0.7);
-    border-radius: 8%;
+    border-radius: 50%;
 }
 h2{
     text-align: center;
@@ -35,6 +35,7 @@ h2{
 .api-buttons{
    display: flex;
    justify-content: end;
+   border-radius: 50%;
 }
 #search{
     display: flex;
@@ -46,7 +47,7 @@ h2{
 
 .main-div{
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
 }
 .task-section{
     width: 300px;
@@ -58,6 +59,7 @@ h2{
 .task-section input{
     width: 150px;
     margin-top: 10px;
+    transform: translateX(20%);
 }
 
 .task-section h2{
@@ -126,6 +128,7 @@ input{
 }
 
 .add-task{
+    transform: translateX(55%);
     width: 55px;
     height: 28px;
     color: white;
