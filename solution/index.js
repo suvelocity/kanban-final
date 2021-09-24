@@ -1,9 +1,10 @@
 const sections = document.querySelectorAll('input')
 const buttons = document.querySelectorAll('button')
 const uls = document.querySelectorAll('ul')
+const searchBar = document.querySelector('#search')
 
 if (!localStorage.tasks) {
-  localStorage.setItem('tasks', '{"todo": [],"in-progress": [],"done": []}')
+  localStorage.setItem('tasks', '{"todo": [],"in-progress": [],"done": []}') // makes sure there is always a tasks key in local storage
 }
 
 const parsedTasks = JSON.parse(localStorage.getItem('tasks'))
@@ -28,11 +29,14 @@ function paintDomFromLocalStorage() {
 paintDomFromLocalStorage()
 
 const liS = document.querySelectorAll('li')
-liS.forEach((li) => li.addEventListener('mouseenter', altHandlerFunction))
+liS.forEach((li) => {
+  li.addEventListener('mouseenter', altHandlerFunction)
+})
 
 function altHandlerFunction(e) {
   // make sure this only runs while cursor is on <li>
-  liS.forEach((li) =>
+  const liElements = document.querySelectorAll('li') // a different var than above var (for the initial use of the app, the app doesn't know liS until the first refresh)
+  liElements.forEach((li) =>
     li.addEventListener('mouseleave', () => {
       document.removeEventListener('keydown', addToObject)
     })
@@ -91,10 +95,10 @@ function getCategory(e) {
   return section.id.split('-section')[0]
 }
 
-function updateLocalStorage(category, input, typeOfContent) {
+function updateLocalStorage(category, input, methodOfExtraction) {
   for (let key in parsedTasks) {
     if (key.split('-').join('') === category.split('-').join('')) {
-      parsedTasks[key].unshift(input[typeOfContent])
+      parsedTasks[key].unshift(input[methodOfExtraction])
       localStorage.setItem('tasks', JSON.stringify(parsedTasks))
     }
   }
@@ -109,7 +113,12 @@ function inputListener(e) {
     return
   }
   const newLiElement = createLiElement(input.value, ['task'])
-  newLiElement.addEventListener('mouseenter', altHandlerFunction) // make sure you don't have to refresh
+  if (!input.value.includes(searchBar.value)) {
+    newLiElement.className = 'hidden'
+  } else {
+    newLiElement.className = 'list-item task'
+  }
+  newLiElement.addEventListener('mouseenter', altHandlerFunction) // makes sure you don't have to refresh
   document.querySelector(`.${category}-tasks`).prepend(newLiElement)
   updateLocalStorage(category, input, 'value')
 }
@@ -130,7 +139,6 @@ function makeEditable(e) {
 
   function setEditedText(blurEvent) {
     let category = getCategory(blurEvent)
-    console.log(blurEvent.target.textContent)
     if (category === 'to-do') category = 'todo'
     parsedTasks[category].splice(
       parsedTasks[category].indexOf(originalTextContent),
@@ -139,4 +147,20 @@ function makeEditable(e) {
     )
     localStorage.setItem('tasks', JSON.stringify(parsedTasks))
   }
+}
+
+document.querySelector('#search').addEventListener('input', globalSearch)
+function globalSearch(e) {
+  const liList = document.querySelectorAll('li')
+  liList.forEach((li) => {
+    if (
+      !li.textContent
+        .toLocaleLowerCase()
+        .includes(e.target.value.toLocaleLowerCase())
+    ) {
+      li.className = 'hidden'
+    } else {
+      li.className = 'task list-item'
+    }
+  })
 }
