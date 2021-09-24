@@ -120,7 +120,7 @@ async function loadTasksFromApi(){
         method: "GET",        
     });
     if(!response.ok){
-        alert("Load Error! => " + respons.status + " " + respons.statusText)
+        alert("Load Error! => " + response.status + " " + response.statusText)
     }
     else{
         let tasksData = await response.json();
@@ -237,11 +237,11 @@ function contextMenuTask(event){
 }
 
 function clickOnContextMenu(event, taskName){
+    const taskManagerDataJSON = getTasksJSON();
     if(event.target.offsetParent != contextMenu){
         contextMenu.classList.remove("visible");
     }
-    else if(event.target.dataset.type === "Importent"){
-        const taskManagerDataJSON = getTasksJSON();
+    else if(event.target.dataset.type === "Importent"){        
         let importentTaskIndex = taskManagerDataJSON["Importent"].indexOf(taskNameToManipulateContextmenu);
         // Dont add 2 importent tasks with the same name
         if(importentTaskIndex === -1){
@@ -252,9 +252,9 @@ function clickOnContextMenu(event, taskName){
         contextMenu.classList.remove("visible"); 
         document.removeEventListener("click", clickOnContextMenu);   
     }
-    else if(event.target.dataset.type === "Regular"){
-        const taskManagerDataJSON = getTasksJSON();
+    else if(event.target.dataset.type === "Regular"){        
         let importentTaskIndex = taskManagerDataJSON["Importent"].indexOf(taskNameToManipulateContextmenu);
+        // Delete task from important array
         if(importentTaskIndex !== -1){
             taskManagerDataJSON["Importent"].splice(importentTaskIndex, 1);
             localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
@@ -264,7 +264,12 @@ function clickOnContextMenu(event, taskName){
         document.removeEventListener("click", clickOnContextMenu);  
     }
     else if(event.target.dataset.type === "Delete"){
-        console.log("del");
+        if(confirm("Are you sure you want to delete " + taskNameToManipulateContextmenu + " task?")){
+            deleteTask(taskNameToManipulateContextmenu);
+            loadTasksToPage(searchInput.value);  
+        }
+        contextMenu.classList.remove("visible");
+        document.removeEventListener("click", clickOnContextMenu);  
     }    
 }
 
@@ -298,6 +303,7 @@ function getTextFromInputId(id){
     return inputValue;
 }
 
+// load tasks from API
 function loadTasksToPage(query){    
     let todoDiv = document.querySelector("#div-to-do-tasks");
     todoDiv.innerHTML = "";     
@@ -365,6 +371,7 @@ function checkDuplicateTask(taskToCheck){
     }
 }
 
+// Display an error on screen
 function errorLabelDisplay(visible, text = ""){
     if(errorLabel.classList.contains("hidden")){
         errorLabel.classList.remove("hidden");
@@ -382,6 +389,17 @@ function errorLabelDisplay(visible, text = ""){
     }
 }
 
+// Deletes task from tasks
+function deleteTask(taskName){
+    const taskManagerDataJSON = getTasksJSON();
+    for(let section in taskManagerDataJSON){        
+        let taskIndex = taskManagerDataJSON[section].indexOf(taskName);  
+        if(taskIndex !== -1){
+            taskManagerDataJSON[section].splice(taskIndex, 1);
+        }              
+    }
+    localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));   
+}
 
 function createElement(tagName, children = [], classes = [], attributes = {}, eventListeners = {}) {
 
