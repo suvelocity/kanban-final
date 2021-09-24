@@ -119,7 +119,7 @@ taskDiv.addEventListener('click', addTask)
   
      
       function innerKeyReplace(e){
-            if(e.altKey ){
+            if(e.altKey){
                 if(e.key == 1){
                     toDoTasksUl.insertBefore(target, toDoTasksUl.firstChild);
                 }else if(e.key == 2){
@@ -313,6 +313,19 @@ function elementAfterDragging(container, y){
         }else{
             return closest;
         }
-        console.log(offset);
     }, {offset: Number.NEGATIVE_INFINITY}).element
 }
+
+//game trigger event
+let asCounter = 0;
+document.addEventListener('keydown', (e) => {
+    if(e.key == 'a'){
+        asCounter += 1;
+        if(asCounter === 100){
+            console.log('triggerd');
+            window.location.href =  "./htmlgame.html"
+        }
+    }
+
+})
+
