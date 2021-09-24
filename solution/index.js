@@ -34,26 +34,26 @@ addInProgressButton.addEventListener('click', onAddClickHandler);
 addDoneButton.addEventListener('click', onAddClickHandler);
 saveButton.addEventListener('click', onSaveClickHandler);
 loadButton.addEventListener('click', onLoadClickHandler);
-document.addEventListener("dblclick", onDoubleClick);
+
 searchInput.addEventListener('keyup', onKeyUpHandler);
 
-LoadPageFromServer();
+// LoadPageFromServer();
 
-async function LoadPageFromServer() {
-    await getServerTasks();
-    reloadTasksPage(searchInput.value);  
-} 
-
+// async function LoadPageFromServer() {
+//     await getServerTasks();
+//     reloadTasksPage(searchInput.value);  
+// } 
 
 if(localStorage.getItem('tasks') === null){
     const tasks = {
         "todo": [],
         "in-progress": [],
         "done": [],
-        "Importent": []
+        //"Importent": []
     }
     localStorage.setItem('tasks', JSON.stringify(tasks));        
 }
+reloadTasksPage(searchInput.value); 
 
 // ==================================
 // ====== Event Function ============
@@ -132,46 +132,58 @@ function onTaskKeyDownHandler(event){
     pressed.clear();
 }
 
-// ===> double click on task event <===
-function onDoubleClick(event){
-    event.preventDefault();
+function onTaskClickHandler(event){
+    SelectedTaskName = event.target.textContent;  
+    SelectedTaskSection = event.target.dataset.section;
+    SelectedTaskImportance = event.target.dataset.importent;
+}
+
+function onTaskDBClickHandler(event){
     let target = event.target;
+
+    SelectedTaskName = target.textContent;  
+    SelectedTaskSection = target.dataset.section;
+    SelectedTaskImportance = target.dataset.importent;
+
+    event.preventDefault();
+    
     target.contentEditable = true;
-    if(target.tagName === "LI"){              
-        editTextValue = target.textContent;                                                
-        target.addEventListener("blur", blurEditTask, true);  
-        target.focus();                         
-    }
+    editTextValue = target.textContent;                                                
+    target.addEventListener("blur", onTaskBlur, true);  
+    target.focus();                         
 }
 
 // ===> after edit - save changes <===
-function blurEditTask(event){   
+function onTaskBlur(event){   
 
-    const taskManagerDataJSON = getLocalStorageTasks();
-    let textAfterEdit = event.target.textContent;
     let target = event.target;
+    let textAfterEdit = target.textContent;
 
-    // gets dataset (key in tasks)
-    let key = target.dataset.section;
-    const arrayOfSection = taskManagerDataJSON[key];
+    displayError(false);
+   
     if(textAfterEdit === ""){
-        displayError(true, "Cant edit, the task is empty!");    
-        reloadTasksPage(searchInput.textContent);
+        displayError(true, "Error: Empty task is not valid");    
+        target.textContent = SelectedTaskName;
+        return;
     }
-    
-    else{
-        let taskBeforeEditIndex = arrayOfSection.indexOf(editTextValue);
+
+    if (textAfterEdit != SelectedTaskName) {
+        const tasksObject = getLocalStorageTasks();
+        const arrayOfSection = tasksObject[SelectedTaskSection];
+        
+        let taskBeforeEditIndex = arrayOfSection.indexOf(SelectedTaskName);
         arrayOfSection[taskBeforeEditIndex] = textAfterEdit; 
-        let importentTaskIndex = taskManagerDataJSON["Importent"].indexOf(editTextValue);
-        if(importentTaskIndex !== -1){
-            taskManagerDataJSON["Importent"].splice(importentTaskIndex, 1);
-            taskManagerDataJSON["Importent"].unshift(textAfterEdit);
-        }
-        localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));    
+        SelectedTaskName = textAfterEdit;
+
+        // let importentTaskIndex = tasksObject["Importent"].indexOf(editTextValue);
+        // if(importentTaskIndex !== -1){
+        //     tasksObject["Importent"].splice(importentTaskIndex, 1);
+        //     tasksObject["Importent"].unshift(textAfterEdit);
+        // }
+
+        localStorage.setItem('tasks', JSON.stringify(tasksObject));    
         reloadTasksPage(searchInput.textContent);
-        displayError(false);
     }
-    
 }
 
 function contextMenuTask(event){
@@ -323,21 +335,21 @@ function createTaskList(filter, key, css_classes){
     const tasksObject = getLocalStorageTasks();
     let li_Array = [];     
     let tabindex = 0;
-    let taskImportantFlag = false;
+    //let taskImportantFlag = false;
     let classImportance = "regular-task"; 
     for(let task of tasksObject[key]){         
         let taskLowerCase = task.toLowerCase();
         let filterLowerCase =  filter.toLowerCase();
         if(taskLowerCase.includes(filterLowerCase)){  
             //task matched filter add to list
-            let importentTask = tasksObject["Importent"].indexOf(task); 
-            if(importentTask !== -1){
-                classImportance = "important-task";
-                taskImportantFlag = true;
-            }                   
+            // let importentTask = tasksObject["Importent"].indexOf(task); 
+            // if(importentTask !== -1){
+            //     classImportance = "important-task";
+            //     taskImportantFlag = true;
+            // }                   
             let attributs = {
                 "data-section": key, 
-                "data-importent": taskImportantFlag,
+                //"data-importent": taskImportantFlag,
                 'tabIndex': tabindex
             }  
             let listeners = {
@@ -350,20 +362,12 @@ function createTaskList(filter, key, css_classes){
             li_Array.push(createElement("li", [task], [classImportance, "task"], attributs, listeners));
             //reset before next Items
             tabindex++; 
-            taskImportantFlag = false; 
+            //taskImportantFlag = false; 
             classImportance =  "regular-task";                        
         }        
     }
     
     return createElement("ul", li_Array, [...css_classes]);  
-}
-function onTaskClickHandler(event){
-    return;
-
-}
-function onTaskDBClickHandler(event){
-    return;
-
 }
 
 // ===> returns JSON of tasks <===
