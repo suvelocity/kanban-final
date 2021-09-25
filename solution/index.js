@@ -51,8 +51,7 @@ if(localStorage.getItem('tasks') === null){
     const tasks = {
         "todo": [],
         "in-progress": [],
-        "done": [],
-        //"Importent": []
+        "done": [],        
     }
     localStorage.setItem('tasks', JSON.stringify(tasks));        
 }
@@ -64,9 +63,11 @@ reloadTasksPage(searchInput.value);
 
 // Click handler of document - if not on element, remove mark
 function onScreenClick(event){
-    if(event.target != SelectedTask){
-        changeSelectedTask("");
-    }
+    if(SelectedTask != undefined){
+        if(event.target != SelectedTask){
+            changeSelectedTask("");
+        }
+    }    
 }
 
 function onAddClickHandler(event){
@@ -287,30 +288,29 @@ async function onSaveClick(){
         body: JSON.stringify({"tasks": taskManagerDataString}),
     })
     if(!respons.ok){
-        alert("Server Error: " + respons.status + " " + respons.statusText);   
+        displayError(true, "Server Error: " + respons.status + " " + respons.statusText);   
     }
     else{
-        alert("Tasks information was saved successfully!");
+        displayError(true, "Tasks information was saved successfully!", "notification");
     }
     
 }
 
 async function onLoadClick(){ 
     let response;    
-    loaderDisplay(true); 
+    loaderDisplay(true);     
 
     setTimeout(loaderDisplay(false), 250);
+    
 
-    response = await fetch( "https://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3", {
-        method: "GET",
-        headers: {            
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },                
+    response = await fetch( "http://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3", {
+        method: "GET",            
     });    
-    if(!response.ok){
-        let errorString = "Load Error! => " + response.status + " " + response.statusText;
-        displayError(true, "error");
+        
+    if(response != undefined && !response.ok){
+        //let errorString = "Load Error! => " + response.status + " " + response.statusText;
+        let errorString = "Load Error! => " ;
+        displayError(true, errorString);
     }
     else{
         //recieve tasks from server, update local storage   
@@ -318,7 +318,6 @@ async function onLoadClick(){
         localStorage.clear();
         localStorage.setItem("tasks", tasksData.tasks); 
         displayError(true, "Tasks Loaded Succesfully","notification");
-
     }    
 }
 
@@ -392,6 +391,10 @@ function reloadTasksPage(query){
     let done_Ul = createTaskList(query, "done", ["done-tasks"]);
     doneDiv.append(done_Ul);
     
+    // Reset all add inputs
+    document.querySelector("#add-to-do-task").value = "";
+    document.querySelector("#add-in-progress-task").value = "";
+    document.querySelector("#add-done-task").value = "";        
 }
 
 // ===> Creating UL element from key in "task" <===
@@ -511,22 +514,22 @@ function createElement(tagName, children = [], classes = [], attributes = {}, ev
 }
 
 function changeSelectedTask(target){
-    if(target !== ""){
-        if ( SelectedTask != undefined) {
+    
+        if(target !== ""){
+            if ( SelectedTask != undefined) {
+                if (SelectedTask.classList.contains("selected")) {
+                    SelectedTask.classList.remove("selected");
+                }
+            }    
+            SelectedTask = target;
+            SelectedTaskName = SelectedTask.textContent;
+            if (!SelectedTask.classList.contains("selected")) {
+                SelectedTask.classList.add("selected");
+            }
+        }
+        else{
             if (SelectedTask.classList.contains("selected")) {
                 SelectedTask.classList.remove("selected");
             }
         }    
-        SelectedTask = target;
-        SelectedTaskName = SelectedTask.textContent;
-        if (!SelectedTask.classList.contains("selected")) {
-            SelectedTask.classList.add("selected");
-        }
-    }
-    else{
-        if (SelectedTask.classList.contains("selected")) {
-            SelectedTask.classList.remove("selected");
-        }
-    }
-
 }
