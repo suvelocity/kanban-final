@@ -16,9 +16,8 @@
         <div class="twelve" style="margin-right:10%;">
             <h1 id="page-title">roy's kanban</h1>
             <div class="form__group search">
-                <input type="text" style="margin-left: 0px;" class="form__input" id="search" placeholder="Search task" required="" />
-                <label for="search" class="form__label">Search task</label>
-                <button onclick="createTask(event)" id="searchButton" type="button" class="submit btn btn-primary">Click me!    </button>
+                <input onfocus="enterSearch()" onfocusout="exitSearch()"type="text" style="margin-left: 0px;" class="form__input" id="search" placeholder="Search task" required="" />
+                <label for="search" class="form__label" >Search task</label>
             </div>  
         </div>
     </header>

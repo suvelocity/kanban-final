@@ -50,7 +50,7 @@ function createElement(tagName ,children = [], classes = [], attributes = {}) {
 // create a new task and put it in his list 
 function createTask(event)
 {
-    let task =createElement("li",[],["list-group-item","task"],);
+    let task =createElement("li",[],["list-group-item","task"],{});
     task.addEventListener('dblclick', changeTask);
     task.addEventListener('mouseover', moveTask);
     task.addEventListener('mouseout', moveTaskEnd);
@@ -114,8 +114,32 @@ function checkEmpty(text)
     }
     return false;
 }
-//function that start changing task
+//function that changing task
 function changeTask(event)
+{
+    let task =this;
+    listId=task.parentElement.id;
+    deleteTaskByText(task.innerText,listId) 
+    task.contentEditable=true;
+    task.addEventListener('blur',(event)=>{
+        task.contentEditable=false;
+        list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
+        list[listId].unshift(task.innerText);
+        localStorage.setItem("tasks",JSON.stringify(list));
+    })
+}
+/* function endChangingTask(event)
+{
+    let task =this.event.target;
+    listId=task.parentElement.id;
+    list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
+    list[listId].unshift(task.innerText);
+    console.log(task.innerText);
+    localStorage.setItem("tasks",JSON.stringify(list));
+    //task.setAttribute("contenteditable",false);
+ 
+} */
+/* function changeTask(event)
 {
     const task=event.target;
     let list=task.parentElement.id;
@@ -124,9 +148,7 @@ function changeTask(event)
     const change=createElement("input",[],["form__input"],{value:text,onblur:"changeTaskComplete()"});
     list.append(change);
     list.replaceChild(change,task);
-    deleteTaskByText(text,list.id);
-    console.log("here")
-    
+    deleteTaskByText(text,list.id);    
 }
 //complete the change task
 function changeTaskComplete(event)
@@ -149,7 +171,7 @@ function changeTaskComplete(event)
     list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
     list[listId].unshift(newText);
     localStorage.setItem("tasks",JSON.stringify(list));
-}
+} */
 //function that delete task given by text
 function deleteTaskByText(text,listName)
 {
@@ -208,5 +230,19 @@ function moveTaskKeyPress(event)
         list["done"].unshift(moveTaskLi.innerText);
         localStorage.setItem("tasks",JSON.stringify(list));
     }
+}
+let searchText;
+function enterSearch(event)
+{
+    document.addEventListener("keydown", searchTask);
+}
+function exitSearch(event)
+{
+    document.removeEventListener("keydown", searchTask, false);
+}
+function searchTask(event)
+{
+    searchText=document.getElementById("search").value+String.fromCharCode(event.keyCode);
+    console.log(searchText)
 }
 
