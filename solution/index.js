@@ -175,7 +175,7 @@ const deleteTask = (innerTextOfTitle) => {
 
 
 const getDataFromAPI = async () => {
-    document.getElementById("loaderDiv").innerHTML = `<img src="./Images/loading.gif" alt="loader" class="loader" id="loader">`; // Loader Set
+    document.getElementById("loaderDiv").innerHTML = `<img src="./Images/loading.svg" alt="loader" class="loader" id="loader">`; // Loader Set
     const response = await fetch("https://json-bins.herokuapp.com/bin/614ad65e4021ac0e6c080c06");
     if (!response.ok) {
         alert(`Error ${response.status} happen when trying to send data to server`);
@@ -187,7 +187,7 @@ const getDataFromAPI = async () => {
 }
 
 const postDataToAPI = async () => {
-    document.getElementById("loaderDiv").innerHTML = `<img src="./Images/loading.gif" alt="loader" class="loader" id="loader">`; 
+    document.getElementById("loaderDiv").innerHTML = `<img src="./Images/loading.svg" alt="loader" class="loader" id="loader">`; 
     const tasksobjtoAPI = { tasks: taskObj }; // the only way the server get the data
     const response = await fetch("https://json-bins.herokuapp.com/bin/614ad65e4021ac0e6c080c06", {
         method: "PUT",
