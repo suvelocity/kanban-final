@@ -7,6 +7,10 @@ body{
   }
   h1{
     font-family: 'Fira Sans', sans-serif;
+    position: relative;
+    top: 20px;
+    right: 81px;
+    font-size: 23px;
   }
   h2{
     font-family: 'Fira Sans', sans-serif;
@@ -39,6 +43,7 @@ body{
 #logoBlack{
     width: 75px;
     height: 75px;
+    border-radius: 2px;
 }
 /* classs selectors */
 .to-do-tasks {
@@ -54,7 +59,7 @@ body{
       color: black;
       font-size: 16px;
       /* should be on the div */
-      border: 1px solid FCF8F3;
+      border: 1px solid #FCF8F3;
       border-radius: 5px;
       box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
       margin: 10px 5px 10px 0;
@@ -178,11 +183,13 @@ bottom: 20px;
 .loader {
     border: 8px solid #f3f3f3;
     border-radius: 50%;
-    border-top: 8px solid #0c2536;
+    border-top: 8px solid #4a80a5;
     width: 40px;
     height: 40px;
-    -webkit-animation: spin 2s linear infinite; /* Safari */
-    animation: spin 2s linear infinite;
+    position: relative;
+    left: 35px;
+    -webkit-animation: spin 1s linear infinite; /* Safari */
+    animation: spin 1s linear infinite;
     margin: auto;
   }
   

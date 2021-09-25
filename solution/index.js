@@ -255,45 +255,91 @@ function mouseout(event){
         hoverdElement=null;
     }
 }
-const loadButton =document.getElementById("loadBT")
- loadButton.onclick = async function(){
-    let localtasks = localStorage.getItem("tasks");
-    // adding loader
+
+const loadButton =document.getElementById("load-btn")
+ loadButton.onclick =async function loadApi(){
     const rightDiv = document.getElementById("rightDiv");
-    const loader = document.createElement("div");
-    loader.classList.add("loader"); 
-    rightDiv.append(loader);
-    try {
-        const response = await fetch("https://json-bins.herokuapp.com/bin/614aeca14021ac0e6c080c6d", {
-            method:"GET",
-            mode: "cors",
+    const loader1 = document.createElement("div");
+    loader1.classList.add("loader"); 
+    rightDiv.append(loader1);
+    
+    const response = await fetch("https://json-bins.herokuapp.com/bin/614aeca14021ac0e6c080c6d",{
+        method:"GET",
+        mode: "cors",
             headers:{
-                "Content-Type": "application/json"
-            },
-        },)
-    } catch (error) {
-        console.log("ERROR : Incorrect text type");
-        loader.hidden=true;
-    alert("ERROR : something went wrong");
+            "Content-Type": "application/json"
+             },
+    },)
+    if (response.ok){
+        
+        const data = await response.json()
+        const lastTasks = data.tasks 
+        // const localSaveStr = JSON.parse(localSave);
+        // const objLocalSave= JSON.parse(localSaveStr);
+        // for (let key in localSave)
+            document.getElementById("todo").textContent = ""
+            document.getElementById("in-progress").textContent = ""
+            document.getElementById("done").textContent = ""
+            
+            
+        localSave = JSON.parse(JSON.stringify(lastTasks))
+    
+        for (let key in localSave){
+            for(let task of localSave[key]) {
+                const li = generateListItems([task],{"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout})
+                document.getElementById(key).append(li)
+                
+            }
+        }
+        localStorage.setItem("tasks" , JSON.stringify(localSave))
+        tasks=lastTasks;
+        loader1.remove();
+
+        
+    }else {
+        alert("Error : something went wrong ☹")
     }
- }
+   
+}
 
 //  save button
-const saveButton =document.getElementById("saveBT")
+const saveButton =document.getElementById("save-btn")
  saveButton.onclick = async function(){
-     const tasks = localSave;
-     const response = fetch("https://json-bins.herokuapp.com/bin/614aeca14021ac0e6c080c6d" ,
-     {
+    
+    if(localSave !== null){
+         tasks = JSON.parse(localSave);
+    }else{
+         tasks = JSON.parse('{"todo":[],"in-progress":[],"done":[]}')
+    }
+
+     const rightDiv = document.getElementById("rightDiv");
+    const loader1 = document.createElement("div");
+    loader1.classList.add("loader"); 
+    rightDiv.append(loader1);
+    
+     const response = await fetch("https://json-bins.herokuapp.com/bin/614aeca14021ac0e6c080c6d" ,{
         method:"PUT",
         mode:"cors",
-            headers:
-            {
+            headers:{
                 "Content-Type": "application/json"
             },  
             body:JSON.stringify({tasks}),  
 
-     }).then(response=> response.json())
-       .then(data =>console.log(data))
+     },)
+     
+    if(response.ok){
+        
+        
+        const data =  await response.json()
+        
+        const lastTasks = JSON.stringify(data.tasks)
+        localStorage.setItem("tasks" , lastTasks)
+        
+    }else{
+        alert("Error : something went wrong ☹");
+    }
+    loader1.remove();
     
  }
     
+// ondragstart: "drag(event)"
