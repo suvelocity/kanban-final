@@ -167,8 +167,8 @@ window.addEventListener( 'keydown', (e) => { // detectin keyboard events are onl
     if( e.altKey || e.altGraphKey )
     {   
         e.preventDefault(); //preventing default so it wont switch to other objects and wont capture the windows events!
-
-        if(isHover && e.key === '1' && currentHoveredEl.parentElement.textContent !== "To Do Tasks")    
+        
+        if(isHover && e.key === '1' && currentHoveredEl.parentElement.parentElement.parentElement.id !== "to-do-tasks-section")    
         {
             if(toDoTasksList[0].firstElementChild === 'null') //if it doesnt have a  child, append it.
             {
@@ -179,7 +179,7 @@ window.addEventListener( 'keydown', (e) => { // detectin keyboard events are onl
             }
         }
 
-        if(isHover && e.key === '2' &&  currentHoveredEl.parentElement.textContent !== `In Progress... Tasks`)    
+        if(isHover && e.key === '2' &&  currentHoveredEl.parentElement.parentElement.parentElement.id !== `in-progress-tasks-section`)    
         {
             if(toDoTasksList[0].firstElementChild === 'null') //if it doesnt have a  child, append it.
             {
@@ -190,7 +190,7 @@ window.addEventListener( 'keydown', (e) => { // detectin keyboard events are onl
             }
         }
 
-        if(isHover && e.key === '3' && currentHoveredEl.parentElement.textContent !== "Done Tasks")    
+        if(isHover && e.key === '3' && currentHoveredEl.parentElement.parentElement.parentElement.id !== "done-tasks-section")    
         {
             if(toDoTasksList[0].firstElementChild === 'null') //if it doesnt have a  child, append it.
             {
