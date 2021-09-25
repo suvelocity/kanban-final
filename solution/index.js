@@ -165,6 +165,7 @@ function getTasksFromSection(section) {
 /**************** Storage Functions ****************/
 
 /**Captures a snapshot of the data on the page and stores it in localStorage
+ * @returns the data to store in the form of an object
  */
 function captureData() {
   const sections = [...document.querySelectorAll('section')]
@@ -176,6 +177,7 @@ function captureData() {
     Object.assign(dataObject, item)
   })
   storeLocally(dataObject)
+  return dataObject
 }
 
 /**Stores the data captured in localStorage.
@@ -268,3 +270,39 @@ mainContianer.addEventListener('focusout', handleBlur)
 mainContianer.addEventListener('input', handleInput)
 
 searchInput.addEventListener('input', handleSearchInput)
+
+/**************** HTTP Requests ****************/
+
+async function getAnswer() {
+  const response = await fetch(
+    'https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61'
+  )
+  const data = await response.json()
+  console.log(data)
+}
+
+async function storeData() {
+  const response = await fetch(
+    'https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61',
+    {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(prepareRemoteDataBody()),
+    }
+  )
+  console.log(response)
+}
+
+function prepareRemoteDataBody() {
+  const remoteData = {
+    _id: '614aea974021ac0e6c080c61',
+    name: 'Ido',
+    tasks: captureData(),
+    createdAt: '2021-09-22T08:34:31.333Z',
+    updatedAt: '2021-09-22T08:34:31.333Z',
+  }
+  return remoteData
+}
