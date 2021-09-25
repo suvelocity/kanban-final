@@ -147,8 +147,13 @@ doneInput.addEventListener('keydown' , (e) => {
 
 
 
+
+UserContentInputArray.forEach((inList) => { //making input lists lower case behind the scenes ;)
+    inList.textContent.toLowerCase();
+});
+
 //Search bar event//
-search.addEventListener('keydown', e => {
+search.addEventListener('keyup', e => {
 
 
     if(e.key !== "Enter"){
@@ -159,26 +164,37 @@ search.addEventListener('keydown', e => {
         }
     }
 
-    let searchInput = search.value.toLowerCase().split(' ');
+
+    let searchInput = [];
+    searchInput = search.value.toLowerCase().split(' ');
     if(e.key === "Escape" && searchInput[0] != '') 
     {
-        console.log( searchInput[searchInput.length - 1].pop() );
+        searchInput[searchInput.length - 1].pop();
     }
 
-    //if(search.value = /a-z/) //regex check for valid input
-    if(searchInput[0] != '') 
+    if(UserContentInputArray.length > 0 || e.key === "Escape")
     {
-        console.log(searchInput);
-        //console.log(UserContentInputArray);
+        for(const listCont of UserContentInputArray)
+        {
+                for(const srch of searchInput)
+                {
+                    if(searchInput.length === 1 && searchInput[0].toLowerCase() === searchInput[0].toUpperCase()) //if nothing in search bar. show everything
+                    {
+                        listCont.parentElement.classList.remove('hidden')
+                        searchInput.length = 0;
+                    }
+
+                    if(!listCont.textContent.toLowerCase().includes(srch.toLowerCase()) ) listCont.parentElement.classList.add('hidden') //if no task matches search thing, hide it
+                    
+                    else 
+                    {
+                        if(searchInput.length > 0 && srch.length === 0) listCont.parentElement.classList.add('hidden') //else, if there is a search bar input but there is a space at the end of the search word. hide everything
+                    
+                        else listCont.parentElement.classList.remove('hidden') //if its matching with no problem. show it.
+                    }
+                }
+        }
     }
-
-    //else
-
-    //console.log(UserContentInputArray)
-
-    UserContentInputArray.forEach(() => {
-        searchInput
-    });
     
 }, { passive: true })
 

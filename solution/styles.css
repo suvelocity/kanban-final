@@ -10,7 +10,7 @@ li>span:not(.li-task) {
 
 .hidden
 {
-    overflow: hidden;
+    display: none;
 }
 
 li .li-task
