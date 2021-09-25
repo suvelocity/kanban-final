@@ -8,7 +8,7 @@ const mapper = {
 const load = () => {
     if (localStorage.tasks) {
         Tasks = JSON.parse(localStorage.tasks);
-
+// definding todo or to-do 
         Object.keys(Tasks).forEach((categoryKey) => {
             const updatedCategory = categoryKey === 'todo' ?
                 'to-do-tasks' : `${categoryKey}-tasks`;
@@ -20,6 +20,8 @@ const load = () => {
                 const li = document.createElement('li');
                 const inputLi = document.createElement('input');
                 li.setAttribute('id', `${updatedId}-${i + 1}`);
+                li.setAttribute('draggable','true');
+                li.setAttribute('ondragstart','drag(event)');
                 inputLi.setAttribute('id', `${updatedId}-${i + 1}-input`);
                 li.setAttribute('class', 'task');
                 li.textContent = currTask;
@@ -29,8 +31,7 @@ const load = () => {
                 ul.appendChild(li);
                 ul.appendChild(inputLi);
                 
-                // li.addEventListener('dblclick', () => dblClickFunction(`${updatedId}-${i + 1}`));
-   
+// li.addEventListener('dblclick', () => dblClickFunction(`${updatedId}-${i + 1}`));
     ///when blur
     // inputLi.addEventListener('blur', () =>  blurFunction(`${updatedId}-${i + 1}`));*/
 });
@@ -41,6 +42,7 @@ localStorage.tasks = JSON.stringify(Tasks);
 }
 
 const dblClickFunction = (currTaskId) => {
+//    document.getElementById(currTaskId).setAttribute("contenteditable",true);
 document.getElementById(currTaskId).style.display = 'none';
 document.getElementById(currTaskId + '-input').style.display = 'list-item';
 document.getElementById(currTaskId + '-input').focus();
@@ -55,10 +57,11 @@ Tasks[idForUse][foundId] = document.getElementById(currTaskId + '-input').value;
 localStorage.tasks = JSON.stringify(Tasks);
 
 document.getElementById(currTaskId).textContent =
-document.getElementById(currTaskId + '-input').value;
+    document.getElementById(currTaskId + '-input').value;
 document.getElementById(currTaskId).style.display = 'list-item';
 document.getElementById(currTaskId + '-input').style.display = 'none';
 }
+
 
 const add = (idToAdd) => {
 let currValue = document.getElementById(`add-${idToAdd}-task`).value;
@@ -125,13 +128,20 @@ if (e.key === 'Alt') {
 
 window.onkeydown = (e) => {
 if (mouseHover && ['1','2','3'].includes(e.key) && onAlt) {
+    if(mapper[e.key] === 'to-do'){
+        mapper[e.key] = 'todo';
+    }
     const currentId = `${mapper[e.key]}-${Tasks[mapper[e.key]].length + 1}`;
 
     Tasks[idToAdd].splice(Tasks[idToAdd].indexOf(Li.textContent), 1);
-    Tasks[mapper[e.key]].push(Li.textContent);
+    Tasks[mapper[e.key]].unshift(Li.textContent);
 
     Li.setAttribute('id', currentId);
     inputLi.setAttribute("id", `${currentId}-input`);
+    console.log(document.getElementById(`${mapper[e.key]}-tasks`));
+    if(mapper[e.key] === 'todo'){
+        mapper[e.key] = 'to-do';
+    }
     document.getElementById(`${mapper[e.key]}-tasks`).append(Li);
     document.getElementById(`${mapper[e.key]}-tasks`).append(inputLi);
 
@@ -164,18 +174,18 @@ if (currElement.textContent.match(filtered)) {
 }
 });
 }
-
+const allowDrop = (ev) => {
+    ev.preventDefault();
+  }
+const drag = (ev) => {
+    ev.dataTransfer.setData("text", ev.target.id);
+  }
+  
+ const drop= (ev) => {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
+  }
+// Localstorage function 
 load();
 
-// const ul = document.getElementById('done-tasks');
-// let lengthOfE = Tasks.done.length
-// for(i = 0; i < lengthOfE; i++){
-//     let li =Tasks['done'].getElementsByTagName('li')[i];
-
-//     let txtValue = li.textContent || li.innerText;
-//     if(txtValue.toUpperCase().indexOf(filter) > -1){
-//         li[i].style.display = "";
-//     }else {
-//         li[i].style.display = "none";
-//     }
-// }
