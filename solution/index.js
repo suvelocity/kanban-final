@@ -93,6 +93,11 @@ function removeTask(task) {
   task.remove()
 }
 
+//to hide, state = true, to view, state = false
+function isTaskHidden(task, state) {
+  task.parentElement.hidden = state
+}
+
 /**************** Classes ****************/
 
 /** Initializes a class for the custom element 'task-box'.
@@ -152,7 +157,10 @@ function stripTaskBox(taskBox) {
   return text
 }
 
-// function listenToKeyboard(event) {}
+function getTasksFromSection(section) {
+  const tasks = section.querySelectorAll('task-box')
+  return tasks
+}
 
 /**************** Storage Functions ****************/
 
@@ -207,15 +215,19 @@ function parseData(data) {
 }
 
 function filterTasks(text) {
+  text = text.toLowerCase()
   console.log(text + ' to filter by..')
   const sections = document.querySelectorAll('section')
 
   sections.forEach((section) => {
-    const tasks = section.querySelectorAll('task-box')
+    const tasks = getTasksFromSection(section)
     tasks.forEach((task) => {
-      if (stripTaskBox(task).includes(text)) {
-        console.log('matches query!')
+      if (!stripTaskBox(task).toLowerCase().includes(text)) {
+        console.log('does not match query!')
         console.log(task)
+        isTaskHidden(task, true)
+      } else {
+        isTaskHidden(task, false)
       }
     })
   })
