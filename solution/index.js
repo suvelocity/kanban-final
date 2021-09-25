@@ -10,23 +10,23 @@ if (!localStorage.tasks) {
 const parsedTasks = JSON.parse(localStorage.getItem('tasks'))
 
 // add better explenation here later
-function paintDomFromLocalStorage() {
+function paintDomFromLocalStorage(dataObject) {
   const neaterUlNames = []
   uls.forEach((ul) => neaterUlNames.push(ul.className.split('-tasks')[0]))
   // this leaves nicer names to work with
-  for (let key in parsedTasks) {
+  for (let key in dataObject) {
     for (let i = 0; i < neaterUlNames.length; i++) {
       if (key.split('-').join('') === neaterUlNames[i].split('-').join('')) {
         // find the matching ul to the mathching key (todo & to-do)
-        for (let j = 0; j < parsedTasks[key].length; j++) {
+        for (let j = 0; j < dataObject[key].length; j++) {
           // iterate over the property in the parsed version of the local storage and put it on the DOM
-          uls[i].append(createLiElement(parsedTasks[key][j], ['task']))
+          uls[i].append(createLiElement(dataObject[key][j], ['task']))
         }
       }
     }
   }
 }
-paintDomFromLocalStorage()
+paintDomFromLocalStorage(parsedTasks)
 
 const liS = document.querySelectorAll('li')
 liS.forEach((li) => {
@@ -105,6 +105,7 @@ function updateLocalStorage(category, input, methodOfExtraction) {
 }
 
 function inputListener(e) {
+  if (!e.target.closest('button').id.includes('submit')) return
   const category = getCategory(e)
   const input = document.querySelector(`#add-${category}-task`)
   // check to see if box contains real text:
@@ -119,6 +120,8 @@ function inputListener(e) {
     newLiElement.className = 'list-item task'
   }
   newLiElement.addEventListener('mouseenter', altHandlerFunction) // makes sure you don't have to refresh
+  // newly added! line 124
+  newLiElement.addEventListener('dblclick', makeEditable)
   document.querySelector(`.${category}-tasks`).prepend(newLiElement)
   updateLocalStorage(category, input, 'value')
 }
@@ -163,4 +166,75 @@ function globalSearch(e) {
       li.className = 'task list-item'
     }
   })
+}
+
+function createLoader() {
+  const loader = document.createElement('img')
+  loader.className = 'loader'
+  loader.src =
+    'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg'
+  loader.alt = 'image of loader'
+  document.body.append(loader)
+  return loader
+}
+
+document.querySelector('#load-btn').addEventListener('click', loadFromApi)
+document.querySelector('#save-btn').addEventListener('click', saveToApi)
+
+async function loadFromApi() {
+  try {
+    const loader = createLoader()
+    const url = 'https://json-bins.herokuapp.com/bin/614afda34021ac0e6c080cc9'
+    const response = await fetch(url, {
+      method: 'Get',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    // handle errors:
+    if (!response.ok) {
+      alert(response.status)
+      throw `HTTP Error ${response.status}`
+    }
+    const data = await response.json()
+    if (localStorage.tasks === data.tasks) {
+      return loader.remove()
+    } else {
+      const newString = makeNormalString(JSON.stringify(data.tasks)) // stringifies without `\\`
+      localStorage.setItem('tasks', newString)
+    }
+    loader.remove()
+    location.reload()
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+async function saveToApi() {
+  try {
+    const { tasks } = localStorage
+    const loader = createLoader()
+    const url = 'https://json-bins.herokuapp.com/bin/614afda34021ac0e6c080cc9'
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tasks }),
+    })
+    if (!response.ok) {
+      alert(response.status)
+      throw `HTTP ERROR ${response.status}`
+    }
+    loader.remove()
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+function makeNormalString(tasks) {
+  tasks = tasks.replace('"{', '{')
+  tasks = tasks.replace('}"', '}')
+  return tasks.replaceAll('\\', '')
 }

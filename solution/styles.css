@@ -1,3 +1,8 @@
+body {
+  display: flex;
+  flex-direction: column;
+}
+
 header {
   display: flex;
   flex-direction: column;
@@ -18,4 +23,15 @@ section {
 
 .list-item {
   display: list-item;
+}
+
+#footer {
+  display: flex;
+  margin: 20px;
+  justify-content: space-between;
+}
+
+.api-button {
+  background-color: darkseagreen;
+  color: blueviolet;
 }
