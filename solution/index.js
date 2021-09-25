@@ -3,26 +3,33 @@ let Tasks = {"todo":[],"in-progress":[],"done":[]};
   
 const add = (idToAdd) =>{
     
-    let currValue = document.getElementById(`${idToAdd}-input`).value;
+    let currValue = document.getElementById(`add-${idToAdd}-task`).value;
     // if input dont have value
     if(currValue === ""){
         return alert("oops"); 
     }
-
-    Tasks[idToAdd].push(currValue);
+    if(idToAdd === 'to-do'){
+        idToAdd = 'todo';
+    }
+    Tasks[idToAdd].unshift(currValue);
     // creating li and input elments
     let Li = document.createElement("li");
     let inputLi = document.createElement('input');
     // making a uniq id 
     const currTaskId = `${idToAdd}-${Tasks[idToAdd].length}`;
     Li.setAttribute('id', currTaskId);
+    Li.setAttribute('class', 'task');
     inputLi.setAttribute("id",currTaskId + '-input');
+    console.log(idToAdd)
     let ul = document.getElementsByClassName(`${idToAdd}-tasks`)[0];
     Li.appendChild(document.createTextNode(currValue));
     ul.append(Li);
     ul.append(inputLi);
-    localStorage.setItem("Tasks",JSON.stringify(Tasks));
-    document.getElementById(`${idToAdd}-input`).value = '';
+    localStorage.setItem("tasks",JSON.stringify(Tasks));
+    if(idToAdd === 'todo'){
+        idToAdd = 'to-do'
+    }
+    document.getElementById(`add-${idToAdd}-task`).value = '';
     inputLi.setAttribute('id', currTaskId + '-input');
     Li.addEventListener('dblclick', () => {
         document.getElementById(currTaskId).style.display = 'none';
@@ -34,6 +41,9 @@ const add = (idToAdd) =>{
     inputLi.addEventListener('blur',()=>{
         document.getElementById(currTaskId).textContent = 
         document.getElementById(currTaskId + '-input').value;
+        if(idToAdd === 'to-do'){
+            idToAdd = 'todo';
+        }
         const foundIndex = Tasks[idToAdd].indexOf(document.getElementById(currTaskId).textContent);
         Tasks[idToAdd][foundIndex] = document.getElementById(currTaskId + '-input').value;
         document.getElementById(currTaskId).style.display = 'list-item';
@@ -86,60 +96,46 @@ const add = (idToAdd) =>{
             document.getElementsByClassName('done-tasks')[0].append(inputLi);
            }
         }
-        // document.getElementsByClassName('todo-tasks')[0].append(Li);     
-    //     Li.setAttribute('id', `in-progress-${Tasks['in-progress'].length}`);
-    //     inputLi.setAttribute("id",`in-progress-${Tasks['in-progress'].length}` + '-input');
-    //    Tasks['in-progress'].push(Li.textContent);
-    //    document.getElementsByClassName('in-progress-tasks')[0].append(Li);
-    //    document.getElementsByClassName('in-progress-tasks')[0].append(inputLi);
-    // //   
-    //    Tasks[idToAdd].splice(Li.textContent);
-    //    console.log(Tasks);
 }
-const search = () =>{
-    
-let input = document.getElementById('myinput');
-let filtered = input.value;
-let returnLi = {"todo":[],"in-progress":[],"done":[]};
-let mapper = {0:'todo',1:'in-progress',2:'done'}
+// end of add function 
+const search = () => {
+    let input = document.getElementById('search');
+    let filtered = input.value;
 
-for(let i = 0; i < 3;++i){
-    returnLi[mapper[i]] = Tasks[mapper[i]].filter(LiValue => {
-        let isFound = false;
-        Object.values(LiValue).forEach(currValue =>{
-           if(currValue.toLowerCase().match(filtered)){
-            isFound = true;
-           } 
-        });
-        return isFound;
+    Array.from(document.getElementsByTagName('li')).forEach(currElement => {
+        if (currElement.textContent.match(filtered)) {
+            currElement.style.display = 'list-item';
+        } else {
+            currElement.style.display = 'none';
+        }
     });
-    returnLi[mapper[i]] = Tasks[mapper[i]].filter(currLi =>{
-        let result = currLi.match(filtered);
-        console.log(result)
-        console.log(document.getElementsByTagName('li'));
-        if(result !== document.getElementsByTagName('li')[i].data && result === null){
-            console.log(result)
-            document.getElementsByTagName('li')[i].style.visibility = 'hidden'
-        }
-        if(filtered === ''){
-            document.getElementsByTagName('li')[i].style.visibility = 'visible';
-        }
-    })
-    
 }
 
 
-// const ul = document.getElementById('done-tasks');
-// let lengthOfE = Tasks.done.length
-// for(i = 0; i < lengthOfE; i++){
-//     let li =Tasks['done'].getElementsByTagName('li')[i];
+
+// for(let i = 0; i < 3;++i){
+//     returnLi[mapper[i]] = Tasks[mapper[i]].filter(LiValue => {
+//         let isFound = false;
+//         Object.values(LiValue).forEach(currValue =>{
+//            if(currValue.toLowerCase().match(filtered)){
+//             isFound = true;
+//            } 
+//         });
+//         return isFound;
+//     });
+//     returnLi[mapper[i]] = Tasks[mapper[i]].filter(currLi =>{
+//         let result = currLi.match(filtered);
+//         console.log(result)
+//         console.log(document.getElementsByTagName('li'));
+//         if(result !== document.getElementsByTagName('li')[i].data && result === null){
+//             console.log(result)
+//             document.getElementsByTagName('li')[i].style.visibility = 'hidden'
+//         }
+//         if(filtered === ''){
+//             document.getElementsByTagName('li')[i].style.visibility = 'visible';
+//         }
+//     })
     
-//     let txtValue = li.textContent || li.innerText;
-//     if(txtValue.toUpperCase().indexOf(filter) > -1){
-//         li[i].style.display = "";
-//     }else {
-//         li[i].style.display = "none";
-//     }
-    // }
-}
+// }
+
 

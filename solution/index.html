@@ -14,28 +14,28 @@
 
         <h1 id = "page-title">Task Manager</h1>
 
-        <div id = search>
+        <div id="search-container">
             <h2>Search</h2>
-            <input oninput="search()" type="text" id = "myinput">
+            <input oninput="search()" type="text" id="search">
         </div>
         <div id = 'main'>
         <div id = "toDo">
             <label>To do List</label>
-            <ul id = "todo-tasks" class = "todo-tasks"></ul>
-            <input type="text" id = "todo-input">
-            <button onclick="add('todo')">Add</button>
+            <ul id = "to-do-tasks" class = "to-do-tasks, todo-tasks"></ul>
+            <input type="text" id = "add-to-do-task">
+            <button id = "submit-add-to-do" onclick="add('to-do')">Add</button>
         </div>
         <div id = "in-Progress">
             <label>In progress</label>
             <ul class = "in-progress-tasks"></ul>
-            <input type="text" id = "in-progress-input">
-            <button onclick="add('in-progress')" >Add</button>
+            <input type="text" id = "add-in-progress-task">
+            <button id = "submit-add-in-progress" onclick="add('in-progress')" >Add</button>
         </div>
         <div id = "done">
             <label>Done</label>
             <ul id = "done-tasks" class = "done-tasks"></ul>
-            <input type="text" id ="done-input">
-            <button onclick="add('done')">Add</button>
+            <input type="text" id ="add-done-task">
+            <button id ="submit-add-done" onclick="add('done')">Add</button>
         </div>
 
     </div>
