@@ -13,6 +13,10 @@ const taskBox = document.createElement('div')
 
 const searchInput = document.querySelector('#search')
 
+const optionBox = document.querySelector('.option-box')
+
+const loader = document.querySelector('.loader')
+
 /**************** Constants ****************/
 const POSSIBLE_KEYS = ['1', '2', '3']
 
@@ -83,6 +87,25 @@ function handleSearchInput(event) {
   filterTasks(event.target.value)
 }
 
+async function handleOptionClick(event) {
+  if (event.target.className === 'load') {
+    console.log('load')
+    //show loader
+    loader.hidden = false
+    await getAnswer()
+    //hide loader
+    loader.hidden = true
+  }
+  if (event.target.className === 'save') {
+    console.log('save')
+    //show loader
+    loader.hidden = false
+    await storeData()
+    //hide loader
+    loader.hidden = true
+  }
+}
+
 function moveTask(task, list) {
   addTaskBox(list, stripTaskBox(task))
   removeTask(task)
@@ -91,6 +114,16 @@ function moveTask(task, list) {
 
 function removeTask(task) {
   task.remove()
+}
+
+/** Clears the section's list from tasks completely
+ *
+ * @param {Array} sections - Array of sections to clear
+ */
+function cleanSection(sections) {
+  sections.forEach((section) =>
+    section.querySelectorAll('li').forEach((item) => removeTask(item))
+  )
 }
 
 //to hide, state = true, to view, state = false
@@ -196,7 +229,15 @@ function loadData() {
   parseData(data)
 }
 
-/** Takes data and displays it on the page.
+//TODO: Unify load remote data and load local data.
+
+function loadRemoteData(data) {
+  cleanSection(document.querySelectorAll('section'))
+  parseData(data)
+  storeLocally(data)
+}
+
+/** Takes data and displays it by adding it to the page.
  *
  * @param {Object} data - the data from which information will be parsed
  */
@@ -258,6 +299,8 @@ function assertInputNotEmpty(list) {
 mainContianer.addEventListener('click', handleClick)
 // mainContianer.addEventListener('mouseover', handleHover)
 
+optionBox.addEventListener('click', handleOptionClick)
+
 window.addEventListener('load', loadData())
 
 window.addEventListener('keydown', handleKeyPress)
@@ -278,9 +321,12 @@ async function getAnswer() {
     'https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61'
   )
   const data = await response.json()
-  console.log(data)
+  console.log(data.tasks)
+  loadRemoteData(data.tasks)
+  return data.tasks
 }
 
+//TODO: give better name that signals it's remote api
 async function storeData() {
   const response = await fetch(
     'https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61',
@@ -306,3 +352,9 @@ function prepareRemoteDataBody() {
   }
   return remoteData
 }
+
+//problem: after refresh, after loading data, the order gets reversed.
+/*
+this means that the order of parsing data from local storage is the opposite of parsing data from remote storage. so we need to reverse the order of remotestorage array before parsing
+
+*/
