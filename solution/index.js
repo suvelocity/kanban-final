@@ -89,7 +89,7 @@ function createTask(task){
     return newTaskElem
 }
 function deleteTask() {
-    const elementToDelete = targetedTask.closest("li")
+    const elementToDelete = targetedTask
     elementToDelete.parentElement.removeChild(elementToDelete)
     removeTaskData(elementToDelete.innerText)
     updateLocalSaveData()
@@ -191,6 +191,8 @@ const saveButton = document.getElementById("save-btn")
 saveButton.addEventListener("click", storeTasks)
 const loadButton = document.getElementById("load-btn")
 loadButton.addEventListener("click", loadTasks)
+const clearAll = document.getElementById("clear-btn")
+clearAll.addEventListener("click", clearTasks)
 
 // Handelers
 function hoverHandler({target}){
@@ -274,9 +276,15 @@ async function storeTasks(){
 async function loadTasks(){
     const loader = document.getElementById("loading")
     loader.classList.add("display")
-    const tasksRequest = await fetch("https://json-bins.herokuapp.com/bin/614ad8b24021ac0e6c080c0b")
+    const tasksRequest = await fetch("https://json-bins.herokuapp.com/bin/614ad8b24021ac0e6c080c0b", {
+        method: "GET",
+        headers: {
+            Accept: "application/json", 
+            "Content-Type": "application/json",
+        }
+    })
     if (!tasksRequest.ok) {
-        alert(`Failed! Error ${response.status}: ${response.statusText}`);
+        alert(`Failed! Error ${tasksRequest.status}: ${tasksRequest.statusText}`);
     }
     const loaded = await tasksRequest.json()
     clearTasks()
@@ -286,33 +294,56 @@ async function loadTasks(){
     loader.classList.remove("display")
 }
 
-const labels = [
-    {
-        label: "defult",
-        color: "rgb(248, 248, 234)",
-    },
-    {
-        label: "work",
-        color: "rgb(185, 255, 163)",
-    },
-    {
-        label: "personal",
-        color: "rgb(182, 189, 255)",
+            ////////////////////////
+            //       labels       //
+            ////////////////////////
+const labels = {
+    defult: "rgb(248, 248, 234)",
+    work: "rgb(185, 255, 163)",
+    personal: "rgb(182, 189, 255)",
+}
+function updateLabelDiv(){
+    const labelsDiv = document.getElementById("labels")
+    const labelUl = createElement("ul", [], ["label-list"])
+    for (const label in labels){
+        const labelLi = createElement("li", [`${label}`], ["label"], {"style": `background-color:${labels[label]}`})//, {click: ShowOnlyLabel})
+        labelUl.appendChild(labelLi)
     }
-]
+    const addNewLabel = createElement("li", ["Add New Label"], ["label"], {})//, {click: newCustomLabel})
+    labelUl.appendChild(addNewLabel)
+    labelsDiv.appendChild(labelUl)
+}
+updateLabelDiv()
+function customLabel(label , color){
+    labels[label] = color
+}
+function setLabel({target}){
+    let labelColor
+    for (const label in labels){
+        if (label === target.innerText.toLowerCase()){
+            labelColor = labels[label]
+        }
+    }
+    targetedTask.setAttribute("data-label", target.innerText)
+    targetedTask.setAttribute("style", `background-color:${labelColor}`)
+}
+
+
+
+
 let targetedTask
 function callMenu({target}){
     deleteMenu()
-    targetedTask = target
+    targetedTask = target.closest(".task")
     const thisMenuButton = target.closest(".options-button")
     const menuButtonCoords = thisMenuButton.getBoundingClientRect()
     createMenuElem(menuButtonCoords.left, menuButtonCoords.bottom)
     document.body.addEventListener("click", exitMenu)
 }
 function createMenuElem(left, top){
-    const menuElem = createElement("div", [], ["menu"], {style: `top: ${top}px; left: ${left}px`})
-    for (const label of labels){
-        const labelElem = createElement("button", [`${label.label}`], ["in-menu-botton"], {style: `background-color: ${label.color}`})
+    const menuElem = createElement("div", [], ["menu"], {style: `top: ${top+10}px; left: ${left}px`})
+    for (const label in labels){
+        const labelElem = createElement("button", [`${label}`], ["in-menu-botton"], {style: `background-color: ${labels[label]}`}, {click: setLabel})
         menuElem.appendChild(labelElem)
     }
     const deleteButton = createElement("button", ["delete task"], ["delete-button", "in-menu-botton"], {}, {click: deleteTask})

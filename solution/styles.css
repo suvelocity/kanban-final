@@ -2,35 +2,53 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: rgb(223, 208, 154);
+    font-family: Garamond;
+    font-weight: 900;
 }
 /*   -----   Top   -----   */
 header{
     display: flex;
     flex-direction: row;
     width: 100vw;
+    top: 0;
     justify-content: space-between;
-    margin: 10px;
+    padding: 20px 0px 20px 15px;
     position: fixed;
+    z-index: 1;
+    background-color: rgb(240, 229, 166);
+    border-bottom: 2px solid rgb(223, 208, 154);
 }
 h1{
     display: flex;  
     align-self: flex-start;
-    margin: 5px 0 0 20px;
-    /* padding: 5px 0 0 20px; */
+    margin: 0 0 0 0;
+    padding: 0 0 0 20px;
 }
 #search{
     display: flex;
-    height: 30px;
+    height: 34px;
     width: 300px;
-    margin: 10px 0 0  0;
+    border-width: 1px;
+    border-radius: 4px;
+    font-size: 16px;
+}
+#search:focus{
+    width: 300px;
 }
 .API-storage-button{
-    margin: 10px -20px 0  0;
+    /* margin: 10px -20px 0  0; */
     height: 30px;
     width: 70px;
-    margin-right: 20px;
+    margin-right: 30px;
     border-radius: 8px;
     font-size: 14px;
+    font-size: 16px;
+    background-color: white;
+}
+.API-storage-button:hover{
+    cursor: pointer;
+    box-shadow: 0 0 5px rgb(119, 119, 119);
 }
 
 /*   -----   Main   -----   */
@@ -43,7 +61,7 @@ section{
     margin: 10px 10px 10px 10px;
     padding: 5px 20px 10px 20px;
     width: 400px;
-    background-color: rgb(240, 233, 215);
+    background-color: rgb(241, 226, 203);
     font-size: large;
     border-radius: 10px;
     border-width: 5px;
@@ -66,12 +84,41 @@ h3{
     font-family:sans-serif;
     letter-spacing: 1px;
     justify-content: space-between;
+    font-family:'Times New Roman', Times, serif;
+    font-size: 21px;
+    font-weight: 500;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
 }
 ul{
     padding-inline-start: 0;
 }
 .invisible{
     display: none;
+}
+.pin{
+    display: block;
+    position: absolute;
+    width: 80px;
+    margin: -58px 0 0 340px;
+}
+.new-task-input{
+    width: 300px;
+    height: 20px;
+    border-radius: 6px;
+    border-width: 1px;
+}
+.new-task-button{
+    width: 50px;
+    height: 23px;
+    border-radius: 6px;
+    border-width: 1px;
+    background-color: white;
+}
+.new-task-button:hover{
+    cursor: pointer;
+    box-shadow: 0 0 3px rgb(119, 119, 119);
 }
 /*   -----   Loading   -----   */
 #loading{
@@ -103,7 +150,10 @@ ul{
 }
 .options-button{
     border-radius: 5px;
-    /* background-color: rgb(182, 189, 255); */
+    background-color: rgb(248, 248, 234);
+}
+.options-button:hover{
+    cursor: pointer;
 }
 .menu{
     position: absolute;
@@ -111,8 +161,10 @@ ul{
     flex-direction: column;
     padding: 5px 3px 5px 3px;
     border-style: solid;
-    border-width: 2px;
+    border-width: 1px;
     border-radius: 5px;
+    background-color: rgb(253, 253, 253);
+    box-shadow: 0 0 8px rgb(119, 119, 119);
 }
 .delete-button{
     background-color: rgb(255, 180, 180);
@@ -123,4 +175,35 @@ ul{
     width: 100px;
     height: 30px;
     font-size: 16px;
+}
+.in-menu-botton:hover{
+    cursor: pointer;
+}
+/*   -----   Labels   -----   */
+#labels{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 150px;
+    background-color: rgb(240, 229, 166);
+    height: 100vh;
+    padding: 100px 20px 50px 20px
+}
+.label-list{
+    list-style: none;
+}
+.label{
+    z-index: 1;
+    margin: 10px 0 10px 0;
+    padding: 5px 0 5px 0px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 8px;
+    border-style: solid ;
+    border-width: 1px;
+    background-color: rgb(255, 255, 255);
+}
+.label:hover{
+    cursor:pointer;
+    box-shadow: 0 0 6px rgb(119, 119, 119);
 }
