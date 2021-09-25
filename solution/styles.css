@@ -2,21 +2,24 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 body{
-    background-image: url(https://media-exp1.licdn.com/dms/image/C5612AQG8rz-SZoGxVA/article-cover_image-shrink_600_2000/0/1520218877106?e=1637798400&v=beta&t=sgxSLJw7B-iDtc3MKCzuZvF00BGz9cw7jBYVh2z5dfo);
-    background-repeat: no-repeat;
+    background-image:url("dailty task manager.jpg");
     background-size: cover;
     position: relative;
+    /* background-color: lightblue; */
     /* background-position:center; */
 
 }
 section {
      overflow: hidden;
      float: left;   
-     margin-right: 29px;
-      margin-left: 120px;  
-      background-color:wheat; 
+     /* margin-right: 25px;
+      
+      margin-bottom: 15px;  */
+      margin:auto;
+      margin-left: 130px;
       border-radius: 10px;   
-      box-shadow: 1px 1px 70px red, 0 0 70px blue;
+      background-color: wheat;
+      box-shadow: 1px 1px 20px red, 0 0 20px blue;
     }
 
     div section{
@@ -28,17 +31,28 @@ section {
         border: 1px solid black;
         text-align:center;
         list-style: none;
-        margin-right: 5em;
-        margin-left: 2em;
+         /* margin-right: 5em;
+        margin-left: 2em; */
+        margin:auto;
         margin-bottom: 10px;
+        margin-right:5em;
         background-color: lightgray;
     }
     button,input{
         margin-bottom: 10px;
-        margin-left: 10px;
+       
+    }
+    button{
+        cursor: pointer;
+    }
+    section>button{
+        margin-left:10px;
+        border:none;
+        border-radius: 10px;
+        box-shadow:1px 1px 5px grey, 0 0 20px lightseagreen ;
     }
     input{
-        margin-left: 30px;
+        margin-left: 20px;
     }
     label{
         justify-content: center;
@@ -49,14 +63,27 @@ section {
         display: flex;
         text-align: center;
         margin-left: 42%;
-        margin-bottom: 60px;
+        margin-bottom: 30px;
         font-weight: bold;
-    }
+        }
     #page-title{   
         color:rgba(226, 223, 59, 0.986);
         font-size:50px;
         text-shadow: 7px 7px  rgb(39, 5, 133);
         text-align: center;
         margin-right: 7%;
-    }
+        }
+   #top-page>button{
+       display: flex;
+         margin:auto;
+         margin-left: 42%;
+         margin-bottom: 30px;
+         height: 30px;
+         width: 11%;
+         justify-content: space-around;
+         border-radius: 10px;
+         border:none;
+         box-shadow:1px 1px 5px blue, 0 0 20px blue ;
+         background-color: lightgray;
+        }
     

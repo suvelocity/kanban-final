@@ -143,7 +143,7 @@ function removeTaskData(text){
     }
     return data
 }
-
+//update the local storage 
 function addNewTaskData(section,text){
        if(section.classList.contains("to-do-tasks")){
            data.todo.push(text)
@@ -169,7 +169,7 @@ function updateTask(dataKey,newTaskText){
           }
 }
     
-
+//create the HTML which the task is written in it
     function createLiElement(text){
         const liEl=document.createElement("li")
     liEl.setAttribute("class","task")
@@ -210,12 +210,10 @@ function updateTask(dataKey,newTaskText){
         }    
     }  
  }
-    
+    //search and show the tasks the user want
 function searchTask(search){
     if(search.keyCode!==32){
     let searchText=search.target.value
-    
-    
     searchText=searchText.toLowerCase()
      const tasks=document.querySelectorAll(".task")
      for(let i=0;i<tasks.length;i++){
@@ -236,6 +234,8 @@ function searchTask(search){
         }
     }
 }
+
+
 function resetPage(){
     let permission=confirm("do you want to rest your daily tasks?")
     if (permission===true){
@@ -243,6 +243,41 @@ function resetPage(){
         location.reload()
     }
 }
+
+// async function loadFromApi(){
+//     cleanSections()
+//     const url="https://json-bins.herokuapp.com/bin/614af0ed4021ac0e6c080ca2"
+//     const response=await fetch(url)
+//     const answer=await response.json()
+//     const loadData=answer.tasks
+//     for(let key in loadData){   
+//            if(loadData[key].length===0){ 
+//             data[key]=loadData[key]
+//             saveLocalData()
+//              }
+//              else{
+//                    for(let i=0;i<loadData[key].length;i++){
+//                  data[key].unshift(loadData[key][i])
+//              }
+//         } 
+//     }
+//     saveLocalData()
+//     generateExistsTasks()
+// }
+
+
+// function cleanSections(){
+//     const sectionsUl=document.querySelectorAll("ul")
+//     for(let i=0;i<sectionsUl.length;i++){
+//         let sectionTasks=sectionsUl[i].querySelectorAll(".task")
+//         for(let j=0;j<sectionTasks.length;j++){
+//             sectionsUl[i].removeChild(sectionTasks[j])
+//         }
+//     }
+    
+// }
+
+// document.getElementById("load-btn").addEventListener("click",loadFromApi)
 document.getElementById("reset").addEventListener("click",resetPage)
 document.getElementById("search").addEventListener("keyup",searchTask)
 document.getElementById("submit-add-to-do").addEventListener("click",addNewTask)
