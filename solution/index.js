@@ -1,16 +1,18 @@
- if(!localStorage){
+if(localStorage.length == 0){
     localStorage.setItem('tasks', JSON.stringify({
         "todo": [],
         "in-progress": [],
-        "done": []
+        "done": [],
+        'deleted':[]
           })
         );
 }  
 
 
-    ///localStorage.clear();
 
+    //localStorage.clear();
 
+    console.log(localStorage.tasks);
     console.log(JSON.parse(localStorage.tasks).todo);
     let localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
 
@@ -24,6 +26,7 @@ function localStorageSave(){
     localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
     localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
     localStorageObjectForUpdate.done[0] = doneTasksUl.outerHTML;
+    localStorageObjectForUpdate.deleted[0] = deletedTasksUl.outerHTML;
     console.log(localStorageObjectForUpdate);
     localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
 }
@@ -35,6 +38,9 @@ let submitButtonArray = Array.from(document.getElementsByClassName('add-task'));
 let searchBar = document.getElementById('search');
 let saveButton = document.getElementById('save-button');
 let loadButton = document.getElementById('load-button');
+let showRecycleBin = document.getElementById('show-recycle');
+let loader = document.querySelector('.api-buttons').lastElementChild;
+let recycleBin = document.querySelector('.recycle-bin');
  
  //localstorage loading function
  if(localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null){
@@ -44,16 +50,17 @@ let loadButton = document.getElementById('load-button');
     toDoSection.innerHTML = localStorageObjectForUpdate.todo[0];
     inProgressContainer.innerHTML = localStorageObjectForUpdate['in-progress'][0];
     donContainer.innerHTML = localStorageObjectForUpdate.done[0];
-
+    recycleBin.innerHTML = localStorageObjectForUpdate.deleted[0];
     var toDoTasksUl = toDoSection.firstChild;
     var inProgressTasksUl = inProgressContainer.firstChild;
     var doneTasksUl = donContainer.firstChild;
+    var deletedTasksUl = document.querySelector('.recycle-Ul');
 
  }else{
     var toDoTasksUl = createElement('ul', children = [], classes = ['to-do-tasks'], attributes = {})
     var inProgressTasksUl = createElement('ul', children = [], classes = ['in-progress-tasks'], attributes = {})
     var doneTasksUl = createElement('ul', children = [], classes = ['done-tasks'], attributes = {})
-
+    var deletedTasksUl = document.querySelector('.recycle-Ul');
     document.getElementById('to-do-container').appendChild(toDoTasksUl);
     document.getElementById('in-progress-container').appendChild(inProgressTasksUl);
     document.getElementById('done-container').appendChild(doneTasksUl);
@@ -89,7 +96,7 @@ function addTask(e){
        }
     }
 }
-taskDiv.addEventListener('click', addTask)
+taskDiv.addEventListener('click', addTask);
 
 // double click functionality
 
@@ -212,6 +219,7 @@ searchBar.addEventListener('blur', () => {
 searchBar.addEventListener('keyup', searchTask);
 //API functions
 async function saveApi(){
+    loader.classList.add('loader');
     console.log('save button');
      await fetch('https://json-bins.herokuapp.com/bin/614adb6c4021ac0e6c080c15',{
         method: 'PUT',
@@ -221,12 +229,15 @@ async function saveApi(){
         //body: JSON.stringify({'tasks':{'todo':[], 'in-progress': [], 'done' : []} 
         body: JSON.stringify({'tasks':{'todo':[toDoTasksUl.outerHTML], 'in-progress': [inProgressTasksUl.outerHTML], 'done' : [doneTasksUl.outerHTML]}
         }) 
-  })
+  }).then(response => {if(response.status > 400){alert("i'm a teapot")}})
+  loader.classList.remove('loader');
 }
-
+//load API function
 async function loadApi(){
+    loader.classList.add('loader');
    await fetch('https://json-bins.herokuapp.com/bin/614adb6c4021ac0e6c080c15').then(response => response.json())
    .then(data => {
+    loader.classList.remove('loader');
     toDoTasksUlAPI = data.tasks.todo[0];
     inProgressTasksUlAPI = data.tasks['in-progress'][0];
     doneTasksUlAPI = data.tasks.done[0];
@@ -346,11 +357,15 @@ themeButton.addEventListener('click', (e) => {
 function removeLi(e){
     if(e.target.tagName === 'LI'){
         e.preventDefault();
-        e.target.remove();
+        deletedTasksUl.appendChild(e.target);
+        //e.target.remove();
         localStorageSave()
     }
 }
-
+//recycle bin button event listener
+showRecycleBin.addEventListener('click', (e)=>{
+    recycleBin.hidden = !recycleBin.hidden;
+})
 
 
 
