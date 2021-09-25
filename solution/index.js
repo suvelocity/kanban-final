@@ -19,7 +19,7 @@ function checkName()
     tasks=JSON.parse(localStorage.getItem("tasks"));
     for (let list in tasks) {
         tasks[list].forEach(text => {
-            let task=createElement("li",[],["list-group-item","task" ])
+            let task =createElement("li",[],["list-group-item","task"],{draggable:"true",ondragstart:"drag(event)"});
             task.innerText=text;
             document.getElementById(list).append(task);
             task.addEventListener('dblclick', changeTask);
@@ -128,50 +128,7 @@ function changeTask(event)
         localStorage.setItem("tasks",JSON.stringify(list));
     })
 }
-/* function endChangingTask(event)
-{
-    let task =this.event.target;
-    listId=task.parentElement.id;
-    list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-    list[listId].unshift(task.innerText);
-    console.log(task.innerText);
-    localStorage.setItem("tasks",JSON.stringify(list));
-    //task.setAttribute("contenteditable",false);
- 
-} */
-/* function changeTask(event)
-{
-    const task=event.target;
-    let list=task.parentElement.id;
-    let text=task.innerText;
-    list=document.getElementById(list);
-    const change=createElement("input",[],["form__input"],{value:text,onblur:"changeTaskComplete()"});
-    list.append(change);
-    list.replaceChild(change,task);
-    deleteTaskByText(text,list.id);    
-}
-//complete the change task
-function changeTaskComplete(event)
-{
-    const change=this.event.target;
-    let list=change.parentElement.id;
-    let listId=list;
-    list=document.getElementById(list);
-    const newText=this.event.target.value;
-    if(checkEmpty(newText))
-    {
-        alert("Task must has info");
-        throw("Task must has info");
-    }
-    let task =createElement("li",[],["list-group-item","task"],);
-    task.addEventListener('dblclick', changeTask);
-    task.innerText=newText;
-    list.append(task);
-    list.replaceChild(task,change);
-    list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-    list[listId].unshift(newText);
-    localStorage.setItem("tasks",JSON.stringify(list));
-} */
+
 //function that delete task given by text
 function deleteTaskByText(text,listName)
 {
@@ -261,8 +218,32 @@ function searchTask(event)
         if(checkEmpty(searchText)){
             allLi[i].style.display="flex";
         }
-        
-
     }
 }
+
+//drag and drop function
+let whichlist;
+let dragTask;
+function allowDrop(ev) {
+    ev.preventDefault();
+  }
+  
+  function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.innerText);
+    whichlist=ev.target.parentElement;
+    dragTask=ev.target;
+  }
+  
+  function drop(ev) {
+    ev.preventDefault();
+    if(ev.target.tagName=="UL")
+    {   
+        let task = ev.dataTransfer.getData("text");
+        deleteTaskByText(ev.dataTransfer.getData("text"),whichlist.id)
+        ev.target.prepend(dragTask);
+        list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
+        list[ev.target.id].unshift(dragTask.innerText);
+        localStorage.setItem("tasks",JSON.stringify(list)); 
+    }
+  }
 
