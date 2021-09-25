@@ -132,6 +132,9 @@ const mainContainer = document.getElementById("main-container");
 const toDoInput = document.getElementById("add-to-do-task");
 const inProgressInput = document.getElementById("add-in-progress-task");
 const doneInput = document.getElementById("add-done-task");
+const toDoList = document.getElementById("to-do-tasks");
+const inProgressList = document.getElementById("in-progress-tasks");
+const doneList = document.getElementById("done-tasks");
 
 //Creates a task object
 function createTaskObject(taskElementId, task){
@@ -170,7 +173,7 @@ function generateTasksDom(){
 
 
 //Event listeners
-addMultipleEventListener(mainContainer, ["click", "dblclick", "mousedown", "mouseup", "blur", "focus", "keydown"], eventHandler);
+addMultipleEventListener(mainContainer, ["click", "dblclick", "keypress", "mouseover"], eventHandler);
 
 //The event handler function
 function eventHandler(e){
@@ -181,24 +184,33 @@ function eventHandler(e){
         //Add task : to do 
         case "a1":
             addTask(e, toDoInput);
-        break;  
+            break;  
         //Add task : in progress
         case "a2":
             addTask(e, inProgressInput);
-        break; 
+            break; 
         //Add task : done 
         case "a3":
             addTask(e, doneInput);
-        break;
+            break;
         //Load DOM from local storage
         case "a4":
             generateTasksDom();
-        //Task element edit     
+            break;
     }
     //Double click event on task
     if(eventType(e.type) === "b" && e.target.className === "task"){
         editByDblClick(e.target);
     };
+    //Hover + alt + 1/2/3 over element
+    while(eventType(e.type) === "d" && e.target.className === "task"){
+        if(eventType(e.type) === "c"){
+            console.log(e.code);
+        }
+        //let task = document.getElementById(e.target.id)
+        //console.log(e.altKey);
+    }
+    //console.log(eventType(e.type) + targetTypeId(e.target.id));
 };
 
 //Event type identifier
@@ -210,20 +222,11 @@ function eventType(type){
         case "dblclick":
             type = "b";
             break;
-        case "mousedown":
+        case "keypress":
             type = "c";
             break;
-        case "mouseup":
-            type = "d";
-            break;
-        case "keydown":
-            type = "e";
-            break;
-        case "blur":
-            type = "f";
-            break;
-        case "focus":
-            type = "g";
+        case "mouseover":
+            type ="d";
             break;
     }
     return type;
