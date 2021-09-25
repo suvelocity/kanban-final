@@ -193,6 +193,8 @@ const loadButton = document.getElementById("load-btn")
 loadButton.addEventListener("click", loadTasks)
 const clearAll = document.getElementById("clear-btn")
 clearAll.addEventListener("click", clearTasks)
+const mobileLabelButton = document.getElementById("label-opener-img")
+mobileLabelButton.addEventListener("click", mobileLabelMenuOpen)
 
 // Handelers
 function hoverHandler({target}){
@@ -326,6 +328,21 @@ function setLabel({target}){
     }
     targetedTask.setAttribute("data-label", target.innerText)
     targetedTask.setAttribute("style", `background-color:${labelColor}`)
+}
+function mobileLabelMenuOpen(){
+    const labelMenu = document.getElementById("labels")
+    labelMenu.classList.add("display")
+    document.body.addEventListener("click", mobileLabelMenuClose)
+}
+function mobileLabelMenuClose({target}){
+    const labelMenu = document.getElementById("labels")
+    if (target.id === "labels" || target.parentElement.id === "labels" || target.parentElement.parentElement.id === "labels" || target.id === "label-opener-img"){
+        return
+    }
+    else {
+        labelMenu.classList.remove("display") 
+    }
+    document.body.removeEventListener("click", mobileLabelMenuClose)
 }
 
 
