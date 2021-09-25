@@ -63,15 +63,15 @@ In addition the page should contain:
 ## Bonuses
 
 - [ ] Implement drag-and-drop sorting of tasks.
-- [ ] Add API integration:
+- [x] Add API integration:
 
-  - [ ] Add save and load buttons that sync the current tasks to the API (see details in the [api-data.txt](#api-integration) file).
-  - [ ] Remove the `.skip` from the two last tests in `main.test.js`.
-  - [ ] While waiting for a response from the API display a loader with the class `loader`.
-  - [ ] If an error occurs show an alert.
-  - [ ] If the data loaded from the API is different from the local data, replace the local data with the API data. Make sure you update both the `localStorage` and the DOM.
+  - [x] Add save and load buttons that sync the current tasks to the API (see details in the [api-data.txt](#api-integration) file).
+  - [x] Remove the `.skip` from the two last tests in `main.test.js`.
+  - [x] While waiting for a response from the API display a loader with the class `loader`.
+  - [x] If an error occurs show an alert.
+  - [x] If the data loaded from the API is different from the local data, replace the local data with the API data. Make sure you update both the `localStorage` and the DOM.
 
-- [ ] Add any additional cool features you can think of...
+- [x] Add any additional cool features you can think of...
 
 ## README
 

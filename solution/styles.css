@@ -72,6 +72,16 @@ body{
       
       
   }
+  .greyTrashImg{
+    width: 70px;
+    height: 60px;
+    position: relative;
+    top: 340px;
+    left: 40px;
+    border: 0.2px dotted white;
+    box-shadow: rgba(90, 85, 85, 0.35) 0px 1px 3px;
+    
+  }
 /*  */
 .box{
     display: table-cell;

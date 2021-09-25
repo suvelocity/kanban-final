@@ -1,10 +1,11 @@
 // global variables 
-let tasks
-let hoverdElement=null;
-let passedUlId = null;
-let altpressed = false;
+let tasks//in line 9 or 12 we define this variable
+let hoverdElement=null;//in use to define the element we want to move using alt+1-3.
+let passedUlId = null;//in use to define the ul that we took and element from
+let altpressed = false;//in use to know if the altkey is pressed(cause we need to press alt and then another key).
+let draggedItem   //in use to define the task we want to drag to another place
 let localSave = localStorage.getItem("tasks")
-if (localSave!=undefined){
+if (localSave!=undefined){//if localSave is not undefine , tasks equals local storage object
     tasks = JSON.parse(localSave);
     publishExistingLi();
 }else {  //defining the local storage if empty.
@@ -19,9 +20,7 @@ function localStorageData (){ // updates the local storage
     localStorage.setItem("tasks",localSave);
 }
 
-
-// adding click events to the add buttons
-// to do section
+// to do section           // adding click events to the add buttons
 const buttonToDo = document.getElementById("submit-add-to-do");
  buttonToDo.addEventListener("click",addLiGeneric);
 //  in-progress
@@ -31,11 +30,6 @@ const buttonToDo = document.getElementById("submit-add-to-do");
  const buttonDone = document.getElementById("submit-add-done");
  buttonDone.addEventListener("click",addLiGeneric);
 
-
-
-
-
-
 function addLiGeneric(event){   //A generic function to generate and add new tasks (li's).
     const target=event.target;
     const section = event.target.closest("section");
@@ -44,21 +38,20 @@ function addLiGeneric(event){   //A generic function to generate and add new tas
     if(inputToDo.length<1){
         alert("Cant assign an empty task ☹");
     }else{
-        const li= document.createElement("li");
+        const li= document.createElement("li");//defining the new task and adding events and attr to it
         li.addEventListener("dblclick" , editTask);
         li.addEventListener("blur" , addChangedTask)
         li.textContent=inputToDo;
         li.classList.add("task")
-        // liDiv.append(li);
+        li.setAttribute("draggable", "true")
         ulToAdd.prepend(li);//enters the li we entered to the top of the ul coloumn.
-        
         newTaskData(target,inputToDo);
         localStorageData();
     }
     section.querySelector(".add-input").value="";
 }
 
-function newTaskData(target ,task){
+function newTaskData(target ,task){ //helping function to addLiGeneric that decide which ul adds the task
     if(target.id==="submit-add-to-do"){
         tasks.todo.unshift(task)
     }
@@ -69,11 +62,13 @@ function newTaskData(target ,task){
         tasks.done.unshift(task)
     }
 }
-function publishExistingLi(){
+function publishExistingLi(){ //function that updates the dom with all the tasks the localStorage has
     for(let i = 0 ; i<tasks.todo.length ; i++){
         const existTask = generateListItems(tasks.todo[i],{"dblclick":editTask ,"blur":addChangedTask,"mouseover":mouseoverFunc , "mouseout": mouseout});
         const liDiv =document.createElement("div");
         const todoSectionUl=document.getElementById("todo");
+        existTask.setAttribute("draggable", "true")
+        existTask.ondragstart=dragStart;
         // liDiv.append(existTask);
         todoSectionUl.append(existTask);
         
@@ -82,6 +77,8 @@ function publishExistingLi(){
         const existTask = generateListItems(tasks["in-progress"][i],{"dblclick":editTask ,"blur":addChangedTask ,"mouseover":mouseoverFunc ,"mouseout": mouseout });
         const liDiv =document.createElement("div");
         const inProgSectionUl=document.getElementById("in-progress");
+        existTask.setAttribute("draggable", "true")
+        existTask.ondragstart=dragStart;
         // liDiv.append(existTask);
         inProgSectionUl.append(existTask);
         
@@ -90,6 +87,8 @@ function publishExistingLi(){
         const existTask = generateListItems(tasks.done[i],{"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout});
         const liDiv =document.createElement("div");
         const doneSectionUl=document.getElementById("done");
+        existTask.setAttribute("draggable", "true")
+        existTask.ondragstart=dragStart;
         // liDiv.append(existTask);
         doneSectionUl.append(existTask);
     }
@@ -97,7 +96,9 @@ function publishExistingLi(){
 function generateListItems(text , eventListeners ={}){
     const listItem = document.createElement("li");
     listItem.setAttribute("class","task");
+    listItem.setAttribute("draggable", "true")
     listItem.append(text);
+    listItem.ondragstart=dragStart;
     const events =Object.keys(eventListeners);
     for(let i = 0 ; i<events.length ; i++){
         listItem.addEventListener(events[i],eventListeners[events[i]])
@@ -132,7 +133,6 @@ const input = document.getElementById('search');
 input.onkeyup = function searchFilter () {
     let filter = input.value.toUpperCase();
     let li = document.getElementsByTagName('li');
-    let filterArr=filter.split()
     for (var i = 0; i < li.length; i++) {
         var name = li[i].innerHTML;
         // (name.toUpperCase().includes(indexOf(filter)))
@@ -207,6 +207,7 @@ function changeUL(newUlId){
         alert("null");
     }else{
         const newLi = generateListItems(hoverdElement.textContent,{"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout})
+        newLi.setAttribute("draggable", "true");
         newLi.textContent=hoverdElement.textContent;
         newUl.prepend(newLi);
         hoverdElement.remove()
@@ -286,7 +287,9 @@ const loadButton =document.getElementById("load-btn")
     
         for (let key in localSave){
             for(let task of localSave[key]) {
-                const li = generateListItems([task],{"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout})
+                const li = generateListItems([task],{"dragstart": dragStart,"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout})
+                li.setAttribute("draggable", "true")
+                li.ondragstart=dragStart;
                 document.getElementById(key).append(li)
                 
             }
@@ -324,17 +327,11 @@ const saveButton =document.getElementById("save-btn")
                 "Content-Type": "application/json"
             },  
             body:JSON.stringify({tasks}),  
-
      },)
-     
     if(response.ok){
-        
-        
         const data =  await response.json()
-        
         const lastTasks = JSON.stringify(data.tasks)
         localStorage.setItem("tasks" , lastTasks)
-        
     }else{
         alert("Error : something went wrong ☹");
     }
@@ -342,4 +339,53 @@ const saveButton =document.getElementById("save-btn")
     
  }
     
-// ondragstart: "drag(event)"
+function dragStart(event){//function that handles the dragstart event
+    draggedItem = event.target;
+    event.target.style.opacity = "1";
+    const oldUl = event.target.closest("ul");
+    passedUlId=oldUl.id;
+}
+const ul1 = document.getElementById("todo");
+    const ul2 = document.getElementById("in-progress");
+    const ul3 = document.getElementById("done");
+    ul1.addEventListener("dragover",allowDrop);//adding dragover and drop listeners to all three ul's
+    ul2.addEventListener("dragover",allowDrop);
+    ul3.addEventListener("dragover",allowDrop);
+    ul1.addEventListener("drop",drop);
+    ul2.addEventListener("drop",drop);
+    ul3.addEventListener("drop",drop);
+    
+
+function allowDrop(event){
+    event.preventDefault();
+    
+
+}
+function drop(event) {
+    // event.preventDefault();
+    draggedItemContent =draggedItem.textContent
+    const newUL= event.target.closest("ul")
+    const newULid= newUL.id;
+    console.log(newUL);
+    const li =generateListItems(draggedItemContent,{"dragstart": dragStart,"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout})
+    li.setAttribute("draggable", "true");
+    newUL.prepend(li);
+    draggedItem.remove();
+    let index=tasks[passedUlId].indexOf(draggedItemContent);
+        tasks[passedUlId].splice(index,1);
+        tasks[newULid].unshift(draggedItemContent);
+        localStorageData();
+  }
+// adding eventlistener to the trash image in order to intialize the trash function
+// this is an extra functionality of drag n drop tasks to the trashImg , when we drop the task to the image the task is deleted
+const trashImg = document.getElementById("trashImg");
+trashImg.addEventListener("dragover",allowDrop)
+trashImg.addEventListener("drop",trash);
+
+function trash(event){
+    draggedItemContent =draggedItem.textContent;
+    draggedItem.remove();
+    let index=tasks[passedUlId].indexOf(draggedItemContent);
+        tasks[passedUlId].splice(index,1);
+        localStorageData();
+}
