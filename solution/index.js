@@ -92,7 +92,7 @@ function chooseTask(targetTask){
 }
    
 
-function movingTaskToSection({altKey,key}){
+function movingTaskToSection({altKey,key,keyCode}){
     if (taskToMove){
         if (altKey && key == 1){
             const toDoList = document.querySelector(".to-do-tasks")
@@ -185,26 +185,37 @@ function updateTask(dataKey,newTaskText){
     
     //shows existing tasks that are saved in the local storage upon refreshing/start of the page
     function generateExistsTasks(){
-        for(let i=0;i<data.todo.length;i++){    
-        const newTaskEl=createLiElement(data.todo[i])
-        const sectionUl=document.querySelector("#main > section:nth-child(2) > div > ul")
+        const sectionsUl=document.querySelectorAll("ul")
+        for(let i=0;i<sectionsUl.length;i++){
+            if(sectionsUl[i].classList.contains("to-do-tasks")){
+        for(let j=0;j<data.todo.length;j++){    
+        const newTaskEl=createLiElement(data.todo[j])
+        const sectionUl=sectionsUl[i]
         sectionUl.prepend(newTaskEl)
         }
-    
-        for(let i=0;i<data["in-progress"].length;i++){    
-            const newTaskEl=createLiElement(data["in-progress"][i])
-            const sectionUl=document.querySelector("#main > section:nth-child(3) > div > ul")
-            sectionUl.prepend(newTaskEl)
-            }
-            for(let i=0;i<data.done.length;i++){    
-                const newTaskEl=createLiElement(data.done[i])
-                const sectionUl=document.querySelector("#main > section:nth-child(4) > div > ul")
+         }
+         if(sectionsUl[i].classList.contains("in-progress-tasks")){
+            for(let j=0;j<data["in-progress"].length;j++){ 
+                const newTaskEl=createLiElement(data["in-progress"][j])
+                const sectionUl=sectionsUl[i]
                 sectionUl.prepend(newTaskEl)
-                }
-    }
+            }
+        }
+        if(sectionsUl[i].classList.contains("done-tasks")){
+            for(let j=0;j<data.done.length;j++){ 
+                const newTaskEl=createLiElement(data.done[j])
+                const sectionUl=sectionsUl[i]
+                sectionUl.prepend(newTaskEl)
+            }
+        }    
+    }  
+ }
     
 function searchTask(search){
+    if(search.keyCode!==32){
     let searchText=search.target.value
+    
+    
     searchText=searchText.toLowerCase()
      const tasks=document.querySelectorAll(".task")
      for(let i=0;i<tasks.length;i++){
@@ -222,9 +233,17 @@ function searchTask(search){
         else {
             tasks[i].style="display:block;"
              }
+        }
     }
 }
-
+function resetPage(){
+    let permission=confirm("do you want to rest your daily tasks?")
+    if (permission===true){
+        localStorage.clear()
+        location.reload()
+    }
+}
+document.getElementById("reset").addEventListener("click",resetPage)
 document.getElementById("search").addEventListener("keyup",searchTask)
 document.getElementById("submit-add-to-do").addEventListener("click",addNewTask)
 document.getElementById("submit-add-in-progress").addEventListener("click",addNewTask)
