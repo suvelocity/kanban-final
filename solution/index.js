@@ -229,7 +229,8 @@ document.getElementById("generalSection").addEventListener("drop", DropFunc);
 document.getElementById("doneSection").addEventListener("dragover", makeDropZone);
 document.getElementById("ongoingSection").addEventListener("dragover", makeDropZone);
 document.getElementById("generalSection").addEventListener("dragover", makeDropZone);
-
+document.getElementById("APIDoanloadIMG").addEventListener("click", getDataFromAPI);
+document.getElementById("APIUploadIMG").addEventListener("click", postDataToAPI);
 //if user has localStorage File it postTasks to it, if he hasn't i create for him 
 if (localStorage.getItem("tasks")) {
     taskObj = JSON.parse(localStorage.getItem("tasks"));

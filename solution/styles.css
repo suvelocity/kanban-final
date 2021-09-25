@@ -124,4 +124,10 @@ margin-right: auto;
  width: 8vw;
  cursor: pointer;
 }
+#sidebar li{
+  border-bottom: 2px solid var(--color-text);
+}
+#sidebar li:last-child{
+  border-bottom: none;
+}
 
