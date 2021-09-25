@@ -249,20 +249,24 @@ else {
 document.getElementById("ThemeChanger").addEventListener("click", function(){
     let theme = localStorage.getItem('data-theme');
     if(theme == "light"){
-    document.documentElement.setAttribute("data-theme", "dark");
+        document.documentElement.setAttribute("data-theme", "dark");
+        document.getElementById("ThemeChanger").setAttribute("src","./Images/Sun.svg");
     localStorage.setItem("data-theme", "dark");
 }
 else{
     document.documentElement.setAttribute("data-theme", "light");
+    document.getElementById("ThemeChanger").setAttribute("src","./Images/Moon.svg"); 
     localStorage.setItem("data-theme", "light"); 
 }
-})
+});
 // remember youre last Theme
 if (localStorage.getItem("data-theme")=="light") {
+    document.getElementById("ThemeChanger").setAttribute("src","./Images/Moon.svg"); 
     document.documentElement.setAttribute("data-theme", "light");
     localStorage.setItem("data-theme", "light");
 }
 else {
     document.documentElement.setAttribute("data-theme", "dark");
+    document.getElementById("ThemeChanger").setAttribute("src","./Images/Sun.svg");
     localStorage.setItem("data-theme", "dark");
 }

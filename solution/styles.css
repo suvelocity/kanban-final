@@ -4,14 +4,13 @@
 }
 html[data-theme='light']{  
   --bg: #fff;
-  --bg-panel: rgba(255, 255, 255, 0.9);
+  --bg-panel: rgba(231, 226, 226, 0.9);
   --color-text: #333333;
 }
 
 html[data-theme='dark'] {
   --bg: #333333;
   --bg-panel: rgba(34, 32, 32, 0.9);
-
   --color-text: #B5B5B5;
 }
 
@@ -53,7 +52,7 @@ section {
 ul {
   list-style: none;
 }
-li {
+section li {
   cursor: pointer;
   display: block;
   position: relative;
@@ -61,7 +60,7 @@ li {
   border-radius: 10px;
   margin: 2px;
 }
-li img {
+section li img {
   width: 15px;
   height: 15px;
   cursor: pointer;
@@ -114,16 +113,15 @@ margin-right: auto;
   width: 15vw;
   height: auto;
 }
-#ThemeChanger{
-  cursor: pointer;
-  position: absolute;
-  padding: 1rem;
-  left:0%;
-  border-right: 3px solid var(--color-text);
-  border-bottom: 3px solid var(--color-text);
-  border-radius: 0px 0px 20px 0px;
-  margin-bottom: 10px;
-  font-size:1rem;
-  color: var(--bg);
-  background-color: var(--color-text);
+#sidebar{
+  position: fixed;
+  top: 10vw;
+  border-radius: 0px 15px 15px 0px;
+  width: 10vw;
+  background-color: var(--bg-panel);
 }
+#sidebar li img {
+ width: 8vw;
+ cursor: pointer;
+}
+

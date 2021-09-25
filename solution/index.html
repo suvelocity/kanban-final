@@ -13,11 +13,16 @@
 
 <body>
     <main>
-    <h6 id="ThemeChanger">Change Theme</h6>
+        <div id="sidebar">
+            <ul>
+                <li><img id="ThemeChanger" src="./Images/Moon.svg"></li>
+                <li><img id="APIIMG" src="./Images/Moon.svg"></li>
+            </ul>
+        </div>
         <h2 id="page-title">Tasks manager</h2>
         <h4>Win the day</h4>
-        <div id="loaderDiv"></div> 
-        
+        <div id="loaderDiv"></div>
+
         <input type="text" id="search" placeholder="search tasks here">
         <section id="generalSection">
             <h3 class="task-headline">Tasks</h3>
@@ -31,14 +36,14 @@
             <input type="text" id="add-in-progress-task" placeholder="add task">
             <button id="submit-add-in-progress" onclick="addTask('in-progress','add-in-progress-task')">Add
                 Task</button>
-            </section>
-            <section id="doneSection">
-                <h3 class="task-headline">Finished Tasks</h3>
-                <ul id="finished-task-table" class="done-tasks"></ul>
-                <input type="text" id="add-done-task" placeholder="add task">
-                <button id="submit-add-done" onclick="addTask('done','add-done-task')">Add Task</button>
-            </section>
-            <div id="API-ACCESS">
+        </section>
+        <section id="doneSection">
+            <h3 class="task-headline">Finished Tasks</h3>
+            <ul id="finished-task-table" class="done-tasks"></ul>
+            <input type="text" id="add-done-task" placeholder="add task">
+            <button id="submit-add-done" onclick="addTask('done','add-done-task')">Add Task</button>
+        </section>
+        <div id="API-ACCESS">
             <p>transfer data to API <button id="save-btn">Save</button><button id="load-btn">Load</button></p>
         </div>
     </main>
