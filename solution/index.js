@@ -15,9 +15,9 @@ let searchInput = document.querySelector("#search");
 let pressed = new Set();
 let errorLabel = document.querySelector("#error-label");
 let contextMenu = document.querySelector("#context-menu");
+let SelectedTask;
 let SelectedTaskName;
-let SelectedTaskSection;
-let SelectedTaskImportance;
+let draggedTask;
 
 let addToDoButton = document.querySelector("#submit-add-to-do", );
 let addInProgressButton = document.querySelector("#submit-add-in-progress");
@@ -34,8 +34,11 @@ addInProgressButton.addEventListener('click', onAddClickHandler);
 addDoneButton.addEventListener('click', onAddClickHandler);
 saveButton.addEventListener('click', onSaveClickHandler);
 loadButton.addEventListener('click', onLoadClickHandler);
-
 searchInput.addEventListener('keyup', onKeyUpHandler);
+
+document.addEventListener('click', onScreenClick);
+document.addEventListener('drop', onTaskDrop);
+document.addEventListener("dragover", onTaskDragOver);
 
 // LoadPageFromServer();
 
@@ -59,6 +62,13 @@ reloadTasksPage(searchInput.value);
 // ====== Event Function ============
 // ==================================
 
+// Click handler of document - if not on element, remove mark
+function onScreenClick(event){
+    if(event.target != SelectedTask){
+        changeSelectedTask("");
+    }
+}
+
 function onAddClickHandler(event){
     const target = event.target;   
     switch (target.id){
@@ -79,12 +89,12 @@ function onAddClickHandler(event){
 }
 
 function onSaveClickHandler(){ 
-    putServerTasks(); 
+    onSaveClick(); 
     reloadTasksPage(searchInput.value);  
 }
 
 async function onLoadClickHandler(){   
-    await getServerTasks();
+    await onLoadClick();
     reloadTasksPage(searchInput.value); 
 }
 
@@ -95,8 +105,7 @@ function onKeyUpHandler(event){
     }    
 }    
 
-function onTaskKeyDownHandler(event){    
-    console.log("down");
+function onTaskKeyDownHandler(event){        
     pressed.add(event.keyCode);
     let arrayOfKeys = [KEY_1, KEY_2, KEY_3];    
     if(event === undefined){
@@ -132,19 +141,15 @@ function onTaskKeyDownHandler(event){
     pressed.clear();
 }
 
-function onTaskClickHandler(event){
-    SelectedTaskName = event.target.textContent;  
-    SelectedTaskSection = event.target.dataset.section;
-    SelectedTaskImportance = event.target.dataset.importent;
+function onTaskClickHandler(event){    
+    changeSelectedTask(event.target);    
 }
 
 function onTaskDBClickHandler(event){
     let target = event.target;
 
-    SelectedTaskName = target.textContent;  
-    SelectedTaskSection = target.dataset.section;
-    SelectedTaskImportance = target.dataset.importent;
-
+    changeSelectedTask(event.target);    
+    
     event.preventDefault();
     
     target.contentEditable = true;
@@ -169,18 +174,11 @@ function onTaskBlur(event){
 
     if (textAfterEdit != SelectedTaskName) {
         const tasksObject = getLocalStorageTasks();
-        const arrayOfSection = tasksObject[SelectedTaskSection];
+        const arrayOfSection = tasksObject[SelectedTask.dataset.section];
         
         let taskBeforeEditIndex = arrayOfSection.indexOf(SelectedTaskName);
         arrayOfSection[taskBeforeEditIndex] = textAfterEdit; 
-        SelectedTaskName = textAfterEdit;
-
-        // let importentTaskIndex = tasksObject["Importent"].indexOf(editTextValue);
-        // if(importentTaskIndex !== -1){
-        //     tasksObject["Importent"].splice(importentTaskIndex, 1);
-        //     tasksObject["Importent"].unshift(textAfterEdit);
-        // }
-
+        SelectedTaskName = textAfterEdit;        
         localStorage.setItem('tasks', JSON.stringify(tasksObject));    
         reloadTasksPage(searchInput.textContent);
     }
@@ -188,9 +186,8 @@ function onTaskBlur(event){
 
 function contextMenuTask(event){
     event.preventDefault();          
-    SelectedTaskName = event.target.textContent;  
-    SelectedTaskSection = event.target.dataset.section;
-    SelectedTaskImportance = event.target.dataset.importent;
+
+    changeSelectedTask(event.target);
     
     const { clientX: mouseX, clientY: mouseY } = event;
     
@@ -206,40 +203,82 @@ function contextMenuTask(event){
 function clickOnContextMenu(event){
     const tasksObject = getLocalStorageTasks();
     if (event.target.offsetParent == contextMenu){ 
-        switch(event.target.dataset.type  ){
-            case "Importent": {
-                if(SelectedTaskImportance == false){
-                    tasksObject["Importent"].unshift(SelectedTaskName);
-                    localStorage.setItem('tasks', JSON.stringify(tasksObject));
-                    reloadTasksPage(searchInput.value);  
-                }         
-            }
-            case "Regular": {
-                if(SelectedTaskImportance == true){
-                    tasksObject["Importent"].splice(importentTaskIndex, 1);
-                    localStorage.setItem('tasks', JSON.stringify(tasksObject));
-                    reloadTasksPage(searchInput.value);  
-                }     
-            }
-            case "Delete": {
-                if(confirm("Are you sure you want to delete " + SelectedTaskName + " task?")){
-                    deleteTask();
-                    reloadTasksPage(searchInput.value);  
-                }      
-            }
+        if (event.target.dataset.type === "Delete" ){                        
+            if(confirm("Are you sure you want to delete " + SelectedTaskName + " task?")){
+                deleteTask();
+                reloadTasksPage(searchInput.value);  
+            }                  
         }               
     }
     contextMenu.classList.remove("visible");
     document.removeEventListener("click", clickOnContextMenu);    
 }
 
+function onTaskDragStart(event){
+    //event.preventDefault();
+    changeSelectedTask(event.target);
+    
+    event.target.style.opacity = .8;    
+}
+
+function onTaskDrop(event){
+    event.preventDefault();
+    let target = event.target  
+    console.log(target);
+    if(target.hasAttribute("data-section")){
+        if(target.dataset.section === "todo"){            
+            if(SelectedTask.dataset.section !== "todo"){
+                const taskManagerDataJSON = getLocalStorageTasks(); 
+                const sectionArray = taskManagerDataJSON[SelectedTask.dataset.section];
+                let index = sectionArray.indexOf(SelectedTaskName);
+
+                sectionArray.splice(index, 1);
+                localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
+                AddToSection(SelectedTaskName, 'todo');                 
+            }             
+        }           
+        if(target.dataset.section === "in-progress"){
+            if(SelectedTask.dataset.section !== "in-progress"){
+                const taskManagerDataJSON = getLocalStorageTasks(); 
+                const sectionArray = taskManagerDataJSON[SelectedTask.dataset.section];
+                let index = sectionArray.indexOf(SelectedTaskName);
+
+                sectionArray.splice(index, 1);
+                localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
+                AddToSection(SelectedTaskName, 'in-progress');                 
+            }            
+        }
+        if(target.dataset.section === "done") {
+            if(SelectedTask.dataset.section !== "done"){
+                const taskManagerDataJSON = getLocalStorageTasks(); 
+                const sectionArray = taskManagerDataJSON[SelectedTask.dataset.section];
+                let index = sectionArray.indexOf(SelectedTaskName);
+
+                sectionArray.splice(index, 1);
+                localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
+                AddToSection(SelectedTaskName, 'done'); 
+                
+            }
+        }
+    }
+    reloadTasksPage(searchInput.textContent);         
+}
+
+function onTaskDragEnd(event){
+    event.target.style.opacity = "";
+}
+
+function onTaskDragOver(event){
+    event.preventDefault();
+}
+
 // ==================================
 // ====== Server Function ============
 // ==================================
-async function putServerTasks(){
+async function onSaveClick(){
     const taskManagerDataString = localStorage.getItem('tasks');   
     //console.log(getTasksJSON());          
-    const respons = await fetch(URL_API, {
+    const respons = await fetch("https://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3", {
         method: "PUT", 
         headers: {        
             "Accept": "application/json",
@@ -256,22 +295,30 @@ async function putServerTasks(){
     
 }
 
-async function getServerTasks(){
-    const response = await fetch( URL_API, {
+async function onLoadClick(){ 
+    let response;    
+    loaderDisplay(true); 
+
+    setTimeout(loaderDisplay(false), 250);
+
+    response = await fetch( "https://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3", {
+        method: "GET",
         headers: {            
             "Accept": "application/json",
             "Content-Type": "application/json",
-        },
-        method: "GET",        
-    });
+        },                
+    });    
     if(!response.ok){
-        alert("Load Error! => " + response.status + " " + response.statusText)
+        let errorString = "Load Error! => " + response.status + " " + response.statusText;
+        displayError(true, "error");
     }
     else{
         //recieve tasks from server, update local storage   
-        let tasksData = await response.json();        
+        let tasksData = await response.json();          
         localStorage.clear();
-        localStorage.setItem("tasks", tasksData.tasks);                
+        localStorage.setItem("tasks", tasksData.tasks); 
+        displayError(true, "Tasks Loaded Succesfully","notification");
+
     }    
 }
 
@@ -279,6 +326,24 @@ async function getServerTasks(){
 // ==================================
 // ======  Functions ============
 // ==================================
+
+function loaderDisplay(display){
+    //<div class="loader"><div></div><div></div><div></div><div></div></div>
+    if(display){
+        let body = document.querySelector("body");
+        let divArray = []; 
+        for (let i = 0; i < 4; i++) {
+            divArray.push(createElement("div"));   
+        }
+        let loaderDiv = createElement("div", divArray, ["loader"]);
+        body.append(loaderDiv);
+    }
+    else{
+        let loader = document.querySelector(".loader");
+        loader.remove();        
+    }
+    
+}
 
 /* 
 *   ===> Adding task to LocalStorage <===
@@ -350,13 +415,16 @@ function createTaskList(filter, key, css_classes){
             let attributs = {
                 "data-section": key, 
                 //"data-importent": taskImportantFlag,
-                'tabIndex': tabindex
+                'tabIndex': tabindex,
+                'draggable': true                
             }  
             let listeners = {
                 'keydown': (event) => {onTaskKeyDownHandler(event)},
                 'contextmenu': (event) => {contextMenuTask(event)},
                 'click': (event) => {onTaskClickHandler(event)},
                 'dblclick': (event) => {onTaskDBClickHandler(event)},
+                'dragstart': (event) => {onTaskDragStart(event)},
+                'dragend': (event) => {onTaskDragEnd(event)}                
             } 
                                               
             li_Array.push(createElement("li", [task], [classImportance, "task"], attributs, listeners));
@@ -367,7 +435,7 @@ function createTaskList(filter, key, css_classes){
         }        
     }
     
-    return createElement("ul", li_Array, [...css_classes]);  
+    return createElement("ul", li_Array, [...css_classes], {"data-section": key});  
 }
 
 // ===> returns JSON of tasks <===
@@ -377,9 +445,22 @@ function getLocalStorageTasks(){
 
 
 // Display an error on screen
-function displayError(visible, text = ""){
+function displayError(visible, text = "", type = "error"){
     //check current state
     errorLabel.textContent = text;
+
+    if(errorLabel.classList.contains("error")){
+        if(type != "error"){
+            errorLabel.classList.remove("error");
+            errorLabel.classList.add("notification");
+        }    
+    }
+    else {
+        if(type == "error"){
+            errorLabel.classList.remove("notification");
+            errorLabel.classList.add("error");
+        }    
+    }        
     if(errorLabel.classList.contains("hidden")){
         if(visible){
             errorLabel.classList.remove("hidden");
@@ -398,9 +479,9 @@ function displayError(visible, text = ""){
 function deleteTask(){
     const tasksObject = getLocalStorageTasks();
         
-    let taskIndex = tasksObject[SelectedTaskSection].indexOf(SelectedTaskName);  
+    let taskIndex = tasksObject[SelectedTask.dataset.section].indexOf(SelectedTaskName);  
     if(taskIndex !== -1){
-        tasksObject[SelectedTaskSection].splice(taskIndex, 1);
+        tasksObject[SelectedTask.dataset.section].splice(taskIndex, 1);
     }              
     localStorage.setItem('tasks', JSON.stringify(tasksObject));   
 }
@@ -426,5 +507,26 @@ function createElement(tagName, children = [], classes = [], attributes = {}, ev
     }
 
     return myElement;    
+
+}
+
+function changeSelectedTask(target){
+    if(target !== ""){
+        if ( SelectedTask != undefined) {
+            if (SelectedTask.classList.contains("selected")) {
+                SelectedTask.classList.remove("selected");
+            }
+        }    
+        SelectedTask = target;
+        SelectedTaskName = SelectedTask.textContent;
+        if (!SelectedTask.classList.contains("selected")) {
+            SelectedTask.classList.add("selected");
+        }
+    }
+    else{
+        if (SelectedTask.classList.contains("selected")) {
+            SelectedTask.classList.remove("selected");
+        }
+    }
 
 }

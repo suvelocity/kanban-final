@@ -113,7 +113,7 @@ let wasInPut = false
 
 describe(projectName, () => {
   beforeAll(async () => {
-    browser = await puppeteer.launch({ headless: false, slowMo: 90}) //change to false if you want to view the page
+    browser = await puppeteer.launch({ headless: false, slowMo:50}) //change to false if you want to view the page
     page = await browser.newPage()
     page.setRequestInterception(true)
     page.on('request', async (req) => {
@@ -138,7 +138,7 @@ describe(projectName, () => {
             ),
           }),
         })
-        wasInPut = true
+        wasInPut = true        
       }
     })
     await page.setViewport({ width: 1000, height: 600 })

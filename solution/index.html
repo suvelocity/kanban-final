@@ -21,7 +21,7 @@
         <label id="error-label" class="error hidden">ddd</label>
     </div> 
     <div class="main-div">        
-        <div class="section-div">
+        <div class="section-div" data-section="to-do">
             <div class="input-div">                
                 <input type="text" id="add-to-do-task" class="add-input">
                 <button type="button" id="submit-add-to-do" class="submit-button">Add Task</button>
@@ -29,10 +29,10 @@
 
             <h2 class="topic">To-Do</h2>
 
-            <div id="div-to-do-tasks">
+            <div id="div-to-do-tasks" data-section="todo">
             </div>                     
         </div>
-        <div class="section-div">
+        <div class="section-div" data-section="in-progress">
             <div class="input-div">
                 <input type="text" id="add-in-progress-task" class="add-input">
                 <button type="button" id="submit-add-in-progress" class="submit-button">Add Task</button>
@@ -40,10 +40,10 @@
             
             <h2 class="topic">In Progress</h2>
             
-            <div id="div-in-progress-tasks">
+            <div id="div-in-progress-tasks" data-section="in-progress">
             </div> 
         </div>
-        <div class="section-div">
+        <div class="section-div" data-section="done">
             <div class="input-div">
                 <input type="text" id="add-done-task" class="add-input">
                 <button type="button" id="submit-add-done" class="submit-button">Add Task</button>
@@ -51,7 +51,7 @@
             
             <h2 class="topic">Done!</h2>
             
-            <div id="div-done-tasks">
+            <div id="div-done-tasks" data-section="done">
             </div> 
         </div>
     </div>
@@ -60,5 +60,6 @@
         <div class="item" data-type="Regular">Mark Regular</div>
         <div class="item" data-type="Delete">Delete task</div>
     </div>
+       
 </body>
 </html>
