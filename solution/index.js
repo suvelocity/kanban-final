@@ -50,7 +50,7 @@ function createElement(tagName ,children = [], classes = [], attributes = {}) {
 // create a new task and put it in his list 
 function createTask(event)
 {
-    let task =createElement("li",[],["list-group-item","task"],{});
+    let task =createElement("li",[],["list-group-item","task"],{draggable:"true",ondragstart:"drag(event)"});
     task.addEventListener('dblclick', changeTask);
     task.addEventListener('mouseover', moveTask);
     task.addEventListener('mouseout', moveTaskEnd);
@@ -211,38 +211,58 @@ function moveTaskKeyPress(event)
     }
     if(event.keyCode===49&&event.altKey)
     {
-        document.getElementById("todo").append(moveTaskLi);
+        document.getElementById("todo").prepend(moveTaskLi);
         list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
         list["todo"].unshift(moveTaskLi.innerText);
         localStorage.setItem("tasks",JSON.stringify(list));
     }
     if(event.keyCode===50&&event.altKey)
     {
-        document.getElementById("in-progress").append(moveTaskLi)
+        document.getElementById("in-progress").prepend(moveTaskLi)
         list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
         list["in-progress"].unshift(moveTaskLi.innerText);
         localStorage.setItem("tasks",JSON.stringify(list));
     }
     if(event.keyCode===51&&event.altKey)
     {        
-        document.getElementById("done").append(moveTaskLi)
+        document.getElementById("done").prepend(moveTaskLi)
         list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
         list["done"].unshift(moveTaskLi.innerText);
         localStorage.setItem("tasks",JSON.stringify(list));
     }
 }
+
+//function search input 
 let searchText;
 function enterSearch(event)
 {
-    document.addEventListener("keydown", searchTask);
+    document.addEventListener("keyup", searchTask);
+    
 }
 function exitSearch(event)
 {
-    document.removeEventListener("keydown", searchTask, false);
+    document.removeEventListener("keyup", searchTask, false);
 }
 function searchTask(event)
-{
-    searchText=document.getElementById("search").value+String.fromCharCode(event.keyCode);
+{ 
+    searchText=document.getElementById("search").value;
     console.log(searchText)
+    let list;
+    let allLi=document.getElementsByTagName("li");
+    for (let i = 0; i < allLi.length; i++ ){
+        if(!allLi[i].innerText.includes(searchText))
+        {
+            allLi[i].style.display="none";
+        } 
+        if(allLi[i].innerText.includes(searchText))
+        {
+            allLi[i].style.display="flex";
+        } 
+        if(checkEmpty(searchText)){
+            allLi[i].style.display="flex";
+        }
+        
+
+    }
 }
 
