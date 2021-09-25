@@ -81,15 +81,19 @@ const createElement = (tag, content = [], clss = [], attr = {}, eventListener = 
 }
 
 function createTask(task){
-    // const taskDeleteButton = createElement("button", [""], ["delete-button"], {}, {click: deleteTask}) taskDeleteButton
-    const newTaskElem = createElement("li", [task], ["task"])
+    const hamburgerTop = createElement("div", [], ["hamburger-menu", "hamburger-top"])
+    const hamburgerMiddle = createElement("div", [], ["hamburger-menu", "hamburger-middle"])
+    const hamburgerBottom = createElement("div", [], ["hamburger-menu", "hamburger-bottom"])
+    const taskDeleteButton = createElement("button", [hamburgerTop, hamburgerMiddle, hamburgerBottom], ["options-button"], {}, {click: callMenu}) 
+    const newTaskElem = createElement("li", [task, taskDeleteButton], ["task"])
     return newTaskElem
 }
-function deleteTask({target}) {
-    const elementToDelete = target.closest("li")
+function deleteTask() {
+    const elementToDelete = targetedTask.closest("li")
     elementToDelete.parentElement.removeChild(elementToDelete)
     removeTaskData(elementToDelete.innerText)
     updateLocalSaveData()
+    deleteMenu()
 }
 
 function addNewTask({target}){
@@ -262,8 +266,9 @@ async function storeTasks(){
         },
         body: JSON.stringify({tasks})
     })
-    const saved = await pushToCloud.json()
-    console.log(saved.tasks)
+    if (!pushToCloud.ok) {
+        alert(`Failed! Error ${response.status}: ${response.statusText}`);
+    }
 }
 
 async function loadTasks(){
@@ -279,4 +284,55 @@ async function loadTasks(){
     generateLists()
     updateLocalSaveData()
     loader.classList.remove("display")
+}
+
+const labels = [
+    {
+        label: "defult",
+        color: "rgb(248, 248, 234)",
+    },
+    {
+        label: "work",
+        color: "rgb(185, 255, 163)",
+    },
+    {
+        label: "personal",
+        color: "rgb(182, 189, 255)",
+    }
+]
+let targetedTask
+function callMenu({target}){
+    deleteMenu()
+    targetedTask = target
+    const thisMenuButton = target.closest(".options-button")
+    const menuButtonCoords = thisMenuButton.getBoundingClientRect()
+    createMenuElem(menuButtonCoords.left, menuButtonCoords.bottom)
+    document.body.addEventListener("click", exitMenu)
+}
+function createMenuElem(left, top){
+    const menuElem = createElement("div", [], ["menu"], {style: `top: ${top}px; left: ${left}px`})
+    for (const label of labels){
+        const labelElem = createElement("button", [`${label.label}`], ["in-menu-botton"], {style: `background-color: ${label.color}`})
+        menuElem.appendChild(labelElem)
+    }
+    const deleteButton = createElement("button", ["delete task"], ["delete-button", "in-menu-botton"], {}, {click: deleteTask})
+    menuElem.appendChild(deleteButton)
+    document.body.appendChild(menuElem)
+    document.body.addEventListener("click", exitMenu)
+}
+function deleteMenu(){
+    targetedTask = null
+    const prevMenus = document.querySelectorAll(".menu")
+    for (const prevMenu of prevMenus){
+        prevMenu.parentElement.removeChild(prevMenu)
+    }
+}
+function exitMenu({target}){
+    if (target.classList.contains("menu") || target.parentElement.classList.contains("menu") || target.classList.contains("options-button") || target.parentElement.classList.contains("options-button")){
+        return
+    }
+    else {
+        deleteMenu()
+    }
+    document.body.removeEventListener("click", exitMenu)
 }
