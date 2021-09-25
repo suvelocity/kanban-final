@@ -13,9 +13,9 @@ const addDoneButton = document.getElementById('submit-add-done'); //Access to to
 
 const toDoTasksList = Array.from(document.getElementsByClassName('to-do-tasks'));
 const inProgressTasksList = Array.from(document.getElementsByClassName('in-progress-tasks'));
-const DoneTasksList = Array.from(document.getElementsByClassName('done-tasks'));
+const doneTasksList = Array.from(document.getElementsByClassName('done-tasks'));
 
-// [toDoTasksList, inProgressTasksList, DoneTasksList].forEach((list) => {
+// [toDoTasksList, inProgressTasksList, doneTasksList].forEach((list) => {
 //    // list.setAttribute('onDragOver', onDragOver);
 // });
 
@@ -61,22 +61,23 @@ inProgressInput.addEventListener('keydown' , (e) => {
 // add done task cntent to matchin list/s & saving in local storage //
 addDoneButton.addEventListener('click' , () => {
 
-    liGenerator( doneInput, DoneTasksList );
+    liGenerator( doneInput, doneTasksList );
         
 }, { passive: true });
 
 doneInput.addEventListener('keydown' , (e) => {
 
-    if(e.key === "Enter") liGenerator( doneInput, DoneTasksList );     
+    if(e.key === "Enter") liGenerator( doneInput, doneTasksList );     
     
 }, { passive: true });
-
 
 // try
 // {
     var UserContentInputArray = []; //public array of user inputs li
     const listItems = document.querySelectorAll('ul'); //selecting lists
     var isHover = false;
+    var currentHoveredEl; // pulic var to store & access the var that being hovered at the moment
+
 
     const observer = new MutationObserver( (mutations) => { //observing for changes in the list
         
@@ -120,27 +121,21 @@ doneInput.addEventListener('keydown' , (e) => {
                         liTask.classList.add('hover');
                         liTask.classList.remove('no_selection')
                         liTask.nextSibling.classList.remove('no_selection')
-                        isHover = false;
                     }, { passive: true });
 
 
                     // liTask.parentElement.setAttribute('draggable', true);
                     // liTask.parentElement.setAttribute('onDragStart', onDragStart);
     
-                    window.addEventListener( 'keypress', (e) => { // detectin keyboard events are only on input type elements so i detect it through window object
-                        
-                        if( (e.key === "Alt" || e.getModifierState('AltGraph')) )
-                        {
-                            console.log('lol')
-                        }
-                    }, { passive: true });
-
-
-    
-                    liTask.addEventListener('mouseover', (e) => {
+                    liTask.addEventListener('mouseover', (e) => {//checking if user hoverin the list item then flag changes to true
                         isHover = true;
+                        currentHoveredEl = liTask;
                         //liTask.matches(':hover')
-                    }, { passive: true });                   
+                    }, { passive: true });    
+                    
+                    liTask.addEventListener('mouseout', () =>{ //checking if user not hoverin the list item then flag changes to false
+                        isHover = false;
+                    }, { passive: true });
             }
         });       
             
@@ -152,6 +147,46 @@ doneInput.addEventListener('keydown' , (e) => {
     });
 /** ~~ !!! STOP THE MUTANT WHEN USER NOT MAKING AN EVENT RELATED TO IT!!! ~~ */
 
+window.addEventListener( 'keydown', (e) => { // detectin keyboard events are only on input type elements so i detect it through window object
+                        
+    if( e.altKey || e.altGraphKey )
+    {   
+        e.preventDefault(); //preventing default so it wont switch to other objects and wont capture the windows events!
+
+        if(isHover && e.key === '1' && currentHoveredEl.parentElement.textContent !== "To Do Tasks")    
+        {
+            if(toDoTasksList[0].firstElementChild === 'null') //if it doesnt have a  child, append it.
+            {
+                eleDOMAppender(toDoTasksList[0],currentHoveredEl.parentElement);  //if current task is hovered and not in the same list of the destination list then pass it over.. 
+            }
+            else{ //if it does  have a child insert the generated li from user to the top of the ul
+                toDoTasksList[0].insertBefore(currentHoveredEl.parentElement, toDoTasksList[0].firstChild);
+            }
+        }
+
+        if(isHover && e.key === '2' &&  currentHoveredEl.parentElement.textContent !== `In Progress... Tasks`)    
+        {
+            if(toDoTasksList[0].firstElementChild === 'null') //if it doesnt have a  child, append it.
+            {
+                eleDOMAppender(inProgressTasksList[0],currentHoveredEl.parentElement); //if current task is hovered and not in the same list of the destination list then pass it over.. 
+            }
+            else{ //if it does  have a child insert the generated li from user to the top of the ul
+                inProgressTasksList[0].insertBefore(currentHoveredEl.parentElement, inProgressTasksList[0].firstChild);
+            }
+        }
+
+        if(isHover && e.key === '3' && currentHoveredEl.parentElement.textContent !== "Done Tasks")    
+        {
+            if(toDoTasksList[0].firstElementChild === 'null') //if it doesnt have a  child, append it.
+            {
+            eleDOMAppender(doneTasksList[0],currentHoveredEl.parentElement); //if current task is hovered and not in the same list of the destination list then pass it over..
+            }
+            else{ //if it does  have a child insert the generated li from user to the top of the ul
+                doneTasksList[0].insertBefore(currentHoveredEl.parentElement, doneTasksList[0].firstChild);
+            }
+        }      
+    }
+});
 
 
 UserContentInputArray.forEach((inList) => { //making input lists lower case behind the scenes ;)
@@ -209,7 +244,7 @@ function moveTaskToSection(id)
 
 }
 
-//function gets an input element and sets an li element to the coresponsing section of the task//
+//function gets an input element and sets an li element to the corresponding section of the task//
 function liGenerator( inputElement, arrayOfListElementsByClass )
 {
     const inputsArray = [toDoInput, doneInput, inProgressInput, search]; //input fields arrays
@@ -285,7 +320,7 @@ function elCreator(el, children = [], classes = [], attributes = {}){
 } 
 
 
-//Element DOM appendor function. gets: where you want to apppend it to, and what you wanna append, which element (which already been made). sets: appending element/s in DOM//
+//Element DOM appendor function. gets: where you want to ***apppend***(means last in place) it to, and what you wanna append, which element (which already been made). sets: appending element/s in DOM//
 function eleDOMAppender( destintionEle, currentEle ){ 
     try{
         destintionEle.append(currentEle);
