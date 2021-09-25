@@ -92,7 +92,7 @@ function chooseTask(targetTask){
 }
    
 
-function movingTaskToSection({altKey,key,keyCode}){
+function movingTaskToSection({altKey,key}){
     if (taskToMove){
         if (altKey && key == 1){
             const toDoList = document.querySelector(".to-do-tasks")
@@ -173,6 +173,7 @@ function updateTask(dataKey,newTaskText){
     function createLiElement(text){
         const liEl=document.createElement("li")
     liEl.setAttribute("class","task")
+    liEl.setAttribute("draggable","true")
     liEl.append(text)
     const  events={"dblclick":editTask,"blur":outOfEditTask,"mouseover":chooseTask}
     const eventsArr=Object.keys(events)
@@ -244,40 +245,8 @@ function resetPage(){
     }
 }
 
-// async function loadFromApi(){
-//     cleanSections()
-//     const url="https://json-bins.herokuapp.com/bin/614af0ed4021ac0e6c080ca2"
-//     const response=await fetch(url)
-//     const answer=await response.json()
-//     const loadData=answer.tasks
-//     for(let key in loadData){   
-//            if(loadData[key].length===0){ 
-//             data[key]=loadData[key]
-//             saveLocalData()
-//              }
-//              else{
-//                    for(let i=0;i<loadData[key].length;i++){
-//                  data[key].unshift(loadData[key][i])
-//              }
-//         } 
-//     }
-//     saveLocalData()
-//     generateExistsTasks()
-// }
 
 
-// function cleanSections(){
-//     const sectionsUl=document.querySelectorAll("ul")
-//     for(let i=0;i<sectionsUl.length;i++){
-//         let sectionTasks=sectionsUl[i].querySelectorAll(".task")
-//         for(let j=0;j<sectionTasks.length;j++){
-//             sectionsUl[i].removeChild(sectionTasks[j])
-//         }
-//     }
-    
-// }
-
-// document.getElementById("load-btn").addEventListener("click",loadFromApi)
 document.getElementById("reset").addEventListener("click",resetPage)
 document.getElementById("search").addEventListener("keyup",searchTask)
 document.getElementById("submit-add-to-do").addEventListener("click",addNewTask)
