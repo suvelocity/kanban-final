@@ -11,6 +11,8 @@ const inProgressTasks = document.querySelector('.in-progress-tasks')
 
 const taskBox = document.createElement('div')
 
+const searchInput = document.querySelector('#search')
+
 /**************** Constants ****************/
 const POSSIBLE_KEYS = ['1', '2', '3']
 
@@ -37,6 +39,11 @@ function handleDoubleClick(event) {
 }
 
 function handleKeyPress(event) {
+  // commented out for the porpuse of testing if handle input handles it better. erasable after verdict
+  // if (document.querySelector('#search:focus')) {
+  //   handleSearchInput(event)
+  // }
+
   if (document.querySelector('task-box:hover')) {
     if (event.altKey && POSSIBLE_KEYS.includes(event.key)) {
       handleMultipleKeys(event)
@@ -69,6 +76,11 @@ function handleMultipleKeys(event) {
   if (list) {
     moveTask(task, list)
   }
+}
+
+function handleSearchInput(event) {
+  console.log('input detected')
+  filterTasks(event.target.value)
 }
 
 function moveTask(task, list) {
@@ -140,7 +152,7 @@ function stripTaskBox(taskBox) {
   return text
 }
 
-function listenToKeyboard(event) {}
+// function listenToKeyboard(event) {}
 
 /**************** Storage Functions ****************/
 
@@ -194,6 +206,21 @@ function parseData(data) {
   })
 }
 
+function filterTasks(text) {
+  console.log(text + ' to filter by..')
+  const sections = document.querySelectorAll('section')
+
+  sections.forEach((section) => {
+    const tasks = section.querySelectorAll('task-box')
+    tasks.forEach((task) => {
+      if (stripTaskBox(task).includes(text)) {
+        console.log('matches query!')
+        console.log(task)
+      }
+    })
+  })
+}
+
 /**
  *  Checks if localStorage contains any related data. If not, stores a template data object.
  */
@@ -225,4 +252,7 @@ mainContianer.addEventListener('dblclick', handleDoubleClick)
 
 mainContianer.addEventListener('focusout', handleBlur)
 
+//TODO: give a better name to "handleInput" to differentiate it from any other general input event
 mainContianer.addEventListener('input', handleInput)
+
+searchInput.addEventListener('input', handleSearchInput)
