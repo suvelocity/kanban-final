@@ -10,9 +10,12 @@
 .submit{
     margin-left: 30px;
 }
+body{
+  background-image:url(./img/bg1.jfif)  ;
+}
 ul{
   border-style: solid;
-  border-color: darkcyan;
+  border-color: #0a58ca;
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -88,7 +91,9 @@ ul{
   transition: all 0.3s;
   transform: translateY(0rem);
 }
-
+.bright{
+  color: wheat;
+}
 .form__input {
   font-family: 'Roboto', sans-serif;
   color: #333;

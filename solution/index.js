@@ -4,6 +4,7 @@ function checkName()
     //let name=localStorage.getItem("name");
     let name=localStorage.getItem("tasks");
     let tasks;
+    bg=1;
     if(name===null)
     {
         tasks={
@@ -15,6 +16,7 @@ function checkName()
         localStorage.setItem("tasks",JSON.stringify(tasks));
         //localStorage.setItem("name",name);
     }
+    currentBg();
     //document.getElementById("page-title").innerText=name+"'s kanban";
     tasks=JSON.parse(localStorage.getItem("tasks"));
     for (let list in tasks) {
@@ -247,3 +249,41 @@ function allowDrop(ev) {
     }
   }
 
+  let bg;
+  function nextBg()
+{
+    bg++;
+    if(bg>3)
+{        bg=1;
+}    currentBg();
+
+}
+function previousBg()
+{
+    bg--;
+    if(bg<1)
+{        bg=3;
+}    currentBg();
+}
+function currentBg()
+{
+    console.log("here")
+    let body=document.getElementById("body");
+    switch (bg) {
+        case 1:
+            console.log("img1")
+            body.style.backgroundImage="url('./img/bg1.jfif')";
+            body.classList.remove("bright");
+            break;
+        case 2:
+            console.log("img2")
+            body.classList.remove("bright");
+            body.style.backgroundImage="url('./img/bg2.jfif')";
+            break;
+        case 3:
+            console.log("img3")
+            body.classList.add("bright");
+            body.style.backgroundImage="url('./img/bg3.jfif')";
+            break;
+    }
+}
