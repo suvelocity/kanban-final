@@ -20,6 +20,8 @@ const loader = document.querySelector('.loader')
 /**************** Constants ****************/
 const POSSIBLE_KEYS = ['1', '2', '3']
 
+const EMPTY_TASKS_DATA = { todo: [], 'in-progress': [], done: [] }
+
 /**************** Event Handlers ****************/
 
 /**Handles click events.
@@ -91,18 +93,23 @@ async function handleOptionClick(event) {
   if (event.target.className === 'load') {
     console.log('load')
     //show loader
-    loader.hidden = false
+    // loader.hidden = false
+    cleanSection(document.querySelectorAll('section'))
+
+    cleanLocalStorage()
+
     await getAnswer()
+
     //hide loader
-    loader.hidden = true
+    // loader.hidden = true
   }
   if (event.target.className === 'save') {
     console.log('save')
     //show loader
-    loader.hidden = false
+    // loader.hidden = false
     await storeData()
     //hide loader
-    loader.hidden = true
+    // loader.hidden = true
   }
 }
 
@@ -274,6 +281,10 @@ function filterTasks(text) {
       }
     })
   })
+}
+
+function cleanLocalStorage() {
+  storeLocally(EMPTY_TASKS_DATA)
 }
 
 /**
