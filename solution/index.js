@@ -18,6 +18,7 @@
 document.body.addEventListener('mouseover' ,addHoverReplace);
 document.body.addEventListener('dblclick',gainFocus);
 document.body.addEventListener('focusout', saveValueBlur);
+document.body.addEventListener('contextmenu', removeLi);
 //local storage save function
 function localStorageSave(){
     localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
@@ -230,27 +231,26 @@ async function loadApi(){
     inProgressTasksUlAPI = data.tasks['in-progress'][0];
     doneTasksUlAPI = data.tasks.done[0];
     //
-    let toDoSection = document.getElementById('to-do-container');
+    let toDoContainer = document.getElementById('to-do-container');
     let inProgressContainer = document.getElementById('in-progress-container');
-    let donContainer = document.getElementById('done-container');
+    let doneContainer = document.getElementById('done-container');
     //
-    if(toDoTasksUlAPI){
-        toDoSection.innerHTML = toDoTasksUlAPI;
-    }
-    if(inProgressTasksUlAPI){
-        inProgressContainer.innerHTML = inProgressTasksUlAPI;
-    }
-    if(doneTasksUlAPI){
-        donContainer.innerHTML = doneTasksUlAPI;
-    }
 
-    console.log(toDoTasksUlAPI);
-    console.log(inProgressTasksUlAPI);
-    console.log(doneTasksUlAPI);
+    function loadTasksFromApi(taskList, section){
+        if(taskList == undefined){
+            section.innerHTML = '';
+        }else{
+            section.innerHTML = taskList; 
+        }
+    } 
+    loadTasksFromApi(toDoTasksUlAPI, toDoContainer);
+    loadTasksFromApi(inProgressTasksUlAPI,  inProgressContainer);
+    loadTasksFromApi(doneTasksUlAPI, doneContainer);
 
-    toDoTasksUl = toDoSection.firstChild;
+
+    toDoTasksUl = toDoContainer.firstChild;
     inProgressTasksUl = inProgressContainer.firstChild;
-    doneTasksUl = donContainer.firstChild;
+    doneTasksUl = doneContainer.firstChild;
 
     localStorageSave();
 
@@ -340,3 +340,17 @@ themeButton.addEventListener('click', (e) => {
         cssLink.setAttribute('href', './styles.css');
     }
 })
+
+
+//right click for erasing li function
+function removeLi(e){
+    if(e.target.tagName === 'LI'){
+        e.preventDefault();
+        e.target.remove();
+        localStorageSave()
+    }
+}
+
+
+
+
