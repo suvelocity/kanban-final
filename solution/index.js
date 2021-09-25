@@ -192,11 +192,11 @@ search.addEventListener('keyup', e => {
 
 //----------------------GENERIC FUNCTIONS----------------------//
 
-//function checking if **INPUT ELEMENT** is empty attach error class style to it etc//
+//function checking if **INPUT ELEMENT** is empty(including spaces) attach error class style to it etc//
 
 function isElementEmpty(el)
 {
-    if(el.value === '')
+    if(el.value === '' || el.value.toLowerCase() === el.value.toUpperCase()) //checing if field empty or only has spaces in it
     {
         el.classList.add('error');
         return true;
