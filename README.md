@@ -58,7 +58,7 @@ In addition the page should contain:
 }
 ```
 
-- [ ] Even if there are no tasks, there should still be a `tasks` key in the `localStorage`, in the above format (the arrays will just be empty).
+- [x] Even if there are no tasks, there should still be a `tasks` key in the `localStorage`, in the above format (the arrays will just be empty).
 
 ## Bonuses
 
