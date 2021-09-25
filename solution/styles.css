@@ -11,6 +11,7 @@ header {
 
 #container {
   display: flex;
+  margin: 5%;
 }
 
 section {
@@ -35,3 +36,48 @@ section {
   background-color: darkseagreen;
   color: blueviolet;
 }
+
+.loader {
+  margin: 0 auto;
+  width: 60%;
+}
+
+section {
+  background-color: rgb(235, 235, 235);
+  border-style: solid;
+  border: rgb(3, 1, 1);
+  border: 20px;
+  height: 0%;
+  width: 33%;
+  /* max-height: 20%; */
+}
+
+/* try using selector */
+h2 {
+  display: flex;
+  justify-content: center;
+}
+
+.task {
+  /* display: flex;
+  justify-content: flex-start; */
+  list-style: none;
+  background-color: rgb(0, 102, 255);
+  font-size: 130%;
+  border-style: solid;
+  border-bottom: 10px;
+  border-color: rgb(212, 212, 212);
+  margin-right: 0px;
+  margin-top: 8%;
+  padding: 3%;
+}
+
+.dragging {
+  opacity: 0.5;
+}
+/* 
+.remove-button {
+  margin-left: 100%;
+  display: flex;
+  justify-content: space-around;
+} */

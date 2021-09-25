@@ -62,7 +62,7 @@ In addition the page should contain:
 
 ## Bonuses
 
-- [ ] Implement drag-and-drop sorting of tasks.
+- [x] Implement drag-and-drop sorting of tasks.
 - [x] Add API integration:
 
   - [x] Add save and load buttons that sync the current tasks to the API (see details in the [api-data.txt](#api-integration) file).

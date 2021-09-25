@@ -1,4 +1,4 @@
-const sections = document.querySelectorAll('input')
+const sections = document.querySelectorAll('.section') // changed from input to section
 const buttons = document.querySelectorAll('button')
 const uls = document.querySelectorAll('ul')
 const searchBar = document.querySelector('#search')
@@ -9,7 +9,7 @@ if (!localStorage.tasks) {
 
 const parsedTasks = JSON.parse(localStorage.getItem('tasks'))
 
-// add better explenation here later
+// add better explanation here later
 function paintDomFromLocalStorage(dataObject) {
   const neaterUlNames = []
   uls.forEach((ul) => neaterUlNames.push(ul.className.split('-tasks')[0]))
@@ -20,7 +20,8 @@ function paintDomFromLocalStorage(dataObject) {
         // find the matching ul to the mathching key (todo & to-do)
         for (let j = 0; j < dataObject[key].length; j++) {
           // iterate over the property in the parsed version of the local storage and put it on the DOM
-          uls[i].append(createLiElement(dataObject[key][j], ['task']))
+          const newLi = createLiElement(dataObject[key][j], ['task'])
+          uls[i].append(newLi)
         }
       }
     }
@@ -122,6 +123,8 @@ function inputListener(e) {
   newLiElement.addEventListener('mouseenter', altHandlerFunction) // makes sure you don't have to refresh
   // newly added! line 124
   newLiElement.addEventListener('dblclick', makeEditable)
+  newLiElement.addEventListener('dragstart', addDragging)
+  newLiElement.addEventListener('dragend', removeDragging)
   document.querySelector(`.${category}-tasks`).prepend(newLiElement)
   updateLocalStorage(category, input, 'value')
 }
@@ -130,6 +133,7 @@ function createLiElement(text, classes = []) {
   const element = document.createElement('li')
   element.append(text)
   element.classList = classes.join(' ')
+  element.setAttribute('draggable', 'true')
   return element
 }
 
@@ -169,12 +173,12 @@ function globalSearch(e) {
 }
 
 function createLoader() {
+  const container = document.querySelector('#container')
   const loader = document.createElement('img')
   loader.className = 'loader'
-  loader.src =
-    'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg'
+  loader.src = 'https://miro.medium.com/max/1400/1*CsJ05WEGfunYMLGfsT2sXA.gif'
   loader.alt = 'image of loader'
-  document.body.append(loader)
+  document.body.insertBefore(loader, container)
   return loader
 }
 
@@ -214,6 +218,7 @@ async function loadFromApi() {
 async function saveToApi() {
   try {
     const { tasks } = localStorage
+    console.log(tasks)
     const loader = createLoader()
     const url = 'https://json-bins.herokuapp.com/bin/614afda34021ac0e6c080cc9'
     const response = await fetch(url, {
@@ -237,4 +242,96 @@ function makeNormalString(tasks) {
   tasks = tasks.replace('"{', '{')
   tasks = tasks.replace('}"', '}')
   return tasks.replaceAll('\\', '')
+}
+
+liS.forEach((li) => {
+  li.addEventListener('dragstart', () => {
+    li.classList.add('dragging')
+  })
+})
+
+liS.forEach((li) => {
+  li.addEventListener('dragend', () => {
+    li.classList.remove('dragging')
+  })
+})
+let tempLi
+liS.forEach((li) => {
+  li.addEventListener('dragend', () => {
+    if (tempLi) {
+      tempLi.remove()
+      tempLi = null
+    }
+  })
+})
+
+uls.forEach((ul) => {
+  ul.addEventListener('dragover', (e) => {
+    if (uls[0].textContent === '') {
+      tempLi = createLiElement(' ', ['task'])
+      tempLi.style = 'background-color: rgb(212, 212, 212)'
+      uls[0].prepend(tempLi)
+      // this is start of solution but still has a way to go
+      // also you need to add a dragstart dragend event listener on this liElement
+      // you can first create the element and then style it with grey background so it will basically be invisible
+    }
+    e.preventDefault()
+    const immediatelyBelowElement = getDragAfterElement(ul, e.clientY) // Gets the element you're immediately above
+    const draggable = document.querySelector('.dragging') // only one el with class 'dragging' at a time
+    if (immediatelyBelowElement == 'null') {
+      ul.append(immediatelyBelowElement)
+    } else {
+      ul.insertBefore(draggable, immediatelyBelowElement)
+    }
+    let droppedAt = ul.className.split('-tasks')[0]
+    if (droppedAt === 'to-do') droppedAt = 'todo'
+    for (const key in parsedTasks) {
+      let takenFrom = key
+      parsedTasks[key].forEach((string, i) => {
+        let wantedIndex
+        if (draggable.textContent === string) {
+          if (!immediatelyBelowElement) {
+            parsedTasks[droppedAt].push(draggable.textContent)
+          } else {
+            wantedIndex = parsedTasks[droppedAt].indexOf(
+              immediatelyBelowElement.textContent
+            )
+            parsedTasks[droppedAt].splice(wantedIndex, 0, draggable.textContent)
+          }
+          parsedTasks[key].splice(i, 1)
+          localStorage.setItem('tasks', JSON.stringify(parsedTasks))
+        }
+      })
+    }
+  })
+})
+
+function getDragAfterElement(ul, yCoordinate) {
+  // Y axis of where your mouse is
+  const draggableElements = [...ul.querySelectorAll('.task:not(.dragging)')] // get every draggable but the one your'e currently dragging
+  return draggableElements.reduce(
+    (closestElement, task) => {
+      const box = task.getBoundingClientRect() // rectangle of <li>
+      const offset = yCoordinate - box.top - box.height / 2 // positive if above the half line of box, negative otherwise
+      if (offset < 0 && offset > closestElement.offset) {
+        // takes the element with the losest POSITIVE offset
+        return { offset: offset, element: task }
+      } else {
+        return closestElement
+      }
+    },
+    { offset: -Infinity } // start at -Infinty so any elements offset will be above
+  ).element // returning the element itself
+}
+
+function addDragging(e) {
+  e.target.classList.add('dragging')
+}
+
+function removeDragging(e) {
+  e.target.classList.remove('dragging')
+}
+
+function makeObjectOutOfUls() {
+  const arrayOfUls = [...uls]
 }
