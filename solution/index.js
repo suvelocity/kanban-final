@@ -2,7 +2,7 @@
             //    Local srorage   //
             ////////////////////////
 
-//  Initialazing Data //
+//  Initialazing Tasks  //
 let taskObj
 let localSave = localStorage.getItem("tasks")
 if (localSave){
@@ -14,6 +14,46 @@ else {
     "in-progress": [],
     "done": []
     }
+}
+
+//  Initialazing Labels  //
+let labelsObj
+let localLabelsSave = localStorage.getItem("labels")
+if (localLabelsSave){
+    labelsObj = JSON.parse(localLabelsSave)
+}
+else {
+    labelsObj = {
+    "todo": {},
+    "in-progress": {},
+    "done": {}
+    }
+}
+const labels = {
+    defult: "rgb(248, 248, 234)",
+    work: "rgb(185, 255, 163)",
+    personal: "rgb(182, 189, 255)",
+}
+
+const updateLabelsObj = () => {
+    console.log(localStorage.getItem("labels"))
+    const tasksList = document.querySelectorAll(".task")
+    for (const task of tasksList) {
+        const taskUl = task.closest("ul")
+        if (taskUl.classList.contains("to-do-tasks")){
+            labelsObj.todo[task.innerText] = task.dataset.label
+        }
+        if (taskUl.classList.contains("in-progress-tasks")){
+            labelsObj["in-progress"][task.innerText] = task.dataset.label
+        }
+        if (taskUl.classList.contains("done-tasks")){
+            labelsObj.done[task.innerText] = task.dataset.label
+        }
+    }
+}
+function updateLocalLabelsData(){
+    localLabelsSave = JSON.stringify(labelsObj)
+    localStorage.setItem("labels", localLabelsSave)
 }
 
 //  Data updating  //
@@ -85,7 +125,7 @@ function createTask(task){
     const hamburgerMiddle = createElement("div", [], ["hamburger-menu", "hamburger-middle"])
     const hamburgerBottom = createElement("div", [], ["hamburger-menu", "hamburger-bottom"])
     const taskDeleteButton = createElement("button", [hamburgerTop, hamburgerMiddle, hamburgerBottom], ["options-button"], {}, {click: callMenu}) 
-    const newTaskElem = createElement("li", [task, taskDeleteButton], ["task"])
+    const newTaskElem = createElement("li", [task, taskDeleteButton], ["task"], {"data-label": "defult"})
     return newTaskElem
 }
 function deleteTask() {
@@ -129,9 +169,37 @@ function generateLists(){
         doneList.appendChild(newTask)
     }
 }
-
 generateLists()
 
+function generateLabelsForTasks(){
+    const tasksList = document.querySelectorAll(".task")
+    for (const task of tasksList) {
+        const taskUl = task.closest("ul")
+        if (taskUl.classList.contains("to-do-tasks")){
+            for (const labeledTasks in labelsObj.todo){
+                if (task.innerText === labeledTasks){
+                    task.setAttribute("data-label", labelsObj.todo[labeledTasks])
+                    task.setAttribute("style", `background-color:${labels[labelsObj.todo[labeledTasks]]}`)
+                }
+            }
+        }
+        if (taskUl.classList.contains("in-progress-tasks")){
+            for (const labeledTasks in labelsObj.todo){
+                if (task.innerText === labeledTasks){
+                    task.setAttribute("data-label", labelsObj.todo[labeledTasks])
+                }
+            }
+        }
+        if (taskUl.classList.contains("done-tasks")){
+            for (const labeledTasks in labelsObj.todo){
+                if (task.innerText === labeledTasks){
+                    task.setAttribute("data-label", labelsObj.todo[labeledTasks])
+                }
+            }
+        }
+    }
+}
+generateLabelsForTasks()
 // Clear tasks
 function clearTasks(){
     const tasksElems = document.querySelectorAll(".task")
@@ -261,7 +329,7 @@ function search({key}){
 
 // API storage
 async function storeTasks(){
-    const tasks = taskObj
+    const tasks = {taskObj, labelsObj}
     const pushToCloud = await fetch("https://json-bins.herokuapp.com/bin/614ad8b24021ac0e6c080c0b", {
         method: "PUT",
         headers: {
@@ -299,16 +367,13 @@ async function loadTasks(){
             ////////////////////////
             //       labels       //
             ////////////////////////
-const labels = {
-    defult: "rgb(248, 248, 234)",
-    work: "rgb(185, 255, 163)",
-    personal: "rgb(182, 189, 255)",
-}
 function updateLabelDiv(){
     const labelsDiv = document.getElementById("labels")
     const labelUl = createElement("ul", [], ["label-list"])
+    const showAll = createElement("li", ["Show All"], ["label"], {}, {click: displayAll})
+    labelUl.appendChild(showAll)
     for (const label in labels){
-        const labelLi = createElement("li", [`${label}`], ["label"], {"style": `background-color:${labels[label]}`})//, {click: ShowOnlyLabel})
+        const labelLi = createElement("li", [`${label}`], ["label"], {"style": `background-color:${labels[label]}`}, {click: displayOnly})
         labelUl.appendChild(labelLi)
     }
     const addNewLabel = createElement("li", ["Add New Label"], ["label"], {})//, {click: newCustomLabel})
@@ -328,6 +393,8 @@ function setLabel({target}){
     }
     targetedTask.setAttribute("data-label", target.innerText)
     targetedTask.setAttribute("style", `background-color:${labelColor}`)
+    updateLabelsObj()
+    updateLocalLabelsData()
 }
 function mobileLabelMenuOpen(){
     const labelMenu = document.getElementById("labels")
@@ -343,6 +410,23 @@ function mobileLabelMenuClose({target}){
         labelMenu.classList.remove("display") 
     }
     document.body.removeEventListener("click", mobileLabelMenuClose)
+}
+function displayOnly({target}){
+    const tasksList = document.querySelectorAll(".task")
+    for (const task of tasksList) {
+        if (task.dataset.label !== target.innerText){
+            task.classList.add("invisible")
+        }
+        else {
+            task.classList.remove("invisible")
+        }
+    }
+}
+function displayAll(){
+    const tasksList = document.querySelectorAll(".task")
+    for (const task of tasksList) {
+        task.classList.remove("invisible")
+    }
 }
 
 

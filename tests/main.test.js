@@ -141,7 +141,7 @@ describe(projectName, () => {
         wasInPut = true
       }
     })
-    await page.setViewport({ width: 1000, height: 600 })
+    await page.setViewport({ width: 1600, height: 600 })
     await page.goto(pagePath, { waitUntil: 'networkidle0' })
     await full4s.beforeAll()
   })
