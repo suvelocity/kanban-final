@@ -4,7 +4,7 @@ This projects is my submission for Cyber4s pre-course final.
 
 A Todo list web application for keeping important tasks in an organized fashion.
 
-Heres a link to the [GitHub Page](https://alontzafari.github.io/todo-app/src/)
+Heres a link to the [GitHub Page]
 
 ### Interaction
 
