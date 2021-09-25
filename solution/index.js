@@ -10,6 +10,7 @@ const doneInput = document.getElementById('add-done-task'); //Access to done tas
 const addToDoButton = document.getElementById('submit-add-to-do'); //Access to to do task submit button element
 const addInProgressButton = document.getElementById('submit-add-in-progress'); //Access to to do task submit button element
 const addDoneButton = document.getElementById('submit-add-done'); //Access to to do task submit button element
+const deleteAllTasksButton = document.getElementById('delete-all-tasks'); //Access to the delete al tasks button element
 
 const toDoTasksList = Array.from(document.getElementsByClassName('to-do-tasks'));
 const inProgressTasksList = Array.from(document.getElementsByClassName('in-progress-tasks'));
@@ -57,7 +58,6 @@ inProgressInput.addEventListener('keydown' , (e) => {
 
 
 
-
 // add done task cntent to matchin list/s & saving in local storage //
 addDoneButton.addEventListener('click' , () => {
 
@@ -70,6 +70,21 @@ doneInput.addEventListener('keydown' , (e) => {
     if(e.key === "Enter") liGenerator( doneInput, doneTasksList );     
     
 }, { passive: true });
+
+
+//delete all tasks button
+deleteAllTasksButton.addEventListener('click', () => {
+    if(UserContentInputArray.length > 0) //if lists are not empty.. continue.
+    {
+        if(confirm("Are you sure you want to delete all buttons in your lists!? THIS ACTION CANNOT BE REVERSED!")) //ask user if he sure he want delete
+        {
+            UserContentInputArray.forEach(liTask => { //clear lists
+                liTask.parentElement.remove();
+            });
+        }
+    }
+});
+
 
 // try
 // {
