@@ -135,7 +135,7 @@ const searchByQuery = (query) => {
             }
         }
     };
-return queryObj;
+    return queryObj;
 }
 
 const ReplaceTaskType = (WantedTypeOfTask, innerTaskText) => {
@@ -187,7 +187,7 @@ const getDataFromAPI = async () => {
 }
 
 const postDataToAPI = async () => {
-    document.getElementById("loaderDiv").innerHTML = `<img src="./Images/loading.svg" alt="loader" class="loader" id="loader">`; 
+    document.getElementById("loaderDiv").innerHTML = `<img src="./Images/loading.svg" alt="loader" class="loader" id="loader">`;
     const tasksobjtoAPI = { tasks: taskObj }; // the only way the server get the data
     const response = await fetch("https://json-bins.herokuapp.com/bin/614ad65e4021ac0e6c080c06", {
         method: "PUT",
@@ -204,8 +204,9 @@ const postDataToAPI = async () => {
 }
 
 const makeDropZone = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // let us drop to this
 }
+
 const DropFunc = (e) => {
     const innerTaskText = e.dataTransfer.getData("titleText");
     e.preventDefault();
@@ -219,6 +220,61 @@ const DropFunc = (e) => {
         ReplaceTaskType("todo", innerTaskText)
     }
 }
+// animation and timer for info
+const showInfo = () => {
+    const infoArray = document.querySelectorAll(".infoForUser");
+    infoArray.forEach(element => {
+        element.style.visibility = "visible";
+        element.style.opacity = "1";
+    });
+    setTimeout(function () {
+        infoArray.forEach(element => {
+            element.style.visibility = "hidden";
+            element.style.opacity = "0";
+        })
+    }, 5000);
+}
+
+const removeEventKeyFromWindow = () =>{
+    window.removeEventListener("keydown", pressEnter);
+}
+
+const keyEnterSendTaskgeneral = () => {
+    window.addEventListener("keydown", function pressEnter(e) {
+        if (e.key === "Enter") {
+            addTask('todo','add-to-do-task')
+        }
+        document.getElementById("add-to-do-task").addEventListener("blur", function(){
+            window.removeEventListener("keydown", pressEnter);
+        });
+    }
+    )
+}
+
+const keyEnterSendTaskongoing = () => {
+    window.addEventListener("keydown", function pressEnter(e) {
+        if (e.key === "Enter") {
+            addTask('in-progress','add-in-progress-task')
+        }
+        document.getElementById("add-in-progress-task").addEventListener("blur", function(){
+            window.removeEventListener("keydown", pressEnter);
+        });
+    }
+    )
+}
+
+const keyEnterSendTaskdone = () => {
+    window.addEventListener("keydown", function pressEnter(e) {
+        if (e.key === "Enter") {
+            addTask('done','add-done-task')
+        }
+        document.getElementById("add-done-task").addEventListener("blur", function(){
+            window.removeEventListener("keydown", pressEnter);
+        });
+    }
+    )
+}
+
 // Event listeners so all the pernament Elements
 document.getElementById("search").addEventListener("keyup", postTasksforquery);
 document.getElementById("load-btn").addEventListener("click", getDataFromAPI);
@@ -231,6 +287,11 @@ document.getElementById("ongoingSection").addEventListener("dragover", makeDropZ
 document.getElementById("generalSection").addEventListener("dragover", makeDropZone);
 document.getElementById("APIDoanloadIMG").addEventListener("click", getDataFromAPI);
 document.getElementById("APIUploadIMG").addEventListener("click", postDataToAPI);
+document.getElementById("infoAboutPage").addEventListener("click", showInfo);
+document.getElementById("add-to-do-task").addEventListener("click", keyEnterSendTaskgeneral);
+document.getElementById("add-in-progress-task").addEventListener("click", keyEnterSendTaskongoing);
+document.getElementById("add-done-task").addEventListener("click", keyEnterSendTaskdone);
+
 //if user has localStorage File it postTasks to it, if he hasn't i create for him 
 if (localStorage.getItem("tasks")) {
     taskObj = JSON.parse(localStorage.getItem("tasks"));
@@ -246,28 +307,28 @@ else {
     localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
 
-// Dark/Light Theme Change
-document.getElementById("ThemeChanger").addEventListener("click", function(){
-    let theme = localStorage.getItem('data-theme');
-    if(theme == "light"){
-        document.documentElement.setAttribute("data-theme", "dark");
-        document.getElementById("ThemeChanger").setAttribute("src","./Images/Sun.svg");
-    localStorage.setItem("data-theme", "dark");
-}
-else{
-    document.documentElement.setAttribute("data-theme", "light");
-    document.getElementById("ThemeChanger").setAttribute("src","./Images/Moon.svg"); 
-    localStorage.setItem("data-theme", "light"); 
-}
-});
 // remember youre last Theme
-if (localStorage.getItem("data-theme")=="light") {
-    document.getElementById("ThemeChanger").setAttribute("src","./Images/Moon.svg"); 
+if (localStorage.getItem("data-theme") == "light") {
+    document.getElementById("ThemeChanger").setAttribute("src", "./Images/Moon.svg");
     document.documentElement.setAttribute("data-theme", "light");
     localStorage.setItem("data-theme", "light");
 }
 else {
     document.documentElement.setAttribute("data-theme", "dark");
-    document.getElementById("ThemeChanger").setAttribute("src","./Images/Sun.svg");
+    document.getElementById("ThemeChanger").setAttribute("src", "./Images/Sun.svg");
     localStorage.setItem("data-theme", "dark");
 }
+// Dark/Light Theme Change
+document.getElementById("ThemeChanger").addEventListener("click", function () {
+    let theme = localStorage.getItem('data-theme');
+    if (theme == "light") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        document.getElementById("ThemeChanger").setAttribute("src", "./Images/Sun.svg");
+        localStorage.setItem("data-theme", "dark");
+    }
+    else {
+        document.documentElement.setAttribute("data-theme", "light");
+        document.getElementById("ThemeChanger").setAttribute("src", "./Images/Moon.svg");
+        localStorage.setItem("data-theme", "light");
+    }
+});
