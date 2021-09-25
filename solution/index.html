@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-         <meta charset="UTF-8">
-         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-         <script src="./index.js" type="text/javascript" defer></script>
-         <link rel="stylesheet" href="./styles.css" />
-         <title id="page-title">Tasks Manager</title>
-    </head>
+      <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <script src="./index.js" type="text/javascript" defer></script>
+            <link rel="stylesheet" href="./styles.css" />
+            <title id="page-title">Tasks Manager</title>
+      </head>
 
-    <body>
+      <body>
 
-        <h1>Task Manager 💌</h1>
+         <h1>Task Manager 💌</h1>
 
-        <span id="search-bar-text">Search:</span>
-        <input id="search" placeholder="Search for tasks..." value="" required></input>
+         <!-- Theme Changer !-->
+         <input type="checkbox" id="themeSwitch" name="theme-switch" class="theme-switch__input"/>
+         <label for="themeSwitch" class="theme-switch__label">
+            <span>Switch theme</span>
+         </label>
+
+         <main>
+             <!-- Search Area !-->
+         <span id="search-bar-text">Search:</span>
+         <input id="search" placeholder="Search for tasks..." value="" required></input>
 
 
-        <!-- To Do Tasks Section!-->
+         <!-- To Do Tasks Section!-->
 
-        <h3>To Do Tasks</h3>
-        
+         <h3>To Do Tasks</h3>
+         
          <section id="to-do-tasks-section">
 
             <ul class="to-do-tasks">
@@ -70,15 +78,14 @@
 
          <div>*Click on a task 4 times to remove it</div>
 
-
- <!----------------- (TODAY') CALENDAR ------------->
+         <!----------------- (TODAY') CALENDAR ------------->
 
          <div class="calendar">
             <p id="monthName"></p>
             <p id="dayName"></p>
             <p id="dayNumber"></p>
             <p id="year"></p>
-            <p id="clock"></p>
+            <p id="clock" style="color:red"></p>
          </div>
 
          <script defer>
@@ -98,11 +105,12 @@
             document.getElementById('dayNumber').innerText = dateNumer;
             document.getElementById('year').innerText = year;
 
-            // setInterval( () => { 
-            //    date = new Date(); //update date to current date
-            //    let clock = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`; //clock build
-            //    document.getElementById('clock').innerText = clock; }, 0 ); //update clock every second
-               
+            setInterval( () => { 
+               date = new Date(); //update date to current date
+               let clock = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`; //clock build
+               document.getElementById('clock').innerText = clock; }, 0 ); //update clock every second
+            
+
          </script>
 
          <style>
@@ -113,16 +121,6 @@
                padding: 0;
                box-sizing: border-box;
                font-family: sans-serif;
-               color:lightblue;
-            } 
-            
-            body
-            {
-               display: flex;
-               justify-content: center;
-               align-items: center;
-               min-height: 100vh;
-               background: #000;
             } 
 
             .calendar
@@ -176,6 +174,8 @@
          </style>
 
 <!------- !* END OF CALENDAR *! -------->
+
+         </main>
 
     </body>
 

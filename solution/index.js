@@ -15,17 +15,20 @@ const toDoTasksList = Array.from(document.getElementsByClassName('to-do-tasks'))
 const inProgressTasksList = Array.from(document.getElementsByClassName('in-progress-tasks'));
 const DoneTasksList = Array.from(document.getElementsByClassName('done-tasks'));
 
+// [toDoTasksList, inProgressTasksList, DoneTasksList].forEach((list) => {
+//    // list.setAttribute('onDragOver', onDragOver);
+// });
+
 const search = document.getElementById('search'); //search bar input section holder
 
 
-//---------------------------------------------------------EVENT LISTENERS---------------------------------------------------------------------//
+//---------------------------------------------------------EVENT LISTENERS (~~ At the top of the script cuz it makes script smother and prevent issues ~~)---------------------------------------------------------------------//    
 
- 
+
 // add to do task content to matchin list/s  & saving in local storage //
 addToDoButton.addEventListener('click', () => {
 
     liGenerator( toDoInput, toDoTasksList );
-       
     
 }, { passive: true });
 
@@ -58,8 +61,8 @@ inProgressInput.addEventListener('keydown' , (e) => {
 // add done task cntent to matchin list/s & saving in local storage //
 addDoneButton.addEventListener('click' , () => {
 
-    liGenerator( doneInput, DoneTasksList );     
-    
+    liGenerator( doneInput, DoneTasksList );
+        
 }, { passive: true });
 
 doneInput.addEventListener('keydown' , (e) => {
@@ -77,7 +80,7 @@ doneInput.addEventListener('keydown' , (e) => {
 
     const observer = new MutationObserver( (mutations) => { //observing for changes in the list
         
-         mutations.forEach( function (mutation){
+            mutations.forEach( function (mutation){
 
             
 
@@ -88,13 +91,11 @@ doneInput.addEventListener('keydown' , (e) => {
                     //!!~~**DONT FORGET TO UPDATE WHEN ITEM DELETED**~~!!//
                     UserContentInputArray.push(liTask); //pushin newcontent to array to store its value
 
-                    console.log(UserContentInputArray)
                     liTask.addEventListener('click', (e) => { //event when user click 4 times in a row it removes the specific list item from the specific lsit
                         if(e.detail === 4)
                         {
                           e.target.parentElement.remove() //removing its whole from list
                           UserContentInputArray.splice(UserContentInputArray.indexOf(e.target),1) //removing it from the user input array as well
-                          console.log(UserContentInputArray)
                         }
                     }, { passive: true });
 
@@ -108,7 +109,7 @@ doneInput.addEventListener('keydown' , (e) => {
                           liTask.addEventListener( 'keydown', (e) => { //when Enter hit prevent its default
                                 if(e.key === "Enter") 
                                 {
-                                   e.preventDefault()
+                                    e.preventDefault()
                                 }
                             }); 
                     }); 
@@ -122,29 +123,34 @@ doneInput.addEventListener('keydown' , (e) => {
                         isHover = false;
                     }, { passive: true });
 
+
+                    // liTask.parentElement.setAttribute('draggable', true);
+                    // liTask.parentElement.setAttribute('onDragStart', onDragStart);
     
-                    liTask.addEventListener('keyup', (e) => { // detectin keyboard events are only on input type elements so i detect it through window object
-                        console.log(isHover)
-                        if((e.altKey || e.getModifierState('AltGraph')) )
+                    window.addEventListener( 'keypress', (e) => { // detectin keyboard events are only on input type elements so i detect it through window object
+                        
+                        if( (e.key === "Alt" || e.getModifierState('AltGraph')) )
                         {
                             console.log('lol')
                         }
-                    });
+                    }, { passive: true });
+
+
     
                     liTask.addEventListener('mouseover', (e) => {
                         isHover = true;
                         //liTask.matches(':hover')
-                    });                   
+                    }, { passive: true });                   
             }
         });       
             
     });
         
         
-    listItems.forEach((list) => { //observing changes for every list
+    listItems.forEach((list) => { //observing the changes for every list
      observer.observe( list, {childList: true }); // observing for list items which being added
     });
-
+/** ~~ !!! STOP THE MUTANT WHEN USER NOT MAKING AN EVENT RELATED TO IT!!! ~~ */
 
 
 
@@ -164,43 +170,21 @@ search.addEventListener('keyup', e => {
         }
     }
 
-
-    let searchInput = [];
-    searchInput = search.value.toLowerCase().split(' ');
-    if(e.key === "Escape" && searchInput[0] != '') 
-    {
-        searchInput[searchInput.length - 1].pop();
-    }
-
-    if(UserContentInputArray.length > 0 || e.key === "Escape")
-    {
-        for(const listCont of UserContentInputArray)
-        {
-                for(const srch of searchInput)
-                {
-                    if(searchInput.length === 1 && searchInput[0].toLowerCase() === searchInput[0].toUpperCase()) //if nothing in search bar. show everything
-                    {
-                        listCont.parentElement.classList.remove('hidden')
-                        searchInput.length = 0;
-                    }
-
-                    if(!listCont.textContent.toLowerCase().includes(srch.toLowerCase()) ) listCont.parentElement.classList.add('hidden') //if no task matches search thing, hide it
-                    
-                    else 
-                    {
-                        if(searchInput.length > 0 && srch.length === 0) listCont.parentElement.classList.add('hidden') //else, if there is a search bar input but there is a space at the end of the search word. hide everything
-                    
-                        else listCont.parentElement.classList.remove('hidden') //if its matching with no problem. show it.
-                    }
-                }
-        }
-    }
+    const searchQuery = e.target.value;
+        UserContentInputArray.forEach( (listTask) =>{
+            if(searchQuery.length > 0)
+            {
+                if(!listTask.textContent.toLowerCase().includes(searchQuery.toLowerCase())) listTask.parentElement.classList.add('hidden')
+                if(listTask.textContent.toLowerCase().includes(searchQuery.toLowerCase()))listTask.parentElement.classList.remove('hidden')     
+            }
+            else listTask.parentElement.classList.remove('hidden')
+        }); 
     
 }, { passive: true })
 
 //---------------------------------------------------------FREE AREA---------------------------------------------------------------------//
 
- 
+
 
 
 
@@ -209,14 +193,20 @@ search.addEventListener('keyup', e => {
 //----------------------GENERIC FUNCTIONS----------------------//
 
 //function checking if **INPUT ELEMENT** is empty attach error class style to it etc//
+
 function isElementEmpty(el)
 {
     if(el.value === '')
     {
-      el.classList.add('error');
-      return true;
+        el.classList.add('error');
+        return true;
     }
     return false;    
+}
+
+function moveTaskToSection(id)
+{
+
 }
 
 //function gets an input element and sets an li element to the coresponsing section of the task//
@@ -232,41 +222,44 @@ function liGenerator( inputElement, arrayOfListElementsByClass )
     }
     else
     {
-      inputsArray.forEach( inputField => inputField.classList.remove('error'));  // if not empty (& and submitted one form) remove error style attribute to all input fieldds 
+        inputsArray.forEach( inputField => inputField.classList.remove('error'));  // if not empty (& and submitted one form) remove error style attribute to all input fieldds 
 
-      const userInputSection = elCreator('span', [inputElement.value], ['li-task', 'hover']); //section of user input only creator
-      const liEl = elCreator( 'li', [userInputSection], ['list'], {} ); //creating and inserting li el to list from user input
+        const userInputSection = elCreator('span', [inputElement.value], ['li-task', 'hover']); //section of user input only creator
+        const liEl = elCreator( 'li', [userInputSection], ['list'], {} ); //creating and inserting li el to list from user input
 
-      
-      //date elements creation!
-      const fullDate = new Date(); //date of submitting indicator
-      const date = elCreator( 'span', [ ` ${fullDate.getDate()}/${fullDate.getMonth()+1}/${fullDate.getFullYear()} `], ['date']);
-      const time = elCreator('span', [` ${fullDate.getHours()}:${fullDate.getMinutes()}:${fullDate.getSeconds()} `], ['time']);
-    
-      //Full Date Structure!
-      const fulldateEl = elCreator('span', [
-         ' { ',
-        date,
-        time,
-         ' }'
-      ], ['full-date']);
+        
+        //date elements creation!
+        const fullDate = new Date(); //date of submitting indicator
+        const date = elCreator( 'span', [ ` ${fullDate.getDate()}/${fullDate.getMonth()+1}/${fullDate.getFullYear()} `], ['date']);
+        const time = elCreator('span', [` ${fullDate.getHours()}:${fullDate.getMinutes()}:${fullDate.getSeconds()} `], ['time']);
+        
+        //Full Date Structure!
+        const fulldateEl = elCreator('span', [
+            ' { ',
+            date,
+            time,
+            ' }'
+        ], ['full-date']);
 
-      //apend FULLDATE to list!
-      eleDOMAppender(liEl, fulldateEl); //apending full date to the task list
-      
-      arrayOfListElementsByClass.forEach( listElement => {
+        //apend FULLDATE to list!
+        eleDOMAppender(liEl, fulldateEl); //apending full date to the task list
+        
+        arrayOfListElementsByClass.forEach( listElement => {
 
-            if(listElement.firstElementChild === 'null') //if it doesnt have a  child, append it.
-            {
-                eleDOMAppender( listElement , liEl ); //sets the value of the input to the currrent state of it
-            }
-            else{ //if it does  have a child insert the generated li from user to the top of the ul
-               listElement.insertBefore(liEl, listElement.firstChild);
-            }
+                if(listElement.firstElementChild === 'null') //if it doesnt have a  child, append it.
+                {
+                    eleDOMAppender( listElement , liEl ); //sets the value of the input to the currrent state of it
+                }
+                else{ //if it does  have a child insert the generated li from user to the top of the ul
+                    listElement.insertBefore(liEl, listElement.firstChild);
+                }
 
-        });
+                //Window.localStorage.setItem('task',JSON.stringify(liEl));    
 
-      inputElement.value = ''; //resetin the value of input field after submittion
+
+            });
+
+        inputElement.value = ''; //resetin the value of input field after submittion
     } 
 } 
 
@@ -306,7 +299,9 @@ function eleDOMAppender( destintionEle, currentEle ){
 
 //----------------------SPECIFIC FUNCTIONS----------------------//
 
-
+// function onDragOver(event) {
+//   event.preventDefault();
+// }
 
 
 //---------------------------------------------------------WEB API(S)---------------------------------------------------------------------//
