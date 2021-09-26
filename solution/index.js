@@ -275,10 +275,10 @@ async function loadApi(){
     toDoTasksUl = toDoContainer.firstChild;
     inProgressTasksUl = inProgressContainer.firstChild;
     doneTasksUl = doneContainer.firstChild;
-
+    //saving changes to local storage
     localStorageSave();
 
-    //resettin the individual eventListeners
+    //resetting the individual dargNdrop eventListeners
     for(let li of Array.from(document.querySelectorAll('.task'))){
         li.addEventListener('dragstart', dragItem);
         li.addEventListener('dragend', endDrag);
