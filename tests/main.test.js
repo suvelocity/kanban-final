@@ -113,7 +113,7 @@ let wasInPut = false
 
 describe(projectName, () => {
   beforeAll(async () => {
-    browser = await puppeteer.launch({ headless: false }) //change to false if you want to view the page
+    browser = await puppeteer.launch({ headless: true }) //change to false if you want to view the page
     page = await browser.newPage()
     page.setRequestInterception(true)
     page.on('request', async (req) => {
@@ -188,16 +188,10 @@ describe(projectName, () => {
     await page.keyboard.up('Alt')
     const expectedData = {}
     await full4s.asyncForEach(lists, async (listItem, i) => {
-      console.log(lists)
-      console.log(listItem)
-      console.log(i)
       const childs = await page.$$(`${listItem} > .task`)
-      console.log(childs.length)
       switch (i) {
         case 0:
           expectedData[tasksTypes[i]] = []
-          console.log(expectedData)
-          console.log(tasksTypes[i])
           expect(childs.length).toBe(0)
           break
         case 1:
