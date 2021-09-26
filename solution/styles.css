@@ -66,6 +66,12 @@ task-box > div {
   height: 100%;
 }
 
+.dragging {
+  opacity: 0.5;
+  box-shadow: black;
+  color: red;
+}
+
 /* LOADER STYLING */
 .loader {
   border: 16px solid #f3f3f3; /* Light grey */

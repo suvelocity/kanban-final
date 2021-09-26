@@ -356,79 +356,6 @@ function loadRemoteData(data) {
   insertData(data)
   storeLocally(data)
 }
-/**************** Drag & Drop Functions ****************/
-
-//////////////////////////////////////////////
-
-var dragged
-
-/* events fired on the draggable target */
-document.addEventListener('drag', function (event) {})
-
-document.addEventListener(
-  'dragstart',
-  function (event) {
-    dragged = event.target
-    event.target.style.opacity = 0.5
-  },
-  false
-)
-
-document.addEventListener(
-  'dragend',
-  function (event) {
-    event.target.style.opacity = ''
-  },
-  false
-)
-
-/* events fired on the drop targets */
-document.addEventListener(
-  'dragover',
-  function (event) {
-    event.preventDefault()
-  },
-  false
-)
-
-document.addEventListener(
-  'dragenter',
-  function (event) {
-    // highlight potential drop target when the draggable element enters it
-    if (event.target.className.includes('section')) {
-      event.target.style.background = 'purple'
-    }
-  },
-  false
-)
-
-document.addEventListener(
-  'dragleave',
-  function (event) {
-    // reset background of potential drop target when the draggable element leaves it
-    if (event.target.className.includes('section')) {
-      event.target.style.background = ''
-    }
-  },
-  false
-)
-
-document.addEventListener(
-  'drop',
-  function (event) {
-    event.preventDefault()
-    // move dragged elem to the selected drop target
-    if (event.target.className.includes('section')) {
-      event.target.style.background = ''
-      dragged.parentNode.removeChild(dragged)
-      const list = event.target.querySelector('ul')
-      list.insertBefore(dragged, list.firstChild)
-    }
-  },
-  false
-)
-
-/////////////////////////////////////////////////
 
 /**************** Assert Functions ****************/
 
@@ -502,4 +429,63 @@ function prepareRemoteDataBody() {
     updatedAt: '2021-09-22T08:34:31.333Z',
   }
   return remoteData
+}
+
+/**************** Drag & Drop Functions ****************/
+
+document.addEventListener('drag', function (event) {})
+
+document.addEventListener('dragstart', function (event) {
+  if (event.target.className === 'task') {
+    event.target.classList.add('dragging')
+  }
+})
+
+document.addEventListener('dragend', function (event) {
+  event.target.classList.remove('dragging')
+})
+
+/* used to disable the 'blocked' cursor icon */
+document.addEventListener('dragover', function (event) {
+  event.preventDefault()
+})
+
+document.addEventListener('dragenter', function (event) {
+  // highlight drop section
+  const sectionElement = getSectionFromPath(event)
+  if (sectionElement) {
+    sectionElement.style.background = '#777'
+  }
+})
+
+document.addEventListener('dragleave', function (event) {
+  // reset background of drop section
+  if (event.target.className.includes('section')) {
+    event.target.style.background = ''
+  }
+})
+
+document.addEventListener('drop', function (event) {
+  event.preventDefault()
+  // move dragged task to the selected section
+  const dragEl = document.querySelector('.dragging')
+  const sectionElement = getSectionFromPath(event)
+  if (sectionElement) {
+    sectionElement.style.background = ''
+    dragEl.parentNode.removeChild(dragEl)
+    const list = sectionElement.querySelector('ul')
+    list.insertBefore(dragEl, list.firstChild)
+  }
+})
+
+/**
+ * Gets the section element, if it exist, from the path of a drop event.
+ * @param {Object} event the event dispatched by the event listener
+ * @returns {Element} - the section element from the event path
+ */
+function getSectionFromPath(event) {
+  const sectionElement = event
+    .composedPath()
+    .filter((element) => element.tagName == 'SECTION')[0]
+  return sectionElement
 }
