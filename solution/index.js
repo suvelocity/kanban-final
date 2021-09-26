@@ -15,6 +15,8 @@ const doneList = document.getElementById('done');
 function updateTaskList() {
     localStorage.setItem('tasks', JSON.stringify(tasklist));
 }
+updateTaskList();
+
 
 function addItem(text, ulId) {
     if (text.length === 0) {
@@ -88,7 +90,7 @@ function loadLocal() {
     }
 
 }
-loadLocal();
+
 
 document.querySelectorAll("li").forEach(function (liEdit) {
     liEdit.ondblclick = function () {
@@ -106,3 +108,71 @@ document.querySelectorAll("li").forEach(function (liEdit) {
         input.focus();
     }
 });
+
+function setItemPhase(task, location) {
+    if(task.phase == location) return;
+    const idx = tasklist[task.phase].findIndex(sTask => sTask == task);
+    if (idx > -1) {
+        switch (task.phase) {
+            case 'todo':
+                for (const child of todoList.children) {
+                    if (child.object == task) {
+                        tasklist[task.phase].splice(idx, 1);
+                        moveItemTo(child, location);
+                    }
+                }
+                break;
+                case 'in-progress':
+                    for (const child of inProgressList.children) {
+                        if (child.object == task) {
+                        tasklist[task.phase].splice(idx, 1);
+                        moveItemTo(child, location);
+                    }
+                }
+                break;
+                case 'done':
+                    for (const child of doneList.children) {
+                        if (child.object == task) {
+                            tasklist[task.phase].splice(idx, 1);
+                        moveItemTo(child, location);
+                    }
+                }
+                break;
+            }
+            task.phase = location;
+            tasklist[location].push(task);
+        }
+        updateTaskList();
+    }
+    function moveItemTo(elem, location) {
+        switch (location) {
+            case 'todo':
+                todoList.appendChild(elem);
+                break;
+                case 'in-progress':
+                inProgressList.appendChild(elem);
+                break;
+                case 'done':
+                    doneList.appendChild(elem);
+                    break;
+                }
+    }
+    
+    
+    loadLocal();
+
+    function altNum(e, li) {
+        if (e.altKey) {
+            switch (e.key) {
+                case '1':
+                    setItemPhase(li.object, "todo");
+                    break;
+                case '2':
+                    setItemPhase(li.object, "in-progress");
+                    break;
+                case '3':
+                    setItemPhase(li.object, "done");
+                    break;
+            }
+        }
+    }
