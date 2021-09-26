@@ -9,6 +9,13 @@ if(!localStorage.tasks || localStorage.tasks.length == 0){
         );
 }  
 
+document.addEventListener('click',(e) => {
+    console.log(e.target.id);
+    if(e.target.id === 'new-theme-btn'){
+        console.log('lll');
+    }
+})
+
 
 //localStorage.clear();//clears local storage
 
@@ -243,6 +250,7 @@ async function saveApi(){
   }).then(response => {if(response.status > 400){alert("i'm a teapot")}})
   loader.classList.remove('loader');
 }
+
 //load API function
 async function loadApi(){
     loader.classList.add('loader');
@@ -301,7 +309,7 @@ function endDrag(e){
 }
 
 
-
+//adding event listeners for dragNdrop
 for(let li of Array.from(document.querySelectorAll('.task'))){
   li.addEventListener('dragstart', dragItem);
   li.addEventListener('dragend', endDrag);
@@ -355,6 +363,12 @@ themeButton.addEventListener('click', (e) => {
         cssLink.setAttribute('href', './cssFornewTheme.css');
     }else{
         cssLink.setAttribute('href', './styles.css');
+    }
+})
+document.addEventListener('click',(e) => {
+    console.log(e.target.id);
+    if(e.target.id === 'new-theme-btn'){
+        console.log('lll');
     }
 })
 
