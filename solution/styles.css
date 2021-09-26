@@ -12,12 +12,15 @@ header{
     text-align: center;
     width: 100%;
 }
-.section-div{
-    margin-top: 2%;
+.section-div{    
     display: inline-grid;
-    width: 30%;
-    margin-left: 30px;    
+    width: 30%;        
     border: 2px solid black;
+    margin-top: 2%;
+}
+.search_div{
+    width: 100%;
+    text-align: center;
 }
 /* every li should have this class */
 .task{
@@ -55,9 +58,9 @@ header{
 }
 .search-input{
     border-radius: 4px;
-    height: 24px;
+    height: 30px;
     border: 1px solid gray;
-    width: 25%;
+    width: 40%;
     margin-top: 25px;
     margin-bottom: 30px;
 }
@@ -100,12 +103,22 @@ header{
     border: 1px solid black;    
 }
 .save-button{
-    padding: 10px 10px;
-    margin-bottom: 20px;
+    padding: 8px 8px;
+    border-radius: 5px;
+    background-color: cornflowerblue;
+}
+.save-button:hover{
+    background-color: lightseagreen;
+    color: white;
 }
 .load-button{
-    padding: 10px 10px;
-    margin-bottom: 20px;
+    padding: 8px 8px;
+    border-radius: 5px;
+    background-color: cornflowerblue;
+}
+.load-button:hover{
+    background-color: lightseagreen;
+    color: white;
 }
 .error{
     color: white;
@@ -127,7 +140,7 @@ header{
 .hidden{
     visibility: hidden;
     opacity: 0;
-    transition: visibility 0s linear 600ms, opacity 600ms;
+    /* transition: visibility 0s linear 600ms, opacity 600ms; */
 }
 .visible{
     visibility: visible;

@@ -56,7 +56,7 @@ function onScreenClick(event){
     if(SelectedTask != undefined){
         if(event.target != SelectedTask){
             changeSelectedTask("");
-        }
+        }        
     }    
 }
 
@@ -223,18 +223,23 @@ function dragLeave(event){
 
 function dragDrop(event){
     event.target.classList.remove('droppable-hovered');
+    let target = event.target;
     const taskManagerDataJSON = getLocalStorageTasks(); 
     const sectionArray = taskManagerDataJSON[SelectedTask.dataset.section];
     let index = sectionArray.indexOf(SelectedTaskName);
+    // Remove from previous sction
     sectionArray.splice(index, 1);
     localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
-    if(event.target.dataset.section === SelectedTask.dataset.section && event.target.dataset.drop_div !== '0'){
-        AddToSection(SelectedTask.textContent, event.target.dataset.section, event.target.dataset.drop_div - 1);
+    //Add to the new one in a specific index
+    let indexDrop = parseInt(target.dataset.drop_div);    
+    if(target.dataset.section === SelectedTask.dataset.section && indexDrop !== 0 && index < indexDrop){
+        AddToSection(SelectedTask.textContent, target.dataset.section, indexDrop - 1);
     }
     else{
-        AddToSection(SelectedTask.textContent, event.target.dataset.section, event.target.dataset.drop_div);
+        AddToSection(SelectedTask.textContent, target.dataset.section, target.dataset.drop_div);
     }
-    reloadTasksPage(searchInput.textContent);        
+    reloadTasksPage(searchInput.textContent); 
+    displayError(false);       
 }
 
 function onTaskDragStart(event){
