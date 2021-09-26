@@ -1,3 +1,5 @@
+
+
 h1 {
     text-align: center;
     font-size: 40px;
@@ -11,16 +13,8 @@ body {
     text-align: center;
 }
 
-li:hover {
-
-    color: rgb(59, 39, 20);
-    background-color: burlywood;
-    max-width: 220px;
-}
-
 li{
     text-align: left;
-    border: none;
 }
 section {
     
@@ -32,31 +26,24 @@ section {
     margin: 10px;
     text-align: center;
     min-height: 300px;
-    min-width: 300px;
+    min-width: 300px; 
     /* margin: inherit; */ 
-       
    
-   
-
-
 }
 
 section:hover{
     box-shadow: 0px 0px 10px 0px
-    
 }
 
-input {
-    min-width: 200px;
-}
 
 div{
     display: flex;
     flex-direction: row;
     justify-content: center;
    
-}
-/* span {
+} 
+/* 
+ span {
     border-radius: 20px;
     border-color: rgb(126, 103, 73);
     border-style: double;
@@ -64,7 +51,7 @@ div{
     background-color: whitesmoke;
     margin-bottom: 10px;
     
-} */
+}  */
 
 button,input {
     border-radius: 5px;
@@ -72,20 +59,22 @@ button,input {
     height: 20px;
 }
 
-.task {
+/* .task {
 width: 180px;
 height: 20px;
-}
-/* input{
+}  */
+
+ input{
     border-radius: 5px;
     border-width: 1px;
     font-family: inherit;
-    /* height: 20px; 
-} */
-
+    height: 20px; 
+    min-width: 200px;
+} 
+ 
 #chageTaskInput{
 
-    border: inherit;
     background-color: transparent;
     /* outline: none; */
-}
+ }  
+

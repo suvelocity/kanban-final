@@ -1,50 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./index.js" defer></script>
-    <link rel="stylesheet" href="./styles.css" />
-    
-    <title>Tasks manager</title>
-</head>
-<body>
-    
-    <h1 id="page-title"> Task Manager ✔ </h1>
-        <input id="search" placeholder="search for tasks here"> 
-             <button id="submit-to-search"> search </button>
-     
-    <br>
-    <div id="sections">
-    <section class="section-1">
-        <h3> To Do List: </h3>
-        <ul class="to-do-tasks" id="ul1">
-            
-        </ul>
-        <input id="add-to-do-task" placeholder="add to do task">
-        <button id="submit-add-to-do"> add </button>
-    </section>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="./index.js" defer></script>
+        <link rel="stylesheet" href="./styles.css" />
+        <title>Tasks manager</title>
+    </head>
+    <body>
+        <h1 id="page-title">Task manager✏️</h1>
+        <input type="text" id="search" placeholder="search tasks here" />
+        <div id="sections" tabindex="0">
+            <section id="section1">
+                <h3> To do: </h3>
+                <input type="text" id="add-to-do-task" placeholder="type some tasks here" />
+                <button id="submit-add-to-do">add</button>
+                <div></div>
+                <ul class="to-do-tasks" id="todo"></ul>
+            </section>
 
-    <section class="section-2">
-        <h3> In Progress List: </h3>
-        <ul class="in-progress-tasks" id="ul2">
-            
-        </ul>
-        <input id="add-in-progress-task" placeholder="add in progress task">
-        <button id="submit-add-in-progress"> add </button>
-    </section>
+            <section id="section2">
+                <h3> In progress: </h3>
+                <input type="text" id="add-in-progress-task" placeholder="type some tasks here" />
+                <button id="submit-add-in-progress">add</button>
+                <br>
+                <ul class="in-progress-tasks" id="in-progress"></ul>
+            </section>
 
-    <section class="section-3">
-        <h3> Done List: </h3>
-        <ul class="done-tasks" id="ul3">
-            
-        </ul>
-        <input id="add-done-task" placeholder="add done task">
-        <button id="submit-add-done"> add </button>
-    </section>
-    </div>
-   
-   
-</body>
+            <section id="section3">
+                <h3> Done: </h3>
+                <input type="text" id="add-done-task" placeholder="type some tasks here" />
+                <button id="submit-add-done">add</button>
+                <br>
+                <ul class="done-tasks" id="done"></ul>
+            </section>
+        </div>
+    </body>
 </html>
