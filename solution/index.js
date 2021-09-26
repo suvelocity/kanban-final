@@ -9,7 +9,7 @@ if(!localStorage.tasks || localStorage.tasks.length == 0){
         );
 }  
 
-document.addEventListener('click',(e) => {
+document.body.addEventListener('click',(e) => {
     console.log(e.target.id);
     if(e.target.id === 'new-theme-btn'){
         console.log('lll');
