@@ -18,10 +18,12 @@ async function checkName()
     } 
     currentBg();
     tasks=JSON.parse(localStorage.getItem("tasks"));
-    /* tasksApi=getApi().json;
+    let tasksApi;
+    /* try{tasksApi=getApi().json;
     if(tasks!==tasksApi)
         tasks=tasksApi;
-    console.log(tasks) */
+    }
+    catch{} */
     for (let list in tasks) {
         tasks[list].forEach(text => {
             let task =createElement("li",[],["list-group-item","task"],{draggable:"true",ondragstart:"drag(event)"});
@@ -30,7 +32,7 @@ async function checkName()
             task.addEventListener('dblclick', changeTask);
             task.addEventListener('mouseover', moveTask);
             task.addEventListener('mouseout', moveTaskEnd);
-        });} 
+        });}  
  
 }
 
@@ -40,18 +42,18 @@ async function getApi(){
     for (let i = alltask.length-1; i >-1; i--) {
         alltask[i].parentElement.removeChild(alltask[i]);        
     }
-    const respone= await fetch("https://json-bins.herokuapp.com/bin/614b080c4021ac0e6c080cd2",{
-        method:"GET",
-        headers :{
-            "ID":"614b080c4021ac0e6c080cd2",
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        },
-        
-    }) 
-    const answerApi= await respone.json();
     try
     {
+        const respone= await fetch("https://json-bins.herokuapp.com/bin/614b080c4021ac0e6c080cd2",{
+            method:"GET",
+            headers :{
+                "ID":"614b080c4021ac0e6c080cd2",
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            
+        }) 
+        const answerApi= await respone.json();
         hideSpinner() ;
 
         tasks=answerApi.tasks;
@@ -82,7 +84,6 @@ async function getApi(){
                 task.addEventListener('mouseout', moveTaskEnd);
             });
         }
-        alert("There is no tasks")
     }
     finally{
         hideSpinner();
@@ -113,8 +114,8 @@ async function saveApi()
     })}
     catch(ex)
     {
-        alert(ex);
-        throw("error")
+        alert('list are empty');
+        throw("The lists are empty")
     }
     finally
     {
@@ -152,7 +153,7 @@ async function clearApi()
     }
     catch(ex)
     {
-        alert(ex);
+        alert("list are empty");
         throw("error")
     }
 }
@@ -328,7 +329,6 @@ function exitSearch(event)
 function searchTask(event)
 { 
     searchText=document.getElementById("search").value;
-    console.log(searchText)
     let list;
     let allLi=document.getElementsByTagName("li");
     for (let i = 0; i < allLi.length; i++ ){
