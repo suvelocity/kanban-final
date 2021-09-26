@@ -4,7 +4,7 @@
 const todoSection = document.querySelector('.todo-section')
 const doneSection = document.querySelector('.done-section')
 const inProgressSection = document.querySelector('.in-progress-section')
-const mainContianer = document.querySelector('.main-container')
+const mainContainer = document.querySelector('.main-container')
 //List Elements
 const doneTasks = document.querySelector('.done-tasks')
 const todoTasks = document.querySelector('.to-do-tasks')
@@ -427,7 +427,7 @@ function assertInputNotEmpty(list) {
 
 /**************** Event Listeners ****************/
 
-mainContianer.addEventListener('click', handleClick)
+mainContainer.addEventListener('click', handleClick)
 
 optionBox.addEventListener('click', handleOptionClick)
 
@@ -435,11 +435,11 @@ window.addEventListener('load', loadData)
 
 window.addEventListener('keydown', handleKeyPress)
 
-mainContianer.addEventListener('dblclick', handleDoubleClick)
+mainContainer.addEventListener('dblclick', handleDoubleClick)
 
-mainContianer.addEventListener('focusout', handleFocusOut)
+mainContainer.addEventListener('focusout', handleFocusOut)
 
-mainContianer.addEventListener('input', handleInput)
+mainContainer.addEventListener('input', handleInput)
 
 searchInput.addEventListener('input', handleSearchInput)
 
