@@ -89,3 +89,20 @@ function loadLocal() {
 
 }
 loadLocal();
+
+document.querySelectorAll("li").forEach(function (liEdit) {
+    liEdit.ondblclick = function () {
+        let val = this.innerHTML;
+        let input = document.createElement("input");
+        input.value = val;
+        input.onblur = function () {
+            // Setting the new value in the state
+            this.parentNode.object.text = input.value;
+            this.parentNode.innerText = input.value;
+            updateTaskList();
+        }
+        this.innerHTML = "";
+        this.appendChild(input);
+        input.focus();
+    }
+});
