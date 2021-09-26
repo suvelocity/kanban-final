@@ -549,24 +549,13 @@ document.addEventListener('dragend', function (event) {
 })
 
 /* used to disable the 'blocked' cursor icon */
-document.addEventListener('dragover', function (event) {
-  event.preventDefault()
-})
-
-document.addEventListener('dragenter', function (event) {
-  // highlight drop section
-  const sectionElement = getSectionFromPath(event)
-  if (sectionElement) {
-    sectionElement.style.background = '#777'
-  }
-})
-
-document.addEventListener('dragleave', function (event) {
-  // reset background of drop section
-  if (event.target.className.includes('section')) {
-    event.target.style.background = ''
-  }
-})
+document.addEventListener(
+  'dragover',
+  function (event) {
+    event.preventDefault()
+  },
+  false
+)
 
 document.addEventListener('drop', function (event) {
   event.preventDefault()
@@ -574,7 +563,6 @@ document.addEventListener('drop', function (event) {
   const dragEl = document.querySelector('.dragging')
   const sectionElement = getSectionFromPath(event)
   if (sectionElement) {
-    sectionElement.style.background = ''
     dragEl.parentNode.removeChild(dragEl)
     const list = sectionElement.querySelector('ul')
     list.insertBefore(dragEl, list.firstChild)

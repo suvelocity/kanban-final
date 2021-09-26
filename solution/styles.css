@@ -26,14 +26,14 @@ section {
 }
 
 .in-progress-section {
-  background-color: seagreen;
+  background-color: rgb(32, 172, 85);
 }
 .todo-section {
-  background-color: sienna;
+  background-color: rgb(231, 178, 31);
 }
 
 .done-section {
-  background-color: skyblue;
+  background-color: rgb(69, 151, 185);
 }
 
 button {
@@ -72,7 +72,23 @@ task-box > div {
   height: 10%;
   width: 100%;
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  background-color: rgba(245, 245, 245, 0.192);
+  border-radius: 25px;
+  padding: 0.75rem;
+  border: 2px solid rgba(255, 255, 255, 0.013);
+  margin-top: -10px;
+}
+
+i:hover {
+  color: rgba(255, 255, 255, 0.746);
+  transition: 0.5s;
+}
+
+i {
+  color: rgba(0, 0, 0, 0.61);
+  transition: 0.5s;
 }
 
 .header {
@@ -135,6 +151,12 @@ task-box > div {
   align-items: center;
 }
 
+.section-options {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
 .color-picker {
   width: 25px;
   height: 25px;
@@ -145,11 +167,24 @@ task-box > div {
   margin: 0;
 }
 
+.highlight-section {
+  background-color: red;
+}
+
+.submit-task {
+  background-color: rgb(255, 255, 255);
+  border-radius: 50px;
+  border: 3px solid rgba(105, 105, 105, 0.746);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 #page-title,
 .search-box,
 .option-box {
   margin: 0 2rem;
 }
+
+sectio
 
 /* LOADER STYLING */
 
