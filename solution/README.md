@@ -4,7 +4,7 @@
 
 Welcome to my Kanban project! Here is a sneak peek 😯
 
-![Example](./solution/images/kanban.jpg)
+![Example](./images/kanban.jpg)
 
 ## Project's Description
 
@@ -18,9 +18,9 @@ My Kanban's goal is to visualize work tasks and giving maximum efficiency workfl
 
 ## Kanban's Interactions
 
- - [] Search bar – Can search through tasks, case-insensitive. Start searching by every key pressed down. 
+ - [x] Search bar – Can search through tasks, case-insensitive. Start searching by every key pressed down. 
 
-**NOTE!** Every change in the page will always_ display tasks according to search input. For example, search input would contain "t", if you will add a task that does not include "t", the task will not be displayed (Will be added but not displayed)  
+    **NOTE!** Every change in the page will always display tasks according to search input. For example, search input would contain "t", if you will add a task that does not include "t", the task will not be displayed (Will be added but not displayed)  
 
  - [x] Add task – Every section as an input with an "Add task" button. To add task, insert your task in the right input and press on "Add task". **NOTE!** Empty task is not allowed.
 
@@ -43,13 +43,15 @@ My Kanban's goal is to visualize work tasks and giving maximum efficiency workfl
 
  ## Future Updates
 
- - [] Important task - Mark important task on page.
- - [] Picture adding - Add picture to tasks
+ - [ ] Important task - Mark important task on page.
+ - [ ] Picture adding - Add picture to tasks
 
  ## Details
 
- - [Profile](https://github.com/DanielPhilosoph "My Github")
- - [Email](mailto:danielph9@gmail.com )
+ - Github [Profile](https://github.com/DanielPhilosoph "My Github")
+ - Email: danielph9@gmail.com 
+
+
 
 
 
