@@ -1,31 +1,33 @@
 /**************** Select Elements ****************/
 
+//Layout Elements
 const todoSection = document.querySelector('.todo-section')
 const doneSection = document.querySelector('.done-section')
 const inProgressSection = document.querySelector('.in-progress-section')
 const mainContianer = document.querySelector('.main-container')
-
+//List Elements
 const doneTasks = document.querySelector('.done-tasks')
 const todoTasks = document.querySelector('.to-do-tasks')
 const inProgressTasks = document.querySelector('.in-progress-tasks')
-
+//Task Elements
 const taskBox = document.createElement('div')
-
+//Utility Elements
 const searchInput = document.querySelector('#search')
-
 const optionBox = document.querySelector('.option-box')
-
 const loader = document.querySelector('.loader')
 
 /**************** Constants ****************/
+
 const POSSIBLE_KEYS = ['1', '2', '3']
 
 const EMPTY_TASKS_DATA = { todo: [], 'in-progress': [], done: [] }
 
 /**************** Event Handlers ****************/
 
-/**Handles click events.
- * @param {Object} event - event object recieved from event listener
+/**Handles click events by delegation.
+ * Checks if input is not empty before allowing to add.
+ * Captures and saves data after adding a task.
+ * @param {Object} event - event object recieved from the event listener
  */
 function handleClick(event) {
   if (event.target.className.includes('submit-task')) {
@@ -37,19 +39,21 @@ function handleClick(event) {
   }
 }
 
+/**Handles double click events.
+ * Makes the double-clicked event editable.
+ * @param {Object} event - event object recieved from the event listener
+ */
 function handleDoubleClick(event) {
-  console.log(event.target)
   const eventTarget = event.target
   eventTarget.setAttribute('contenteditable', true)
-  eventTarget.addEventListener('input', handleInput)
+  // eventTarget.addEventListener('input', handleInput)
 }
 
+/**Handles keyboard events.
+ * If a task box is being hovered, allows task removal with ALT + num shortcut.
+ * @param {Object} event - event object recieved from the event listener
+ */
 function handleKeyPress(event) {
-  // commented out for the porpuse of testing if handle input handles it better. erasable after verdict
-  // if (document.querySelector('#search:focus')) {
-  //   handleSearchInput(event)
-  // }
-
   if (document.querySelector('task-box:hover')) {
     if (event.altKey && POSSIBLE_KEYS.includes(event.key)) {
       handleMultipleKeys(event)
@@ -57,16 +61,29 @@ function handleKeyPress(event) {
   }
 }
 
-function handleBlur(event) {
-  console.log('blur')
+/**Handles focusout events.
+ * Removes the 'contenteditable' attribute.
+ * @param {Object} event - event object recieved from the event listener
+ */
+function handleFocusOut(event) {
   event.target.setAttribute('contenteditable', false)
-  event.target.removeEventListener('input', handleInput)
 }
 
-function handleInput(event) {
-  captureData()
+/**
+ * Saves the board for every element edit event.
+ */
+function handleInput() {
+  if (document.querySelector('div:focus')) {
+    console.log('focus detected')
+    captureData()
+  }
 }
 
+/**Handles multiple keystroke events.
+ * Uses an options dictionary to match the corresponding number pressed to a list.
+ * Pressing a number that does not match any dictionary property will result in no action.
+ * @param {Object} event - event object recieved from the event listener
+ */
 function handleMultipleKeys(event) {
   const task = document.querySelector('task-box:hover').parentElement
 
@@ -83,36 +100,30 @@ function handleMultipleKeys(event) {
   }
 }
 
+/**Handles input events targeting the search box.
+ * @param {Object} event - event object recieved from the event listener
+ */
 function handleSearchInput(event) {
-  console.log('input detected')
   filterTasks(event.target.value)
 }
 
-///
-
-// async function handleOptionClick(event) {
-//   if (event.target.className === 'load') {
-//     console.log('load')
-//     //show loader
-//     // loader.hidden = false
-//     cleanSection(document.querySelectorAll('section'))
-
-//     cleanLocalStorage()
-
-//     await getAnswer()
-
-//     //hide loader
-//     // loader.hidden = true
-//   }
-//   if (event.target.className === 'save') {
-//     console.log('save')
-//     //show loader
-//     // loader.hidden = false
-//     await storeData()
-//     //hide loader
-//     // loader.hidden = true
-//   }
-// }
+/**Handles click events targeting an option button.
+ * @param {Object} event - event object recieved from the event listener
+ */
+async function handleOptionClick(event) {
+  if (event.target.className === 'load') {
+    console.log('load')
+    displayLoader()
+    await getAnswer()
+    removeLoader()
+  }
+  if (event.target.className === 'save') {
+    console.log('save')
+    displayLoader()
+    await storeData()
+    removeLoader()
+  }
+}
 
 function moveTask(task, list) {
   addTaskBox(list, stripTaskBox(task))
@@ -284,6 +295,17 @@ function filterTasks(text) {
   })
 }
 
+function displayLoader() {
+  const loader = document.createElement('div')
+  loader.classList.add('loader')
+  mainContianer.append(loader)
+}
+
+function removeLoader() {
+  const loader = document.querySelector('.loader')
+  loader.remove()
+}
+
 //this function is used to satisfy test requirements. For some reason the test demands to get a clear board and clear storage right after loading. This function makes it happen.
 function cleanLocalStorage() {
   storeLocally(EMPTY_TASKS_DATA)
@@ -313,7 +335,7 @@ mainContianer.addEventListener('click', handleClick)
 // mainContianer.addEventListener('mouseover', handleHover)
 
 //
-// optionBox.addEventListener('click', handleOptionClick)
+optionBox.addEventListener('click', handleOptionClick)
 //
 
 window.addEventListener('load', loadData())
@@ -322,7 +344,7 @@ window.addEventListener('keydown', handleKeyPress)
 
 mainContianer.addEventListener('dblclick', handleDoubleClick)
 
-mainContianer.addEventListener('focusout', handleBlur)
+mainContianer.addEventListener('focusout', handleFocusOut)
 
 //TODO: give a better name to "handleInput" to differentiate it from any other general input event
 mainContianer.addEventListener('input', handleInput)
@@ -370,46 +392,4 @@ function prepareRemoteDataBody() {
     updatedAt: '2021-09-22T08:34:31.333Z',
   }
   return remoteData
-}
-
-//problem: after refresh, after loading data, the order gets reversed.
-/*
-this means that the order of parsing data from local storage is the opposite of parsing data from remote storage. so we need to reverse the order of remotestorage array before parsing
-
-*/
-///TEST ZONE
-
-const loadBtn = document.querySelector('#load-btn')
-const saveButton = document.querySelector('#save-btn')
-
-saveButton.addEventListener('click', handleSave)
-loadBtn.addEventListener('click', loadHandle)
-
-async function handleSave() {
-  console.log('save button clicked')
-  displayLoader()
-  await storeData()
-  removeLoader()
-}
-
-async function loadHandle() {
-  displayLoader()
-  cleanSection(document.querySelectorAll('section'))
-
-  cleanLocalStorage()
-
-  await getAnswer()
-  removeLoader()
-}
-
-///
-function displayLoader() {
-  const loader = document.createElement('div')
-  loader.classList.add('loader')
-  mainContianer.append(loader)
-}
-
-function removeLoader() {
-  const loader = document.querySelector('.loader')
-  loader.remove()
 }
