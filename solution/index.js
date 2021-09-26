@@ -28,7 +28,6 @@ function localStorageSave(){
     localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
     localStorageObjectForUpdate.done[0] = doneTasksUl.outerHTML;
     localStorageObjectForUpdate.deleted[0] = deletedTasksUl.outerHTML;
-    //console.log(localStorageObjectForUpdate);
     localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
 }
 
