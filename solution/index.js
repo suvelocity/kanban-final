@@ -304,7 +304,6 @@ function drop(event) {//function that deletes the task from the oldul and genera
     draggedItemContent =draggedItem.textContent
     const newUL= event.target.closest("ul")
     const newULid= newUL.id;
-    console.log(newUL);
     const li =generateListItems(draggedItemContent,{"dragstart": dragStart,"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout})
     li.setAttribute("draggable", "true");
     newUL.prepend(li);
