@@ -198,3 +198,25 @@ searchButton.addEventListener('click', function () {
         alert('No items to display');
     }
 });
+
+function saveToServer() {
+    fetch("https://json-bins.herokuapp.com/bin/614c71fe18fa9b97f9f6adcf", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({tasks: tasklist})
+    });
+}
+
+function loadFromServer() {
+    fetch("https://json-bins.herokuapp.com/bin/614c71fe18fa9b97f9f6adcf").then(res => {
+        if(res.ok) {
+            res.json().then(data => {
+                tasklist = data.tasks;
+                updateTaskList();
+                location.reload();
+            });
+        }
+    })
+}
