@@ -22,6 +22,9 @@ const POSSIBLE_KEYS = ['1', '2', '3']
 
 const EMPTY_TASKS_DATA = { todo: [], 'in-progress': [], done: [] }
 
+const NETWORK_ERR =
+  'Whoops! There was a network error. Please know, this is not your fault.'
+
 /**************** Event Handlers ****************/
 
 /**Handles click events by delegation.
@@ -30,12 +33,16 @@ const EMPTY_TASKS_DATA = { todo: [], 'in-progress': [], done: [] }
  * @param {Object} event - event object recieved from the event listener
  */
 function handleClick(event) {
-  if (event.target.className.includes('submit-task')) {
-    const list = event.target.parentElement.querySelector('ul')
-    assertInputNotEmpty(list)
-    const taskText = event.target.parentElement.querySelector('input').value
-    addTaskBox(list, taskText)
-    captureData()
+  try {
+    if (event.target.className.includes('submit-task')) {
+      const list = event.target.parentElement.querySelector('ul')
+      assertInputNotEmpty(list)
+      const taskText = event.target.parentElement.querySelector('input').value
+      addTaskBox(list, taskText)
+      captureData()
+    }
+  } catch (error) {
+    alert(error)
   }
 }
 
@@ -121,13 +128,20 @@ function handleOptionClick(event) {
  */
 async function handleRequest(req) {
   displayLoader()
-  if (req === 'load') {
-    await getRemoteData()
+  greyOutButtons(true)
+  try {
+    if (req === 'load') {
+      await getRemoteData()
+    }
+    if (req === 'save') {
+      await storeRemoteData()
+    }
+  } catch (error) {
+    DisplayInfo(error)
+  } finally {
+    greyOutButtons(false)
+    removeLoader()
   }
-  if (req === 'save') {
-    await storeRemoteData()
-  }
-  removeLoader()
 }
 
 /**************** Classes ****************/
@@ -148,7 +162,10 @@ class TaskBox extends HTMLElement {
 
 customElements.define('task-box', TaskBox)
 
-/**************** Utility Functions ****************/
+/**************** User Interface ****************/
+function DisplayInfo(text) {
+  alert(text)
+}
 
 /** Creates a new task-box element and adds it to the list passed.
  *
@@ -193,6 +210,8 @@ function cleanSection(sections) {
     section.querySelectorAll('li').forEach((item) => removeTask(item))
   )
 }
+
+/**************** Utility Functions ****************/
 
 /**
  * Sets the hidden attribute of an element to true or false.
@@ -281,6 +300,19 @@ function displayLoader() {
 function removeLoader() {
   const loader = document.querySelector('.loader')
   loader.remove()
+}
+
+/**
+ * Disables any option to create another network request while some other request is being handled.
+ * @param boolean {Boolean} - a true / false statement on wether to grey out the buttons or not.
+ */
+function greyOutButtons(boolean) {
+  const buttons = document.querySelectorAll('button')
+  if (boolean) {
+    buttons.forEach((button) => button.setAttribute('disabled', true))
+  } else {
+    buttons.forEach((button) => button.removeAttribute('disabled'))
+  }
 }
 
 /**
@@ -397,6 +429,10 @@ searchInput.addEventListener('input', handleSearchInput)
 
 /**************** HTTP Requests ****************/
 
+/**
+ * Gets remote data from an API storage bin.
+ * @returns {Object}  a data object containing task information
+ */
 async function getRemoteData() {
   const response = await fetch(
     'https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61',
@@ -405,21 +441,35 @@ async function getRemoteData() {
     }
   )
   const data = await response.json()
+  if (response.status > 200) {
+    throw NETWORK_ERR
+  }
   loadRemoteData(data.tasks)
   return data.tasks
 }
 
+/** Stores data in a remote API storage bin.*/
 async function storeRemoteData() {
-  await fetch('https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61', {
-    method: 'PUT',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(prepareRemoteDataBody()),
-  })
+  const response = await fetch(
+    'https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61',
+    {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(prepareRemoteDataBody()),
+    }
+  )
+  if (response.status > 200) {
+    throw NETWORK_ERR
+  }
 }
 
+/**
+ * Prepares a dedicated data object especially for storing data in the remote storage bin.
+ * @returns {Object}  a data object containing task information and some other properties required for API communication.
+ */
 function prepareRemoteDataBody() {
   const remoteData = {
     _id: '614aea974021ac0e6c080c61',
@@ -475,6 +525,7 @@ document.addEventListener('drop', function (event) {
     dragEl.parentNode.removeChild(dragEl)
     const list = sectionElement.querySelector('ul')
     list.insertBefore(dragEl, list.firstChild)
+    captureData()
   }
 })
 
