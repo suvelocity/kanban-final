@@ -211,7 +211,7 @@ function isTaskHidden(task, state) {
  * @returns an object containing the section name as key and taskBox texts array as value
  */
 function extractData(section) {
-  const sectionName = getSectionName(section)
+  const sectionName = getSectionTitle(section)
   const tasksArray = getTaskList(section)
   const strippedTasksArray = tasksArray.map(stripTaskBox)
   return { [sectionName]: strippedTasksArray }
@@ -227,15 +227,39 @@ function stripTaskBox(taskBox) {
   return text
 }
 
+/** Takes data and displays it by adding it to the page.
+ *  each array item of dataArray consists of one sub-array with the section name, and a second sub-array with that section's tasks texts.
+ * @param {Object} data - the data from which information will be parsed
+ */
+function insertData(data) {
+  const dataArray = Object.entries(data)
+  dataArray.forEach((subArr) => {
+    const sectionElement = getSectionElementByTitle(subArr[0])
+    const listElement = sectionElement.querySelector('ul')
+    const textsArray = subArr[1]
+    //reverse it for creating each taskBox in the order they appeared last.
+    textsArray.reverse()
+    textsArray.forEach((text) => {
+      addTaskBox(listElement, text)
+    })
+  })
+}
+
 /**
- * Gets the essential section name by cutting off the '-section' string.
+ * Gets the essential section title by cutting off the '-section' string.
  * @param {Element} section the section HTMLElement
  * @returns string representing the section name
  */
-function getSectionName(section) {
+function getSectionTitle(section) {
   const sectionClassName = [...section.classList].join('')
   const sectionName = sectionClassName.replace('-section', '')
   return sectionName
+}
+
+function getSectionElementByTitle(title) {
+  const sectionName = title + '-section'
+  const sectionElement = document.querySelector(`.${sectionName}`)
+  return sectionElement
 }
 
 /**
@@ -255,11 +279,9 @@ function getTaskList(section) {
  */
 function captureData() {
   const sections = [...document.querySelectorAll('section')]
-  const resultsArray = sections.map(extractData)
-  // resultsArray.reverse()
-  console.log(resultsArray)
+  const tasksArray = sections.map(extractData)
   const dataObject = {}
-  resultsArray.forEach((item) => {
+  tasksArray.forEach((item) => {
     Object.assign(dataObject, item)
   })
   storeLocally(dataObject)
@@ -267,10 +289,9 @@ function captureData() {
 }
 
 /**Stores the data captured in localStorage.
- * @param {Array} data - the array that contains the data object
+ * @param {Object} data - the object that contains the data to be stored
  */
 function storeLocally(data) {
-  console.log(data)
   localStorage.setItem('tasks', JSON.stringify(data))
 }
 
@@ -279,35 +300,17 @@ function storeLocally(data) {
 function loadData() {
   assertDataNotEmpty()
   const data = JSON.parse(localStorage.getItem('tasks'))
-  parseData(data)
+  insertData(data)
 }
 
-//TODO: Unify load remote data and load local data.
-
+/**
+ *  Loads given data object from a remote source and displays it on the board.
+ * @param {Object} data the data object to load
+ */
 function loadRemoteData(data) {
   cleanSection(document.querySelectorAll('section'))
-  parseData(data)
+  insertData(data)
   storeLocally(data)
-}
-
-/** Takes data and displays it by adding it to the page.
- *
- * @param {Object} data - the data from which information will be parsed
- */
-function parseData(data) {
-  const propsArr = Object.entries(data)
-  propsArr.forEach((prop) => {
-    const sectionName = prop[0] + '-section'
-    const sectionElement = document.querySelector(`.${sectionName}`)
-    const listElement = sectionElement.querySelector('ul')
-    const textArray = prop[1]
-    //reverse if for creating each taskBox in the order they appeared last.
-    //this could be fixed if we reverse ahead the order in which they are stored by. so this is a temp fix.
-    textArray.reverse()
-    textArray.forEach((item) => {
-      addTaskBox(listElement, item)
-    })
-  })
 }
 
 function filterTasks(text) {
