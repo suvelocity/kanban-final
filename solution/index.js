@@ -1,3 +1,4 @@
+// If there's previous tasklist -load it, else - create empty state
 let tasklist = localStorage.getItem('tasks') ?
     JSON.parse(localStorage.getItem('tasks')) :
     {
@@ -6,17 +7,17 @@ let tasklist = localStorage.getItem('tasks') ?
         done: []
     };
 
-
+// ul elements
 const todoList = document.getElementById('todo');
 const inProgressList = document.getElementById('in-progress');
 const doneList = document.getElementById('done');
 
-
+// Saving the current state into localStorage
 function updateTaskList() {
     localStorage.setItem('tasks', JSON.stringify(tasklist));
 }
-updateTaskList();
 
+updateTaskList();
 
 function addItem(text, ulId) {
     if (text.length === 0) {
@@ -37,6 +38,7 @@ function addItem(text, ulId) {
     }
 }
 
+
 document.body.addEventListener('click', function (e) {
     if (e.target === document.getElementById("submit-add-to-do")) {
         let inputToDo = document.getElementById("add-to-do-task");
@@ -54,18 +56,6 @@ document.body.addEventListener('click', function (e) {
         
     }
 })
-
-function setupLi(li) {
-    const helper = (ev) => {
-        altNum(ev, li);
-    }
-    li.addEventListener('mouseenter', () => {
-        document.addEventListener('keydown', helper);
-    });
-    li.addEventListener('mouseleave', () => {
-        document.removeEventListener('keydown', helper);
-    });
-}
 
 function loadLocal() {
     for (const key in tasklist) {
@@ -92,6 +82,91 @@ function loadLocal() {
 }
 
 
+// Changing the current phase of a task in the state
+function setItemPhase(task, phase) {
+    if(task.phase == phase) return;
+    const idx = tasklist[task.phase].findIndex(sTask => sTask == task);
+    if (idx > -1) {
+        switch (task.phase) {
+            case 'todo':
+                for (const child of todoList.children) {
+                    if (child.object == task) {
+                        tasklist[task.phase].splice(idx, 1);
+                        moveItemTo(child, phase);
+                    }
+                }
+                break;
+                case 'in-progress':
+                    for (const child of inProgressList.children) {
+                        if (child.object == task) {
+                        tasklist[task.phase].splice(idx, 1);
+                        moveItemTo(child, phase);
+                    }
+                }
+                break;
+                case 'done':
+                    for (const child of doneList.children) {
+                        if (child.object == task) {
+                            tasklist[task.phase].splice(idx, 1);
+                        moveItemTo(child, phase);
+                    }
+                }
+                break;
+            }
+            task.phase = phase;
+            tasklist[phase].push(task);
+        }
+        updateTaskList();
+    }
+    
+    //Moving the task in the user interface
+    function moveItemTo(elem, phase) {
+    switch (phase) {
+        case 'todo':
+            todoList.appendChild(elem);
+            break;
+            case 'in-progress':
+            inProgressList.appendChild(elem);
+            break;
+            case 'done':
+                doneList.appendChild(elem);
+                break;
+            }
+}
+
+
+loadLocal();
+
+// let clear=document.createElement("button");
+// clear.innerText="clear all";
+// clear.id="clear";
+// document.body.append(clear);
+// clear.addEventListener('click',clearTaskList);
+
+// function clearTaskList() {
+//     tasklist.todo = [];
+//     tasklist["in-progress"] = [];
+//     tasklist.done = [];
+//     updateTaskList();
+//     location.reload();
+// }
+
+
+// Adding events to new tasks elements
+function setupLi(li) {
+    const helper = (ev) => {
+        altNum(ev, li);
+    }
+    li.addEventListener('mouseenter', () => {
+        document.addEventListener('keydown', helper);
+    });
+    li.addEventListener('mouseleave', () => {
+        document.removeEventListener('keydown', helper);
+    });
+}
+
+
+
 document.querySelectorAll("li").forEach(function (liEdit) {
     liEdit.ondblclick = function () {
         let val = this.innerHTML;
@@ -109,75 +184,25 @@ document.querySelectorAll("li").forEach(function (liEdit) {
     }
 });
 
-function setItemPhase(task, location) {
-    if(task.phase == location) return;
-    const idx = tasklist[task.phase].findIndex(sTask => sTask == task);
-    if (idx > -1) {
-        switch (task.phase) {
-            case 'todo':
-                for (const child of todoList.children) {
-                    if (child.object == task) {
-                        tasklist[task.phase].splice(idx, 1);
-                        moveItemTo(child, location);
-                    }
-                }
-                break;
-                case 'in-progress':
-                    for (const child of inProgressList.children) {
-                        if (child.object == task) {
-                        tasklist[task.phase].splice(idx, 1);
-                        moveItemTo(child, location);
-                    }
-                }
-                break;
-                case 'done':
-                    for (const child of doneList.children) {
-                        if (child.object == task) {
-                            tasklist[task.phase].splice(idx, 1);
-                        moveItemTo(child, location);
-                    }
-                }
-                break;
-            }
-            task.phase = location;
-            tasklist[location].push(task);
-        }
-        updateTaskList();
-    }
-    function moveItemTo(elem, location) {
-        switch (location) {
-            case 'todo':
-                todoList.appendChild(elem);
-                break;
-                case 'in-progress':
-                inProgressList.appendChild(elem);
-                break;
-                case 'done':
-                    doneList.appendChild(elem);
-                    break;
-                }
-    }
-    
-    
-    loadLocal();
 
-    function altNum(e, li) {
-        if (e.altKey) {
-            switch (e.key) {
-                case '1':
-                    setItemPhase(li.object, "todo");
-                    break;
-                case '2':
-                    setItemPhase(li.object, "in-progress");
-                    break;
-                case '3':
-                    setItemPhase(li.object, "done");
-                    break;
-            }
+function altNum(e, li) {
+    if (e.altKey) {
+        switch (e.key) {
+            case '1':
+                setItemPhase(li.object, "todo");
+                break;
+            case '2':
+                setItemPhase(li.object, "in-progress");
+                break;
+            case '3':
+                setItemPhase(li.object, "done");
+                break;
         }
     }
+}
 
-    let searchButton = document.getElementById('search-button');
+
+let searchButton = document.getElementById('search-button');
 searchButton.addEventListener('click', function () {
     let searchInput = document.getElementById("search").value.toLowerCase();
     let allLi = document.querySelectorAll("li");
@@ -197,7 +222,23 @@ searchButton.addEventListener('click', function () {
     if (Counter === allLi.length) {
         alert('No items to display');
     }
-});
+})
+
+
+let saveApi=document.createElement('button');
+saveApi.addEventListener('click',saveToServer);
+saveApi.innerText='save';
+saveApi.id='save-api';
+document.getElementById('api').appendChild(saveApi);
+// Sending the current state to the server
+
+let loadApi=document.createElement('button');
+loadApi.addEventListener('click',loadFromServer);
+loadApi.innerText='load';
+loadApi.id='load-api';
+document.getElementById('api').appendChild(loadApi);
+
+
 
 function saveToServer() {
     fetch("https://json-bins.herokuapp.com/bin/614c71fe18fa9b97f9f6adcf", {
@@ -220,23 +261,17 @@ function loadFromServer() {
         }
     })
 }
-let div=document.createElement('div');
-div.id='api';
-// div.appendChild(document.createElement('h3'));
-let apiHeader=document.createElement('h3');
-apiHeader.innerText='API';
-div.appendChild(apiHeader);
 
-document.body.appendChild(div);
-let saveApi=document.createElement('button');
-saveApi.addEventListener('click',saveToServer);
-saveApi.innerText='save';
-saveApi.id='save-api';
-document.getElementById('api').appendChild(saveApi);
-// Sending the current state to the server
+let clear=document.createElement("button");
+clear.innerText="clear all";
+clear.id="clear";
+document.body.append(clear);
+clear.addEventListener('click',clearTaskList);
 
-let loadApi=document.createElement('button');
-loadApi.addEventListener('click',loadFromServer);
-loadApi.innerText='load';
-loadApi.id='load-api';
-document.getElementById('api').appendChild(loadApi);
+function clearTaskList() {
+    tasklist.todo = [];
+    tasklist["in-progress"] = [];
+    tasklist.done = [];
+    updateTaskList();
+    location.reload();
+}

@@ -56,12 +56,7 @@ button{
     bottom: 83.8%;
     right: 45%;
 }
-#clear{
-    position: absolute;
-    bottom: 83.75%;
-    right: 38%;
-    
-}
+
 #save-api{
 position:absolute;
 bottom: 80%;
