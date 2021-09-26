@@ -10,10 +10,8 @@ if(!localStorage.tasks || localStorage.tasks.length == 0){
 }  
 
 
-//localStorage.clear();
+//localStorage.clear();//clears local storage
 
-    console.log(localStorage.tasks);
-    console.log(JSON.parse(localStorage.tasks).todo);
 
     let localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
 
