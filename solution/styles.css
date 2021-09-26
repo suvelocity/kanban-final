@@ -14,59 +14,68 @@ body {
     font-family: sans-serif;
   }
   
-  .kanban-board {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    font-family: sans-serif;
-  }
-  
-  .kanban-heading-text {
-    font-size: 1.8rem;
-    background-color: green;
-    padding: 0.8rem 1.7rem;
-    border-radius: 0.5rem;
-    margin: 1rem;
-  }
-  
-  .section {
-    padding: 0.6rem;
-    width: 30.5%;
-    min-width: 14rem;
-    min-height: 4.5rem;
-    border-radius: 0.3rem; 
-  }
+.kanban-board {
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+font-family: sans-serif;
+}
+
+.kanban-heading-text {
+font-size: 1.8rem;
+background-color: green;
+padding: 0.8rem 1.7rem;
+border-radius: 0.5rem;
+margin: 1rem;
+}
+
+.section {
+padding: 0.6rem;
+width: 30.5%;
+min-width: 14rem;
+min-height: 4.5rem;
+border-radius: 0.3rem; 
+}
 
 
-  
-  #todo {
-    background-color: red;
-  }
-  
-  #inprogress {
-    background-color: #ffaf00;
-    /* display: none; */
-  }
-  
-  #done {
-    background-color: #018b01;
-    /* display: none; */
-  }
 
-  .submit {
-    cursor: pointer;
-    background-color: blue; /* Green */
-    border: none;
-    color: white;
-    margin-top: 10px;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-  }
+#todo {
+background-color: red;
+}
 
-  .submit:hover
-  {
-    content: ' \00BB';
-  }
+#in-progress {
+background-color: #ffaf00;
+/* display: none; */
+}
+
+#done {
+background-color: #018b01;
+/* display: none; */
+}
+
+.submit {
+cursor: pointer;
+background-color: blue; /* Green */
+border: none;
+color: white;
+margin-top: 10px;
+padding: 15px 32px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 14px;
+}
+
+.submit:hover
+{
+content: ' \00BB';
+}
+
+
+.task {
+background-color: white;
+margin: 0.2rem 0rem 0.3rem 0rem;
+border: 0.1rem solid black;
+border-radius: 0.2rem;
+padding: 0.5rem 0.2rem 0.5rem 2rem;
+}
