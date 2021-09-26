@@ -9,13 +9,6 @@ if(!localStorage.tasks || localStorage.tasks.length == 0){
         );
 }  
 
-document.body.addEventListener('click',(e) => {
-    console.log(e.target.id);
-    if(e.target.id === 'new-theme-btn'){
-        console.log('lll');
-    }
-})
-
 
 //localStorage.clear();//clears local storage
 
@@ -363,12 +356,6 @@ themeButton.addEventListener('click', (e) => {
         cssLink.setAttribute('href', './cssFornewTheme.css');
     }else{
         cssLink.setAttribute('href', './styles.css');
-    }
-})
-document.addEventListener('click',(e) => {
-    console.log(e.target.id);
-    if(e.target.id === 'new-theme-btn'){
-        console.log('lll');
     }
 })
 
