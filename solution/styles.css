@@ -1,0 +1,11 @@
+.task{
+    border-style: solid;
+    border-radius: 25px;
+    border-color: black;
+    margin: 3%;
+    padding: 1%;
+}
+
+.list{
+    list-style: none;
+}

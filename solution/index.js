@@ -173,7 +173,10 @@ function generateTasksDom(){
 
 
 //Event listeners
-addMultipleEventListener(mainContainer, ["click", "dblclick", "keypress", "mouseover"], eventHandler);
+addMultipleEventListener(mainContainer, ["click", "dblclick"], eventHandler);
+//addMultipleEventListener(toDoList, ["mouseover"], changeByAlt);
+//addMultipleEventListener(inProgressList, ["mouseover"], changeByAlt);
+//addMultipleEventListener(doneList, ["mouseover"], changeByAlt);
 
 //The event handler function
 function eventHandler(e){
@@ -202,16 +205,19 @@ function eventHandler(e){
     if(eventType(e.type) === "b" && e.target.className === "task"){
         editByDblClick(e.target);
     };
+    /*
     //Hover + alt + 1/2/3 over element
-    while(eventType(e.type) === "d" && e.target.className === "task"){
-        if(eventType(e.type) === "c"){
-            console.log(e.code);
+    if(eventType(e.type) === "d" && e.target.className === "task"){
+        let task = document.getElementById(e.target.id);
+        if(e.altKey === true){
+            console.log(e.target.id)
+            keydownChange(task);
         }
-        //let task = document.getElementById(e.target.id)
-        //console.log(e.altKey);
     }
-    //console.log(eventType(e.type) + targetTypeId(e.target.id));
+    */
 };
+
+
 
 //Event type identifier
 function eventType(type){
@@ -356,7 +362,69 @@ function editByDblClick(taskElement){
     console.log(Tasks);
 };   
 
+//Remove task by id and saves to local storage
+function removeTask(taskId) {
+    for(let i = 0; i < Tasks.todo.length; i++){
+        if(Tasks.todo[i].id == taskId){
+            Tasks.todo.splice(i , i);
+        }
+     }
+     for(let i = 0; i < Tasks["in-progress"].length; i++){
+        if(Tasks["in-progress"][i].id == taskId){
+            Tasks["in-progress"].splice(i , i);
+        }
+     }
+     for(let i = 0; i < Tasks.done.length; i++){
+        if(Tasks.done[i].id == taskId){
+            Tasks.done.splice(i , i);
+        }
+     }
+     saveTasksToStorage();
+};
 
+/*
+function keydownChange(){
+    window.addEventListener("keydown", (event) => {
+        //removeTask(event.id);
+        console.log(event.code);
+        switch(event.code){
+            case "Digit1":
+                console.log("1");
+                //toDoList.appendChild(task);
+                break;
+            case "Digit2":
+                //inProgressList.appendChild(task);
+                console.log("2");
+                break;
+            case "Digit3":
+                //doneList.appendChild(task);
+                console.log("3");
+                break;
+        }
+    })
+};
 
+//Handles Hover + alt + 1/2/3 over element
+function changeByAlt(e){
+    let targetList;
+    if(e.altKey === true){
+        if(e.type === "mouseover"){
+            if(e.target.className === "task"){
+                const targetList = e.target.parentElement;
+                 targetId = e.target.id;
+                keydownChange();
+                if(keydownChange() == 1){
+                    console.log(targetId +" "+ targetList.id);
+                }
+            }
+        }
+    }
+};
+*/
 
+//Hide irrelevant tasks 
+function hideTasks(query){
+    console.log(toDoList.childNodes);
+};
 
+hideTasks("x");

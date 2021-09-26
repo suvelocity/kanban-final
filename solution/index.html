@@ -1,25 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head id="page-title">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./index.js" defer></script>
     <link rel="stylesheet" href="./styles.css" />
-    <title>Tasks manager</title>
+    <title >Tasks manager</title>
 </head>
 <body>
     <div id="head-container">
-        <h1 id="page-title">KANBAN - Your Personal Task Organizer</h1>
+        <h1 id="title">KANBAN - Your Personal Task Organizer</h1>
     </div>
-    <input id="search" type="text" placeholder="Search a task...">
+    <input id="search-input" type="text" placeholder="Search a task...">
+    <button id="search-button">Search</button>
     <div id="main-container">
         <section id="to-do-section">
             <header class="section-header">To Do Tasks</header>
-            <div id="storage">
-                <button id="load-local">Load</button>
-            </div>
-            <ul id="to-do-tasks"></ul>
+            <ul id="to-do-tasks" class="list"></ul>
             <div class = "add-class">
                 <input id="add-to-do-task" class="section-input" type="text" placeholder="Add to do task">
                 <button id="submit-add-to-do">Add Task</button>
@@ -27,7 +25,7 @@
         </section>
         <section id="in-progress-section">
             <header class="section-header">In Progress Tasks</header>
-            <ul id="in-progress-tasks"></ul>
+            <ul id="in-progress-tasks" class="list"></ul>
             <div class = "add-class">
                 <input id="add-in-progress-task" class="section-input" type="text" placeholder="Add in progress task">
                 <button id="submit-add-in-progress">Add Task</button>
@@ -35,12 +33,15 @@
         </section>
         <section id="done-section">
             <header class="section-header">Done Tasks</header>
-            <ul id="done-tasks"></ul>
+            <ul id="done-tasks" class="list"></ul>
             <div class = "add-class">
                 <input id="add-done-task" class="section-input" type="text" placeholder="Add done task">
                 <button id="submit-add-done">Add Task</button>
             </div>
         </section>
+        <div id="storage">
+            <button id="load-local">Load from local storage</button>
+        </div>
     </div>
 </body>
 </html>
