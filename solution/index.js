@@ -52,20 +52,16 @@ function addTasks(e) {
     }
 }
 function generateTasks() {
-    for (let i of tasksObj.todo) {
-        const task = makeTaskElement()
-        task.innerHTML = i
-        todo.append(task)
+    for (const taskType in tasksObj) {
+        for (let taskText of tasksObj[taskType]) {
+            const task = makeTaskElement(taskText)
+            document.getElementById(taskType).append(task)
+        }
     }
-    for (let i of tasksObj["in-progress"]) {
-        const task = makeTaskElement()
-        task.innerHTML = i
-        document.getElementById("in-progress").append(task)
-    }
-    for (let i of tasksObj.done) {
-        const task = makeTaskElement()
-        task.innerHTML = i
-        done.append(task)
+    let allUl = document.getElementsByTagName('UL')
+    for (const ul of allUl) {
+        ul.addEventListener('dragover', allowDrop)
+        ul.addEventListener('drop', drop)
     }
 }
 
@@ -83,6 +79,7 @@ function changeTask(e) {
         newText = target.textContent
         saveKey[saveKey.findIndex((a) => a === oldText)] = newText
         localStorage.setItem('tasks', JSON.stringify(tasksObj))
+        target.setAttribute('contentEditable', 'false')
     })
 }
 
@@ -155,9 +152,24 @@ function makeTaskElement(text) {
     task.setAttribute('tabindex', '0')
     task.setAttribute('class', 'task')
     task.setAttribute('draggable', 'true')
+    task.addEventListener('dragstart', drag)
     task.textContent = text
     return task
 }
 function drag(e) {
-
+    e.target.setAttribute('id', 'remove-task')
+    e.dataTransfer.setData("Text", e.target.textContent);
+}
+function allowDrop(e) {
+    e.preventDefault();
+}
+function drop(e) {
+    const removeTask = document.getElementById('remove-task')
+    if (removeTask === null) return
+    const taskText = e.dataTransfer.getData("Text");
+    e.target.closest('ul').append(makeTaskElement(taskText))
+    tasksObj[e.target.closest('ul').id].unshift(taskText)
+    tasksObj[removeTask.parentNode.id] = tasksObj[removeTask.parentNode.id].filter(a => a !== taskText)
+    removeTask.remove()
+    localStorage.setItem('tasks', JSON.stringify(tasksObj))
 }
