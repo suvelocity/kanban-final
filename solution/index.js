@@ -1,13 +1,15 @@
 'use strict'
 let taskObj, queryObj;
 const spaceAtEndRegex = /[\s]*$/g;
+let mockList = document.createElement("li");
+let rememberElement;
 
 const addEventListenerToButtons = () => {
 
     const deleteButtons = document.querySelectorAll('.deleteButton');
     deleteButtons.forEach(element => {
         element.addEventListener("click", function () {
-            deleteTask(element.parentElement.parentElement.getElementsByClassName("task")[0].innerText)
+            deleteTask(element.parentElement.parentElement.getElementsByClassName("task")[0].innerText);
         })
     });
 
@@ -17,19 +19,38 @@ const addEventListenerToButtons = () => {
             ReplaceTaskType("done", element.parentElement.parentElement.getElementsByClassName("task")[0].innerText);
         })
     });
+
+    const sortButtons = document.querySelectorAll('.sortButton');
+    sortButtons.forEach(element => {
+        element.addEventListener("click", function () {
+            element.parentElement.setAttribute("draggable", "true");
+        })
+    });
 }
 
 
 const addEventListenerToTasks = () => {
     let oldinnerTaskText;
 
-    const taskLi = document.querySelectorAll('.task');
-    taskLi.forEach(element => {
-        // store data when the drag start of the innerText to implement in the new Task type
-        element.addEventListener("dragstart", function (e) {
-            e.dataTransfer.setData("titleText", element.innerText);
+    const taskList = document.querySelectorAll('.task');
+    taskList.forEach(element => {
+        element.addEventListener("dragstart", function () { //mockList is for task drag be showen for user
+            rememberElement = element.innerHTML;
+            mockList.classList.add("mocklist");
+            mockList.innerHTML = `${element.innerText}`
         });
 
+        element.addEventListener("dragenter", function (e) {
+            e.target.parentElement.insertBefore(mockList, e.target);
+        });
+
+        element.addEventListener("dragend", function () {
+            mockList.innerHTML = rememberElement;
+            mockList.className = "task";
+            const elementB4orAfter = mockList.previousElementSibling || mockList.nextElementSibling;
+            deleteTask(element.innerText);
+            dropTask(elementB4orAfter.innerText);
+        });
 
         element.addEventListener("click", function () {
             try { document.querySelector("#selectedTask").id = ""; }
@@ -57,6 +78,7 @@ const addEventListenerToTasks = () => {
                 }
             })
         });
+
         element.addEventListener("dblclick", function () {
             oldinnerTaskText = element.getElementsByClassName("TaskTitle")[0].innerText;
             element.contentEditable = true;
@@ -81,13 +103,13 @@ const addTask = (taskType, idOfInput) => {
 const postTasks = () => {
     let generalString = ``, ongoingString = ``, finishedString = ``;
     for (let key of taskObj.todo) {
-        generalString += `<li class="task" draggable="true"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
+        generalString += `<li class="task"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="sortButton" src="./Images/sort.png"><img class="deleteButton" src="./Images/XRED.ico"></li>`
     }
     for (let key of taskObj["in-progress"]) {
-        ongoingString += `<li class="task" draggable="true"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></button></li>`
+        ongoingString += `<li class="task"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="sortButton" src="./Images/sort.png"><img class="deleteButton" src="./Images/XRED.ico"></button></li>`
     }
     for (let key of taskObj.done) {
-        finishedString += `<li class="task" draggable="true"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></button></li>`
+        finishedString += `<li class="task"><span class="TaskTitle">${key}</span><img class="sortButton" src="./Images/sort.png"><img class="deleteButton" src="./Images/XRED.ico"></button></li>`
     }
     document.getElementById("general-task-table").innerHTML = generalString;
     document.getElementById("ongoing-task-table").innerHTML = ongoingString;
@@ -150,12 +172,12 @@ const ReplaceTaskType = (WantedTypeOfTask, innerTaskText) => {
     postTasks();
 }
 
-const ChangeTaskText = (oldTaskText, newTaskText) => {
+const dropTask = (innerTaskText) => {
     for (let taskarray in taskObj) {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
-            if (taskObj[taskarray][i] == oldTaskText) {
-                taskObj[taskarray].splice(i, 1);
-                taskObj[taskarray].unshift(newTaskText);
+            if (taskObj[taskarray][i] == innerTaskText) {
+                taskObj[taskarray].splice(i + 1, 0, mockList.innerText);
+                break;
             }
         }
     }
@@ -167,6 +189,19 @@ const deleteTask = (innerTextOfTitle) => {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
             if (taskObj[taskarray][i] == innerTextOfTitle) {
                 taskObj[taskarray].splice(i, 1);
+                break;
+            }
+        }
+    }
+    postTasks();
+}
+
+const ChangeTaskText = (oldTaskText, newTaskText) => {
+    for (let taskarray in taskObj) {
+        for (let i = 0; i < taskObj[taskarray].length; i++) {
+            if (taskObj[taskarray][i] == oldTaskText) {
+                taskObj[taskarray].splice(i, 1);
+                taskObj[taskarray].unshift(newTaskText);
             }
         }
     }
@@ -203,23 +238,6 @@ const postDataToAPI = async () => {
     }
 }
 
-const makeDropZone = (e) => {
-    e.preventDefault(); // let us drop to this
-}
-
-const DropFunc = (e) => {
-    const innerTaskText = e.dataTransfer.getData("titleText");
-    e.preventDefault();
-    if (e.target.id === "doneSection") {
-        ReplaceTaskType("done", innerTaskText)
-    }
-    else if (e.target.id === "ongoingSection") {
-        ReplaceTaskType("in-progress", innerTaskText)
-    }
-    else if (e.target.id === "generalSection") {
-        ReplaceTaskType("todo", innerTaskText)
-    }
-}
 // animation and timer for info
 const showInfo = () => {
     const infoArray = document.querySelectorAll(".infoForUser");
@@ -235,16 +253,12 @@ const showInfo = () => {
     }, 5000);
 }
 
-const removeEventKeyFromWindow = () =>{
-    window.removeEventListener("keydown", pressEnter);
-}
-
 const keyEnterSendTaskgeneral = () => {
     window.addEventListener("keydown", function pressEnter(e) {
         if (e.key === "Enter") {
-            addTask('todo','add-to-do-task')
+            addTask('todo', 'add-to-do-task')
         }
-        document.getElementById("add-to-do-task").addEventListener("blur", function(){
+        document.getElementById("add-to-do-task").addEventListener("blur", function () {
             window.removeEventListener("keydown", pressEnter);
         });
     }
@@ -254,9 +268,9 @@ const keyEnterSendTaskgeneral = () => {
 const keyEnterSendTaskongoing = () => {
     window.addEventListener("keydown", function pressEnter(e) {
         if (e.key === "Enter") {
-            addTask('in-progress','add-in-progress-task')
+            addTask('in-progress', 'add-in-progress-task')
         }
-        document.getElementById("add-in-progress-task").addEventListener("blur", function(){
+        document.getElementById("add-in-progress-task").addEventListener("blur", function () {
             window.removeEventListener("keydown", pressEnter);
         });
     }
@@ -266,9 +280,9 @@ const keyEnterSendTaskongoing = () => {
 const keyEnterSendTaskdone = () => {
     window.addEventListener("keydown", function pressEnter(e) {
         if (e.key === "Enter") {
-            addTask('done','add-done-task')
+            addTask('done', 'add-done-task')
         }
-        document.getElementById("add-done-task").addEventListener("blur", function(){
+        document.getElementById("add-done-task").addEventListener("blur", function () {
             window.removeEventListener("keydown", pressEnter);
         });
     }
@@ -279,18 +293,26 @@ const keyEnterSendTaskdone = () => {
 document.getElementById("search").addEventListener("keyup", postTasksforquery);
 document.getElementById("load-btn").addEventListener("click", getDataFromAPI);
 document.getElementById("save-btn").addEventListener("click", postDataToAPI);
-document.getElementById("doneSection").addEventListener("drop", DropFunc);
-document.getElementById("ongoingSection").addEventListener("drop", DropFunc);
-document.getElementById("generalSection").addEventListener("drop", DropFunc);
-document.getElementById("doneSection").addEventListener("dragover", makeDropZone);
-document.getElementById("ongoingSection").addEventListener("dragover", makeDropZone);
-document.getElementById("generalSection").addEventListener("dragover", makeDropZone);
 document.getElementById("APIDoanloadIMG").addEventListener("click", getDataFromAPI);
 document.getElementById("APIUploadIMG").addEventListener("click", postDataToAPI);
 document.getElementById("infoAboutPage").addEventListener("click", showInfo);
 document.getElementById("add-to-do-task").addEventListener("click", keyEnterSendTaskgeneral);
 document.getElementById("add-in-progress-task").addEventListener("click", keyEnterSendTaskongoing);
 document.getElementById("add-done-task").addEventListener("click", keyEnterSendTaskdone);
+// Dark/Light Theme Change
+document.getElementById("ThemeChanger").addEventListener("click", function () {
+    let theme = localStorage.getItem('data-theme');
+    if (theme == "light") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        document.getElementById("ThemeChanger").setAttribute("src", "./Images/Sun.svg");
+        localStorage.setItem("data-theme", "dark");
+    }
+    else {
+        document.documentElement.setAttribute("data-theme", "light");
+        document.getElementById("ThemeChanger").setAttribute("src", "./Images/Moon.svg");
+        localStorage.setItem("data-theme", "light");
+    }
+});
 
 //if user has localStorage File it postTasks to it, if he hasn't i create for him 
 if (localStorage.getItem("tasks")) {
@@ -307,6 +329,7 @@ else {
     localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
 
+
 // remember youre last Theme
 if (localStorage.getItem("data-theme") == "light") {
     document.getElementById("ThemeChanger").setAttribute("src", "./Images/Moon.svg");
@@ -318,17 +341,3 @@ else {
     document.getElementById("ThemeChanger").setAttribute("src", "./Images/Sun.svg");
     localStorage.setItem("data-theme", "dark");
 }
-// Dark/Light Theme Change
-document.getElementById("ThemeChanger").addEventListener("click", function () {
-    let theme = localStorage.getItem('data-theme');
-    if (theme == "light") {
-        document.documentElement.setAttribute("data-theme", "dark");
-        document.getElementById("ThemeChanger").setAttribute("src", "./Images/Sun.svg");
-        localStorage.setItem("data-theme", "dark");
-    }
-    else {
-        document.documentElement.setAttribute("data-theme", "light");
-        document.getElementById("ThemeChanger").setAttribute("src", "./Images/Moon.svg");
-        localStorage.setItem("data-theme", "light");
-    }
-});
