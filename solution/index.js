@@ -220,3 +220,23 @@ function loadFromServer() {
         }
     })
 }
+let div=document.createElement('div');
+div.id='api';
+// div.appendChild(document.createElement('h3'));
+let apiHeader=document.createElement('h3');
+apiHeader.innerText='API';
+div.appendChild(apiHeader);
+
+document.body.appendChild(div);
+let saveApi=document.createElement('button');
+saveApi.addEventListener('click',saveToServer);
+saveApi.innerText='save';
+saveApi.id='save-api';
+document.getElementById('api').appendChild(saveApi);
+// Sending the current state to the server
+
+let loadApi=document.createElement('button');
+loadApi.addEventListener('click',loadFromServer);
+loadApi.innerText='load';
+loadApi.id='load-api';
+document.getElementById('api').appendChild(loadApi);

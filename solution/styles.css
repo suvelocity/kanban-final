@@ -1,3 +1,7 @@
+body{
+    background-image: linear-gradient(rgba(0, 0, 255, 0.5), rgba(255, 255, 0, 0.5));
+    
+}
 #search{
     position: absolute;
     right: 46%;
@@ -17,18 +21,18 @@
 }
 #first{
     position: absolute;
-    right: 75%;
     bottom: 45%;
+    right: 75%;
 }
 #second{
     position: absolute;
-    right: 39%;
     bottom: 45%;
+    right: 39%;
 }
 #third{
     position: absolute;
-    right: 3%;
     bottom: 45%;
+    right: 3%;
 }
 li{
     box-sizing: content-box;
@@ -39,16 +43,41 @@ li{
 }
 button{
     position: absolute;
+    bottom: 72%;
     right: 0%;
-    bottom: 0%;
 }
 .inputs{
     position: absolute;
-    right: 5%;
-    bottom: 0%;
+    bottom: 72%;
+    right: 6%;
 }
 #search-button{
     position: absolute;
-    right: 43%;
     bottom: 83.8%;
+    right: 45%;
+}
+#clear{
+    position: absolute;
+    bottom: 83.75%;
+    right: 38%;
+    
+}
+#save-api{
+position:absolute;
+bottom: 80%;
+right: 12%;
+}
+#load-api{
+position: absolute;
+bottom: 80%;
+right: 9%;
+}
+h3{
+    position: absolute;
+    bottom: 81%;
+    right: 11%;
+}
+h2{
+    position: relative;
+    bottom: 2%;
 }
