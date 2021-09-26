@@ -83,7 +83,7 @@ task-box > div {
 
 i:hover {
   color: rgba(255, 255, 255, 0.746);
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 i {
@@ -100,7 +100,8 @@ i {
   transform: translate(-50%, 0);
   width: 100%;
   height: 3rem;
-  background-color: royalblue;
+  background-color: rgb(87, 103, 151);
+  border-bottom: 6px solid rgba(0, 0, 0, 0.287);
 }
 
 .dragging {

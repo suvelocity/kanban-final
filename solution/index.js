@@ -36,7 +36,10 @@ function handleClick(event) {
     if (event.target.className.includes('submit-task')) {
       const list = event.target.parentElement.querySelector('ul')
       assertInputNotEmpty(list)
-      const taskText = event.target.parentElement.querySelector('input').value
+      console.log(event.target)
+      const taskText = event.target
+        .closest('section')
+        .querySelector('.add-task-button').value
       addTaskBox(list, taskText)
       captureData()
     }
@@ -58,6 +61,7 @@ function handleClick(event) {
     }
   } catch (error) {
     alert(error)
+    console.log(error)
   }
 }
 
@@ -456,7 +460,9 @@ function assertDataNotEmpty() {
  * @param {Element} list - the list that shares the input element's parent
  */
 function assertInputNotEmpty(list) {
-  const input = list.parentElement.querySelector('input')
+  console.log(list)
+  const input = list.parentElement.querySelector('.add-task-button')
+  console.log(input)
   if (input.value === '') {
     throw 'you must enter a value'
   }
