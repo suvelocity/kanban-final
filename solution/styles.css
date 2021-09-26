@@ -1,11 +1,3 @@
-
-
-h1 {
-    text-align: center;
-    font-size: 40px;
-}
-
-
 body {
     background-image: url(https://influencermarketinghub.com/wp-content/uploads/2019/11/shutterstock_1038395047-2048x1152.jpg);
     background-size: 100%;
@@ -13,9 +5,6 @@ body {
     text-align: center;
 }
 
-li{
-    text-align: left;
-}
 section {
     
     border-radius: 20px;
@@ -27,7 +16,6 @@ section {
     text-align: center;
     min-height: 300px;
     min-width: 300px; 
-    /* margin: inherit; */ 
    
 }
 
@@ -35,34 +23,27 @@ section:hover{
     box-shadow: 0px 0px 10px 0px
 }
 
-
 div{
     display: flex;
     flex-direction: row;
     justify-content: center;
    
 } 
-/* 
- span {
-    border-radius: 20px;
-    border-color: rgb(126, 103, 73);
-    border-style: double;
-    border-width: 5px;
-    background-color: whitesmoke;
-    margin-bottom: 10px;
-    
-}  */
+
+h1 {
+    text-align: center;
+    font-size: 40px;
+}
+
+li{
+    text-align: left;
+}
 
 button,input {
     border-radius: 5px;
     border-width: 1px;
     height: 20px;
 }
-
-/* .task {
-width: 180px;
-height: 20px;
-}  */
 
  input{
     border-radius: 5px;
@@ -72,9 +53,11 @@ height: 20px;
     min-width: 200px;
 } 
  
-#chageTaskInput{
+#search {
+    width: 950px;
+    height: 40px;
+    border-radius: 10px;
+    border-color: rgb(126, 103, 73);
+    border-width: 2px;
 
-    background-color: transparent;
-    /* outline: none; */
- }  
-
+}
