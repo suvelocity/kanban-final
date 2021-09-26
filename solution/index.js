@@ -44,8 +44,9 @@
 function randomId(){
     return Math.floor(Math.random() * 101);
   };
-  //ID check
-  function idCheck(taskId){
+  
+//ID check
+function idCheck(taskId){
     let indicator = 0;
     for(let task of Tasks.todo){
        if(task.id.slice(4) == taskId){
@@ -80,7 +81,7 @@ function attachId(element){
 //A function that creates a task element (<li>) with "task" class, and places it in the correct tasks-list
 function createTaskElement(task, listId){
     return createElement("li", [task], ["task"], {}, listId);
-}
+};
 
 /* Add one or more listeners to an element
 ** @param {DOMElement} element - DOM element to add listeners to
@@ -132,9 +133,9 @@ const mainContainer = document.getElementById("main-container");
 const toDoInput = document.getElementById("add-to-do-task");
 const inProgressInput = document.getElementById("add-in-progress-task");
 const doneInput = document.getElementById("add-done-task");
-const toDoList = document.getElementById("to-do-tasks");
-const inProgressList = document.getElementById("in-progress-tasks");
-const doneList = document.getElementById("done-tasks");
+const toDoList = document.getElementById("to-do-list");
+const inProgressList = document.getElementById("in-progress-list");
+const doneList = document.getElementById("done-list");
 const serachInput = document.getElementById("search-input");
 
 //Creates a task object
@@ -172,16 +173,18 @@ function generateTasksDom(){
     }
 };
 
+generateTasksDom();
 
 //Event listeners
-addMultipleEventListener(mainContainer, ["click", "dblclick"], eventHandler);
-//addMultipleEventListener(toDoList, ["mouseover"], changeByAlt);
-//addMultipleEventListener(inProgressList, ["mouseover"], changeByAlt);
-//addMultipleEventListener(doneList, ["mouseover"], changeByAlt);
+addMultipleEventListener(mainContainer, ["click", "dblclick"], clickHandler);
+addMultipleEventListener(toDoList, ["mouseover"], changeByAlt);
+addMultipleEventListener(inProgressList, ["mouseover"], changeByAlt);
+addMultipleEventListener(doneList, ["mouseover"], changeByAlt);
 serachInput.addEventListener("input", searchHandler)
 
+//----Add task - Add task button----\\
 //The event handler function
-function eventHandler(e){
+function clickHandler(e){
     //Create action code for specific events
     let actionCode = eventType(e.type) + targetTypeId(e.target.id);
     switch(actionCode){
@@ -198,28 +201,12 @@ function eventHandler(e){
         case "a3":
             addTask(e, doneInput);
             break;
-        //Load DOM from local storage
-        case "a4":
-            generateTasksDom();
-            break;
     }
     //Double click event on task
     if(eventType(e.type) === "b" && e.target.className === "task"){
         editByDblClick(e.target);
     };
-    /*
-    //Hover + alt + 1/2/3 over element
-    if(eventType(e.type) === "d" && e.target.className === "task"){
-        let task = document.getElementById(e.target.id);
-        if(e.altKey === true){
-            console.log(e.target.id)
-            keydownChange(task);
-        }
-    }
-    */
 };
-
-
 
 //Event type identifier
 function eventType(type){
@@ -253,12 +240,11 @@ function targetTypeId(targetId){
         case "submit-add-done":
             targetId = 3;
             break;
-        case "load-local":
-            targetId = 4;
     }
     return targetId;
 };
 
+//Create a task object
 function createTaskObject(taskElementId, task){
     const taskObject = {
         id: taskElementId,
@@ -271,13 +257,13 @@ function createTaskObject(taskElementId, task){
 function relevantListArray(parentListId){
     let listArray;
     switch(parentListId){
-        case "to-do-tasks":
+        case "to-do-list":
             listArray = "todo";
             break;
-        case "in-progress-tasks":
+        case "in-progress-list":
             listArray = "in-progress";
             break;
-        case "done-tasks":
+        case "done-list":
             listArray = "done";
             break;
     }
@@ -289,13 +275,13 @@ function relevantListElement(listArray) {
     let parentListId;
     switch(listArray){
         case "todo":
-            parentListId = "to-do-tasks";
+            parentListId = "to-do-list";
             break;
         case "in-progress":
-            parentListId = "in-progress-tasks";
+            parentListId = "in-progress-list";
             break;
         case "done":
-            parentListId = "done-tasks";
+            parentListId = "done-list";
             break;
     }
     return parentListId;
@@ -324,7 +310,8 @@ function addTask(e, input){
     input.value = "";
     return taskElement;  
 };
-    
+
+//--------Edit task - Double click---------\\
 //Edit a task's value in tasks by its ID
 function editTaskValue(taskId, newValue){
     for(let task of Tasks.todo){
@@ -364,72 +351,97 @@ function editByDblClick(taskElement){
     console.log(Tasks);
 };   
 
-//Remove task by id and saves to local storage
+//----Change task list - Hover + alt + 1/2/3----\\
+//Remove task from Tasks object by id and saves to local storage
 function removeTask(taskId) {
     for(let i = 0; i < Tasks.todo.length; i++){
         if(Tasks.todo[i].id == taskId){
-            Tasks.todo.splice(i , i);
+            if(Tasks.todo.length === 1 || i === 0){
+                Tasks.todo.shift();
+            }else{
+                Tasks.todo.splice(i, i); 
+            }
         }
      }
      for(let i = 0; i < Tasks["in-progress"].length; i++){
         if(Tasks["in-progress"][i].id == taskId){
-            Tasks["in-progress"].splice(i , i);
+            if(Tasks["in-progress"].length === 1 || i === 0){
+                Tasks["in-progress"].shift();
+            }else{
+                Tasks["in-progress"].splice(i, i); 
+            }
         }
      }
      for(let i = 0; i < Tasks.done.length; i++){
         if(Tasks.done[i].id == taskId){
-            Tasks.done.splice(i , i);
+            if(Tasks.done.length === 1 || i === 0){
+                Tasks.done.shift();
+            }else{
+                Tasks.done.splice(i, i); 
+            }
         }
      }
+     document.getElementById(taskId).remove();
      saveTasksToStorage();
 };
 
-/*
-function keydownChange(){
-    window.addEventListener("keydown", (event) => {
-        //removeTask(event.id);
-        console.log(event.code);
-        switch(event.code){
-            case "Digit1":
-                console.log("1");
-                //toDoList.appendChild(task);
-                break;
-            case "Digit2":
-                //inProgressList.appendChild(task);
-                console.log("2");
-                break;
-            case "Digit3":
-                //doneList.appendChild(task);
-                console.log("3");
-                break;
-        }
-    })
+//Removes the task from the current list array and assign it to the given list and creates its element
+function replaceList(taskId, task, newList) {
+    //removes the chosen task from the Tasks object and from the DOM
+    removeTask(taskId);
+    //Creates a task object and places iy in the correct array and list element
+    let taskObject = createTaskObject(taskId, task);
+    createAndPlace(taskObject, newList);
+    Tasks[newList].push(taskObject);
+    //Saves changes to local storage
+    saveTasksToStorage();
 };
 
 //Handles Hover + alt + 1/2/3 over element
 function changeByAlt(e){
-    let targetList;
-    if(e.altKey === true){
-        if(e.type === "mouseover"){
-            if(e.target.className === "task"){
-                const targetList = e.target.parentElement;
-                 targetId = e.target.id;
-                keydownChange();
-                if(keydownChange() == 1){
-                    console.log(targetId +" "+ targetList.id);
-                }
-            }
+    if(e.type === "mouseover"){
+        if(e.target.className === "task"){
+            document.taskElement = e.target;
+            const targetList = e.target.parentElement;
+            targetId = e.target.id;
+            document.addEventListener("keydown", keydownEvent);
         }
     }
 };
-*/
 
-
+//Keydown event listener
+function keydownEvent(e){
+    //Checks alt key 
+    if(e.altKey === true){
+        let taskId = document.taskElement.id;
+        let task = document.taskElement.innerText;
+        let newList;
+        //Execute by digit
+        switch(e.code){
+            case "Digit1":
+                newList = "todo"
+                replaceList(taskId, task, newList)
+                break;
+            case "Digit2":
+                newList = "in-progress"
+                replaceList(taskId, task, newList)
+                break;
+            case "Digit3":
+                newList = "done"
+                replaceList(taskId, task, newList)
+                break;
+        }
+        document.taskElement = null;
+        document.removeEventListener("keydown", keydownEvent);
+        console.log(Tasks);
+    }
+};
+//----Search by query - Search input----\\
 //Task content scan and match to query
 function searchHandler(e){
     //Get input value and convert to lower case
     const inputValue = e.target.value.toLowerCase();
-    //Get list of tasks 
+    //Get list of tasks from the main container
     const tasks = mainContainer.getElementsByClassName("task");
     //Convert list to array and create a taskName variable for each task 
     Array.from(tasks).forEach(function(task){
@@ -445,3 +457,8 @@ function searchHandler(e){
     });
 };
 
+/*
+const d = new Date();
+let year = d.getFullYear();
+console.log(year);
+*/
