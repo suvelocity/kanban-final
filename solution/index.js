@@ -41,8 +41,15 @@ function handleClick(event) {
       captureData()
     }
     if (event.target.parentElement.className === 'remove-btn') {
-      removeTask(event.target.parentElement.parentElement.parentElement)
+      removeTask(event.target.closest('li'))
       captureData()
+    }
+    if (event.target.parentElement.className === 'clean-section-btn') {
+      cleanSections([event.target.closest('section')])
+      captureData()
+    }
+    if (event.target.parentElement.className === 'change-color-btn') {
+      console.log('changecolor')
     }
   } catch (error) {
     alert(error)
@@ -202,7 +209,7 @@ function removeTask(task) {
  *Clears the section's list from tasks completely
  * @param {Array} sections - Array of sections to clear
  */
-function cleanSection(sections) {
+function cleanSections(sections) {
   sections.forEach((section) =>
     section.querySelectorAll('li').forEach((item) => removeTask(item))
   )
@@ -400,7 +407,7 @@ function loadData() {
  * @param {Object} data the data object to load
  */
 function loadRemoteData(data) {
-  cleanSection(document.querySelectorAll('section'))
+  cleanSections(document.querySelectorAll('section'))
   insertData(data)
   storeLocally(data)
 }
