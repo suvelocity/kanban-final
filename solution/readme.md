@@ -9,4 +9,5 @@ there is some things you can do using this web.
 4. Using the search input you can search through all your tasks.
 5. Also you can drag any task yu want and drop it in any list.
 6. Our web is also udating through API so make sure you internet works fine.
+7. Choose background from our 3 great choices.
 
