@@ -93,7 +93,6 @@ function inputListener(e) {
     !clsLst.includes('bold') &&
     !clsLst.includes('underline')
   ) {
-    console.log('in')
     if (!e.target.closest('button').id.includes('submit')) return
   }
   const category = getCategory(e)
