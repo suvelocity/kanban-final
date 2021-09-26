@@ -239,7 +239,7 @@ async function saveApi(){
         headers :{
             Accept: "application/json", "Content-Type": "application/json",
         },
-        //body: JSON.stringify({'tasks':{'todo':[], 'in-progress': [], 'done' : []} 
+        //body: JSON.stringify({'tasks':{'todo':[], 'in-progress': [], 'done' : []} // resets the API
         body: JSON.stringify({'tasks':{'todo':[toDoTasksUl.outerHTML], 'in-progress': [inProgressTasksUl.outerHTML], 'done' : [doneTasksUl.outerHTML]}
         }) 
   }).then(response => {if(response.status > 400){alert("i'm a teapot")}})
