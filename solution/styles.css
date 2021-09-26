@@ -21,6 +21,8 @@
 }
 .section{
     border: 1px solid black;
+    display: flex;
+    flex-flow: column;
 }
 .section-header{
     font-family: 'Orbitron', sans-serif;
@@ -33,7 +35,7 @@
 }
 
 .list{
-    padding-right: 3%;
+    padding-right: 20%;
     padding-left: 3%;
     padding-top: 1%;
     padding-bottom: 1%;
@@ -44,9 +46,17 @@
     border-style: solid;
     border-radius: 20px;
     border-color: black;
+    margin-right: 10%;
     margin: 1%;
-    padding: 1%;
+    padding: 2%;
     background-color: whitesmoke;
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+}
+.task:hover {
+    background-color:black;
+    color: whitesmoke;
 }
 
 li{
@@ -60,3 +70,19 @@ li{
     padding-bottom: 1%;
 }
 
+#deadline-form{
+    display: none;
+}
+
+.dates-button{
+    margin-left: 10%;
+    width: 70px;
+}
+.deadline-button{
+    margin-left: 10%;
+    width: 70px;
+}
+.delete-button{
+    margin-left: 10%;
+    width: 70px;
+}
