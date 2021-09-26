@@ -353,7 +353,9 @@ let cssLink = document.head.querySelector('link');
 themeButton.addEventListener('click', (e) => {
     if(cssLink.href == 'http://127.0.0.1:5500/solution/styles.css' || cssLink.href == "./styles.css"){
         cssLink.setAttribute('href', './cssFornewTheme.css');
+        console.log(cssLink.href);
     }else{
+        console.log(cssLink.href);
         cssLink.setAttribute('href', './styles.css');
     }
 })
