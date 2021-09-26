@@ -176,3 +176,25 @@ function setItemPhase(task, location) {
             }
         }
     }
+
+    let searchButton = document.getElementById('search-button');
+searchButton.addEventListener('click', function () {
+    let searchInput = document.getElementById("search").value.toLowerCase();
+    let allLi = document.querySelectorAll("li");
+    let Counter = 0;
+    allLi.forEach((li) => {
+        if ((li.innerText.toLowerCase()).includes(searchInput, 0) === false) {
+            li.style.display = "none";
+        } else {
+            li.style.display = "list-item";
+        }
+
+        if (li.style.display === "none") {
+            Counter++;
+        }
+    });
+
+    if (Counter === allLi.length) {
+        alert('No items to display');
+    }
+});
