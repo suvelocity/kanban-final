@@ -13,23 +13,27 @@
 </head>
 <body id="body"onload="checkName()">
     <header>
-        <div class="twelve" style="margin-right:10%;">
+      <button id="save-btn" style="margin-left: 5%;"onclick="saveApi()" type="button" class="submit btn btn-primary api">Save</button>
+      <button id="load-btn" onclick="getApi()" type="button" class="submit btn btn-primary api">Load</button>
+      <button id="clear-btn" onclick="clearApi()" type="button" class="submit btn btn-primary api">Clear</button>
+
+        <div class="twelve" style="margin-right:44%;">
             <h1 id="page-title">roy's kanban</h1>
             <div class="form__group search">
                 <input onfocus="enterSearch()" onfocusout="exitSearch()"type="text" style="margin-left: 0px;" class="form__input" id="search" placeholder="Search task" required="" />
                 <label for="search" class="form__label" >Search task</label>
-            </div>  
-            <button onclick="previousBg()"style="width:5%" class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button onclick="nextBg()" style="width:5%"class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-        </div>
+              </div>  
+              <button onclick="previousBg()"style="width:5%" class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button onclick="nextBg()" style="width:5%"class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
     </header>
-    <main style="display: flex;">
+    <main id="main"style="display: flex;">
         <section class="box" id="1" >
             <h4 class="display-4">To do</h4>
             <ul class="to-do-tasks" id="todo" ondragover="allowDrop(event)" ondrop="drop(event)">
@@ -66,29 +70,8 @@
     </main>
 </body>
 </html>
-<!--<header>
     
-<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-indicators">
-  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-  <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-  </div>
-  <div class="carousel-inner">
-    <div class="carousel-item active" style="background-image: url(./img/bg1.jfif)"></div>
-    <div class="carousel-item" style="background-image: url(./img/bg2.jfif)"></div>
-    <div class="carousel-item" style="background-image: url(./img/bg3.jfif)"></div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-  <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-  <span class="visually-hidden">Next</span>
-  </button>
-</div>
-</header> -->
+
 
 
 

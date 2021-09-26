@@ -1,7 +1,9 @@
+
+
 //function that check the user's name
-function checkName()
+async function checkName()
 {
-    //let name=localStorage.getItem("name");
+
     let name=localStorage.getItem("tasks");
     let tasks;
     bg=1;
@@ -12,13 +14,14 @@ function checkName()
             "in-progress": [],
             "done": [],
         };
-        //name=prompt("What is your name?");
         localStorage.setItem("tasks",JSON.stringify(tasks));
-        //localStorage.setItem("name",name);
-    }
+    } 
     currentBg();
-    //document.getElementById("page-title").innerText=name+"'s kanban";
     tasks=JSON.parse(localStorage.getItem("tasks"));
+    /* tasksApi=getApi().json;
+    if(tasks!==tasksApi)
+        tasks=tasksApi;
+    console.log(tasks) */
     for (let list in tasks) {
         tasks[list].forEach(text => {
             let task =createElement("li",[],["list-group-item","task"],{draggable:"true",ondragstart:"drag(event)"});
@@ -27,9 +30,130 @@ function checkName()
             task.addEventListener('dblclick', changeTask);
             task.addEventListener('mouseover', moveTask);
             task.addEventListener('mouseout', moveTaskEnd);
+        });} 
+ 
+}
 
+async function getApi(){
+    showSpinner();
+    let alltask=document.getElementsByTagName("li");
+    for (let i = alltask.length-1; i >-1; i--) {
+        alltask[i].parentElement.removeChild(alltask[i]);        
+    }
+    const respone= await fetch("https://json-bins.herokuapp.com/bin/614b080c4021ac0e6c080cd2",{
+        method:"GET",
+        headers :{
+            "ID":"614b080c4021ac0e6c080cd2",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        
+    }) 
+    const answerApi= await respone.json();
+    try
+    {
+        hideSpinner() ;
 
-        });
+        tasks=answerApi.tasks;
+            for (let list in tasks) {
+            tasks[list].forEach(text => {
+                let task =createElement("li",[],["list-group-item","task"],{draggable:"true",ondragstart:"drag(event)"});
+                task.innerText=text;
+                document.getElementById(list).append(task);
+                task.addEventListener('dblclick', changeTask);
+                task.addEventListener('mouseover', moveTask);
+                task.addEventListener('mouseout', moveTaskEnd);
+            });
+        }
+        return answerApi.tasks;
+    }
+    catch(er)   
+    {   
+                    
+        hideSpinner() ;
+       tasks=JSON.parse(localStorage.getItem("tasks"));
+        for (let list in tasks) {
+            tasks[list].forEach(text => {
+                let task =createElement("li",[],["list-group-item","task"],{draggable:"true",ondragstart:"drag(event)"});
+                task.innerText=text;
+                document.getElementById(list).append(task);
+                task.addEventListener('dblclick', changeTask);
+                task.addEventListener('mouseover', moveTask);
+                task.addEventListener('mouseout', moveTaskEnd);
+            });
+        }
+        alert("There is no tasks")
+    }
+    finally{
+        hideSpinner();
+    }   
+}
+async function saveApi()
+{
+    let alltask=document.getElementsByTagName("li");
+    let lists = {
+        "todo": [],
+        "in-progress": [],
+        "done": [],
+    };
+    for (let i = alltask.length-1; i >-1; i--) {
+        let ul=alltask[i].parentElement.id;
+        lists[ul].unshift(alltask[i].innerText);
+    }
+    localStorage.setItem("tasks",JSON.stringify(lists))
+    try{
+    const respone= await fetch("https://json-bins.herokuapp.com/bin/614b080c4021ac0e6c080cd2",{
+    method:"PUT",
+    headers :{
+        "ID":"614b080c4021ac0e6c080cd2",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+    },
+    body : JSON.stringify( {tasks:lists} )
+    })}
+    catch(ex)
+    {
+        alert(ex);
+        throw("error")
+    }
+    finally
+    {
+        alert("saved!");
+    }
+}
+async function clearApi()
+{
+    let lists = {
+        "todo": [],
+        "in-progress": [],
+        "done": [],
+    };
+    try{
+    const respone= await fetch("https://json-bins.herokuapp.com/bin/614b080c4021ac0e6c080cd2",{
+    method:"PUT",
+    headers :{
+        "ID":"614b080c4021ac0e6c080cd2",
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+    },
+    body : JSON.stringify( {tasks:lists} )
+    })
+    localStorage.clear();
+    tasks={
+        "todo": [],
+        "in-progress": [],
+        "done": [],
+    };
+    localStorage.setItem("tasks",JSON.stringify(tasks));    
+    let alltask=document.getElementsByTagName("li");
+    for (let i = alltask.length-1; i >-1; i--) {
+        alltask[i].parentElement.removeChild(alltask[i]);        
+    }
+    }
+    catch(ex)
+    {
+        alert(ex);
+        throw("error")
     }
 }
 //function that creates element
@@ -56,7 +180,6 @@ function createTask(event)
     task.addEventListener('dblclick', changeTask);
     task.addEventListener('mouseover', moveTask);
     task.addEventListener('mouseout', moveTaskEnd);
-
     let section=event.target.parentElement.id;
     let ul,text;
     switch(section)
@@ -248,7 +371,7 @@ function allowDrop(ev) {
         localStorage.setItem("tasks",JSON.stringify(list)); 
     }
   }
-
+//change background image
   let bg;
   function nextBg()
 {
@@ -267,23 +390,34 @@ function previousBg()
 }
 function currentBg()
 {
-    console.log("here")
     let body=document.getElementById("body");
     switch (bg) {
         case 1:
-            console.log("img1")
             body.style.backgroundImage="url('./img/bg1.jfif')";
             body.classList.remove("bright");
             break;
         case 2:
-            console.log("img2")
             body.classList.remove("bright");
             body.style.backgroundImage="url('./img/bg2.jfif')";
             break;
         case 3:
-            console.log("img3")
             body.classList.add("bright");
             body.style.backgroundImage="url('./img/bg3.jfif')";
             break;
     }
 }
+//show and hide spinner
+function showSpinner() {
+    let loader =createElement('div');
+    loader.id='loader';
+    loader.classList.add('loader')
+    document.getElementById("body").append(loader);
+    document.getElementById('main').style.display="none";
+  }
+  
+  function hideSpinner() {
+    let loader=document.getElementById("loader");
+    loader.remove();
+    document.getElementById('main').style.display="flex";
+  }
+  
