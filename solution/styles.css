@@ -1,20 +1,16 @@
 *{
     font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder ;
 }
 body{
-    background-image:url("dailty task manager.jpg");
+    background-image:url("daily task manager.jpg");
     background-size: cover;
     position: relative;
-    /* background-color: lightblue; */
-    /* background-position:center; */
 
 }
 section {
      overflow: hidden;
      float: left;   
-     /* margin-right: 25px;
-      
-      margin-bottom: 15px;  */
       margin:auto;
       margin-left: 130px;
       border-radius: 10px;   
@@ -31,8 +27,6 @@ section {
         border: 1px solid black;
         text-align:center;
         list-style: none;
-         /* margin-right: 5em;
-        margin-left: 2em; */
         margin:auto;
         margin-bottom: 10px;
         margin-right:5em;
@@ -59,7 +53,6 @@ section {
         display: flex;
     }
     #search{
-        /* justify-content: center; */
         display: flex;
         text-align: center;
         margin-left: 42%;
@@ -85,5 +78,6 @@ section {
          border:none;
          box-shadow:1px 1px 5px blue, 0 0 20px blue ;
          background-color: lightgray;
+         font-weight: bold;
         }
     

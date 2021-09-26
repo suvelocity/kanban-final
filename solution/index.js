@@ -32,7 +32,7 @@ function addNewTask({target}){
 
 }
 
-
+//add the new data to the data variable
 function addTaskData(target,newTask){
     if(target.id==="submit-add-to-do"){
         data.todo.push(newTask)
@@ -45,7 +45,7 @@ function addTaskData(target,newTask){
     }
 }
 
-
+//save every change to thr local data
 function saveLocalData(){
     const save=JSON.stringify(data)
     localStorage.setItem("tasks",save)
@@ -79,6 +79,22 @@ function outOfEditTask(targetTask){
         updateTask(dataKey,targetTask.target.innerText)
     }
 }
+
+
+
+//update the changed task
+function updateTask(dataKey,newTaskText){
+    arrayOfData=data[dataKey]
+          for(let i=0;i<arrayOfData.length;i++){
+              if(arrayOfData[i]===existTaskText){
+                  data[dataKey][i]=newTaskText
+                  saveLocalData()
+                  return
+              }
+          }
+}
+
+
 let taskToMove
 function chooseTask(targetTask){
     if(targetTask.target.classList.contains("task")){
@@ -157,17 +173,7 @@ function addNewTaskData(section,text){
     return data
 }
 
-//update the changed task
-function updateTask(dataKey,newTaskText){
-    arrayOfData=data[dataKey]
-          for(let i=0;i<arrayOfData.length;i++){
-              if(arrayOfData[i]===existTaskText){
-                  data[dataKey][i]=newTaskText
-                  saveLocalData()
-                  return
-              }
-          }
-}
+
     
 //create the HTML which the task is written in it
     function createLiElement(text){
