@@ -89,7 +89,7 @@ function addTask(e){
        if(inputText === ''){
             alert("You haven't entered any text");
        }else{
-            let newTask = createElement('li',children = [/*newTaskInnerItem */ `${target.previousElementSibling.value}`], classes = ['task'], attributes = {'draggable': 'true'});
+            let newTask = createElement('li',children = [`${target.previousElementSibling.value}`], classes = ['task'], attributes = {'draggable': 'true'});
             console.log(target.nextElementSibling.firstChild);
             target.nextElementSibling.firstChild.insertBefore(newTask, target.nextElementSibling.firstChild.firstChild);
 
@@ -202,7 +202,6 @@ function searchTask(e){
   hideTask(toDoTaskArray);
   hideTask(inProgressTaskArray);
   hideTask(doneTaskArray);
-  
 }
 //search bar animations
 searchBar.addEventListener('focus', () => {
