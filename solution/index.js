@@ -122,7 +122,7 @@ function checkTasksStorage(){
    if(tasks === null){
     saveTasksToStorage();
    }
-}
+};
 
 
 
@@ -137,7 +137,8 @@ const toDoList = document.getElementById("to-do-list");
 const inProgressList = document.getElementById("in-progress-list");
 const doneList = document.getElementById("done-list");
 const serachInput = document.getElementById("search-input");
-
+const loadButton = document.getElementById("load-api");
+const updateButton = document.getElementById("update-api")
 //Creates a task object
 function createTaskObject(taskElementId, task){
     const taskObject = {
@@ -155,6 +156,7 @@ function createAndPlace(task, arrayList){
     return taskElement;
 };
 
+//Makes sure that in initial setup there would be an empy Tasks object by default
 checkTasksStorage();
 
 //Loads the Tasks object with stored values
@@ -181,6 +183,7 @@ addMultipleEventListener(toDoList, ["mouseover"], changeByAlt);
 addMultipleEventListener(inProgressList, ["mouseover"], changeByAlt);
 addMultipleEventListener(doneList, ["mouseover"], changeByAlt);
 serachInput.addEventListener("input", searchHandler)
+
 
 //----Add task - Add task button----\\
 //The event handler function
@@ -348,7 +351,6 @@ function editByDblClick(taskElement){
     taskElement.innerText="";
     taskElement.appendChild(input);
 	input.focus();
-    console.log(Tasks);
 };   
 
 //----Change task list - Hover + alt + 1/2/3----\\
@@ -433,7 +435,6 @@ function keydownEvent(e){
         }
         document.taskElement = null;
         document.removeEventListener("keydown", keydownEvent);
-        console.log(Tasks);
     }
 };
 //----Search by query - Search input----\\
@@ -455,6 +456,70 @@ function searchHandler(e){
             task.style.display = 'none';
         }
     });
+};
+
+//--------API---------\\
+loadButton.addEventListener("click", loadHandler);
+updateButton.addEventListener("click", updateHandler);
+
+function resetTasksDom() {
+    storedTasks = getStoredTasks();
+    for(let task of storedTasks.todo){
+        let taskElement = document.getElementById(task.id)
+        if(taskElement != null){
+            taskElement.remove();
+        }
+    }
+    for(let task of storedTasks["in-progress"]){
+        let taskElement = document.getElementById(task.id)
+        if(taskElement != null){
+            taskElement.remove();
+        }
+    }
+    for(let task of storedTasks.done){
+        let taskElement = document.getElementById(task.id)
+        if(taskElement != null){
+            taskElement.remove();
+        }
+    }
+};
+
+const apiURL = 'https://json-bins.herokuapp.com/bin/614b360bb2e21e6812f6e73b';
+//Load event handler - receives the data in the API bin, saves it in the local storage and generates the DOM
+async function loadHandler(e){
+    let response = await fetch(apiURL, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+    });
+    let results = await response.json();
+    if(response.status < 400 || response.status === 418){
+        //Resets the DOM
+        resetTasksDom();
+        //Appends the new local stored values to Tasks
+        localStorage.setItem("tasks", JSON.stringify(results.tasks))
+        Tasks = getStoredTasks();
+        //Regenerate the DOM
+        generateTasksDom();
+    }else{
+        alert("Request failiure")
+    }
+};
+
+//Update event handler - Receives the data in the local storage and fetches it to the API
+async function updateHandler(e){
+    let response = await fetch(apiURL,{
+        method: "PUT",
+        headers:{
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }, body: JSON.stringify({tasks: JSON.parse(localStorage.tasks)})
+    });
+    if(response.status > 400 && response.status != 418){
+        alert("Request failiure");
+    }
 };
 
 /*
