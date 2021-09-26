@@ -1,21 +1,11 @@
-# Cyber4s 3rd Pre-Course Final Project
+# Cyber4s 3rd Pre-Course Final Project - Elay Gelbart
 
-## What we will be building
+Welcome to my Todo website repo, before doing anything read the Readme text to ensure you have the best time.
 
-Welcome to your pre-course final project. You are going to build a task-management application.
-
-![Example](./example.png)
-
-## Instructions
-
-1. Fork this repo into your account.
-2. Clone the forked repo to your computer.
-3. Run the [setup](#setup) script.
-4. Create a new git branch for your work.
-5. Complete the project [requirements](#requirements).
-6. Push your work to GitHub.
-7. [Submit](#submission) your work.
-
+## Technologies i use for Website
+![HTML](./Image4Reademe/html.svg) 
+![CSS](./Image4Reademe/css.svg) 
+![JS](./Image4Reademe/js.svg) 
 ## Setup
 
 Execute `npm run final <your name>` (replace `<your name>` with your name). This command will install all the needed dependencies, and generate an [api-data.txt](#api-integration) file.
