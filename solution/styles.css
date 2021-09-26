@@ -1,7 +1,9 @@
-#page-title{
-    margin: auto;
-}
+
 #main{
+    background: url("https://img5.goodfon.com/wallpaper/nbig/f/1a/osen-listia-fon-derevo-colorful-doska-wood-background-autu-2.jpg") no-repeat center / cover;
+    box-shadow:rgb(53, 53, 53) 10px 0 10px ;
+  height: 100vh;
+  overflow: hidden;
     margin: 0px 10px;
     position: relative;
     justify-content:space-evenly; 
@@ -28,24 +30,116 @@ ul {
     overflow-y: auto;
 }
 #toDo{
+    background-color: rgba(255, 255, 255, 0.508);
     text-align: center;
-    border: 1px solid black;
+    border: 1px solid rgb(87, 87, 87);
+    box-shadow:rgb(53, 53, 53) 10px 0 10px 
     
 }
 
 #in-Progress{
+    background-color: rgba(255, 255, 255, 0.508);
     text-align: center;
-    border: 1px solid black;
+    border: 1px solid rgb(130, 130, 130);
+    box-shadow:rgb(53, 53, 53) 10px 0 10px 
     
 }
 
 #done{
+    background-color: rgba(255, 255, 255, 0.508);
     text-align: center;
-    border: 1px solid black;
+    border: 1px solid rgb(87, 87, 87);
+    box-shadow:rgb(53, 53, 53) 10px 0 10px ;
     
 }
 #search-container {
     right: -45%;
     position: relative;
     margin-bottom: 60px;
+}
+body {
+    margin: 0;
+    background-color:#FAFAFA;
+    font-family: arial;
+}
+
+#page-title{
+    font-size: 25px;
+    margin: auto;
+    background-color: #29B6F6;
+    padding:20px;
+    box-shadow: 0px 0px 4px 0px;
+    right: 0px;
+}
+
+
+
+
+h3 {
+    position: relative;
+    left: 10px;
+}
+
+form {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+}
+
+ul {
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 0;
+    list-style-type: none;
+}
+#container {
+    width: 300px;
+    text-align: center;
+    background-color: white;
+    box-shadow: 0px 0px 5px 0px;
+    padding: 30px;
+    max-height: 600px;
+}
+
+#search-container {
+    padding: 35px;
+    display: flex;
+    justify-content: center;
+}
+
+.search-icon {
+    font-size: 21px;
+    position: relative;
+    right: 7px;
+    bottom: 2px;
+    cursor: default;
+}
+
+label {
+    color: #7a7a7a;
+    font-weight: bold;
+    position: relative;
+    bottom: 12px;
+    font-size: 20px;
+}
+
+.submit-btn {
+    color: lightseagreen;
+    cursor: pointer;
+    font-weight: bold;
+    position: relative;
+    left: 10px;
+    top: 2px;
+}
+
+li {
+    padding: 7px;
+}
+
+li:nth-child(odd) {
+    background-color: #EAEAEA
+}
+
+#search {
+    font-size: 17px;
 }

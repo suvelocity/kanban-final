@@ -22,22 +22,18 @@ const load = () => {
             Tasks[categoryKey].forEach((currTask, i) => {
                 const ul = document.getElementById(updatedCategory);
                 const li = document.createElement('li');
-                const inputLi = document.createElement('input');
                 li.setAttribute('id', `${updatedId}-${i + 1}`);
                 li.setAttribute('draggable', 'true');
                 li.setAttribute('ondragstart', 'drag(event)');
-                inputLi.setAttribute('id', `${updatedId}-${i + 1}-input`);
                 li.setAttribute('class', 'task');
                 li.textContent = currTask;
-                inputLi.value = currTask;
-                inputLi.style.display = 'none';
 
                 ul.appendChild(li);
-                ul.appendChild(inputLi);
 
-                // li.addEventListener('dblclick', () => dblClickFunction(`${updatedId}-${i + 1}`));
+                // double click
+                li.addEventListener('dblclick', () => dblClickFunction(`${updatedId}-${i + 1}`));
                 ///when blur
-                // inputLi.addEventListener('blur', () =>  blurFunction(`${updatedId}-${i + 1}`));*/
+                li.addEventListener('blur', () =>  blurFunction(`${updatedId}-${i + 1}`));
             });
         });
     } else {
@@ -54,9 +50,12 @@ const blurFunction = (currTaskId) => {
     const idForUse = currTaskId.substr(0, currTaskId.lastIndexOf('-')) === 'to-do' ?
         'todo' : currTaskId.substr(0, currTaskId.lastIndexOf('-'))
 
-    const foundId = parseInt(currTaskId.substr(currTaskId.lastIndexOf('-') + 1));
-    Tasks[idForUse][foundId] = document.getElementById(currTaskId).textContent;
-    localStorage.tasks = JSON.stringify(Tasks);
+        const foundId = parseInt(currTaskId.substr(currTaskId.lastIndexOf('-') + 1));
+        Tasks[idForUse][foundId] = document.getElementById(currTaskId).textContent;
+        let remove = foundId-1;
+        Tasks[idForUse].splice(Tasks[idForUse][remove],1,Tasks[idForUse][foundId]);
+        localStorage.tasks = JSON.stringify(Tasks);
+    
 
     document.getElementById(currTaskId).setAttribute('contenteditable', false);
     // document.getElementById(currTaskId + '-input').style.display = 'none';
@@ -134,35 +133,23 @@ const add = (idToAdd) => {
                 mapper[e.key] = 'todo';
             }
             const currentId = `${mapper[e.key]}-${Tasks[mapper[e.key]].length + 1}`;
-
+            console.log(Tasks[idToAdd]);
             Tasks[idToAdd].splice(Tasks[idToAdd].indexOf(Li.textContent), 1);
-            Tasks[mapper[e.key]].unshift(Li.textContent);
+            Tasks[mapper[e.key]].push(Li.textContent);
 
             Li.setAttribute('id', currentId);
-            inputLi.setAttribute("id", `${currentId}-input`);
+            // inputLi.setAttribute("id", `${currentId}-input`);
             console.log(document.getElementById(`${mapper[e.key]}-tasks`));
             if (mapper[e.key] === 'todo') {
                 mapper[e.key] = 'to-do';
             }
             document.getElementById(`${mapper[e.key]}-tasks`).append(Li);
-            document.getElementById(`${mapper[e.key]}-tasks`).append(inputLi);
+            // document.getElementById(`${mapper[e.key]}-tasks`).append(inputLi);
 
             Li.removeEventListener('dblclick', () => dblClickFunction(currentId));
             Li.addEventListener('dblclick', () => dblClickFunction(currentId));
-
-            inputLi.removeEventListener('blur', () => blurFunction(currentId));
-            inputLi.addEventListener('blur', () => blurFunction(currentId));
         }
     }
-    // document.getElementsByClassName('todo-tasks')[0].append(Li);     
-    //     Li.setAttribute('id', `in-progress-${Tasks['in-progress'].length}`);
-    //     inputLi.setAttribute("id",`in-progress-${Tasks['in-progress'].length}` + '-input');
-    //    Tasks['in-progress'].push(Li.textContent);
-    //    document.getElementsByClassName('in-progress-tasks')[0].append(Li);
-    //    document.getElementsByClassName('in-progress-tasks')[0].append(inputLi);
-    // //   
-    //    Tasks[idToAdd].splice(Li.textContent);
-    //    console.log(Tasks);
 }
 const search = () => {
     let input = document.getElementById('search');
