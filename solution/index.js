@@ -316,12 +316,8 @@ sections.forEach((section) => {
         let afterElement = elementAfterDragging(section, e.clientY);
         
         if(afterElement == null){
-            console.log(document.querySelector('.dragging'));
-            console.log('over element');
             section.lastElementChild.firstElementChild.appendChild(document.querySelector('.dragging'));
         }else{
-            console.log(section.lastElementChild.firstElementChild)
-            console.log('over element')
             section.lastElementChild.firstElementChild.insertBefore(document.querySelector('.dragging'), afterElement);
         }
  })
@@ -347,7 +343,6 @@ document.addEventListener('keydown', (e) => {
     if(e.key == 'a'){
         asCounter += 1;
         if(asCounter === 100){
-            console.log('triggerd');
             window.location.href =  "./htmlgame.html"
         }
     }
@@ -358,7 +353,6 @@ document.addEventListener('keydown', (e) => {
 let themeButton = document.getElementById('new-theme-btn');
 let cssLink = document.head.querySelector('link');
 themeButton.addEventListener('click', (e) => {
-    console.log(cssLink.href);
     if(cssLink.href === 'http://127.0.0.1:5500/solution/styles.css'){
         cssLink.setAttribute('href', './cssFornewTheme.css');
     }else{
