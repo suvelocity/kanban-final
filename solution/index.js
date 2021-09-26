@@ -1,4 +1,4 @@
-const sections = document.querySelectorAll('.section') // changed from input to section
+const sections = document.querySelectorAll('.section')
 const buttons = document.querySelectorAll('button')
 const uls = document.querySelectorAll('ul')
 const searchBar = document.querySelector('#search')
@@ -55,27 +55,18 @@ function altHandlerFunction(e) {
         keyPressedObject['Alt'] &&
         numberOptions.includes(secondClickEvent.key)
       ) {
-        let category = getCategory(e)
-        if (category === 'to-do') category = 'todo'
-        parsedTasks[category].splice(
-          parsedTasks[category].indexOf(e.target.textContent),
-          1 // deletes the appropriate li from it's place in parsed version of local storage.
-        )
         switch (secondClickEvent.key) {
           case '1':
             uls[0].prepend(e.target)
-            parsedTasks.todo.unshift(e.target.textContent)
             break
           case '2':
             uls[1].prepend(e.target)
-            parsedTasks['in-progress'].unshift(e.target.textContent)
             break
           case '3':
             uls[2].prepend(e.target)
-            parsedTasks.done.unshift(e.target.textContent)
             break
         }
-        localStorage.setItem('tasks', JSON.stringify(parsedTasks))
+        updateParsedTasksAndSetLocalStorage()
       }
     })
     document.addEventListener('keyup', (e) => {
@@ -96,22 +87,21 @@ function getCategory(e) {
   return section.id.split('-section')[0]
 }
 
-function updateLocalStorage(category, input, methodOfExtraction) {
-  for (let key in parsedTasks) {
-    if (key.split('-').join('') === category.split('-').join('')) {
-      parsedTasks[key].unshift(input[methodOfExtraction])
-      localStorage.setItem('tasks', JSON.stringify(parsedTasks))
-    }
-  }
-}
-
 function inputListener(e) {
-  if (!e.target.closest('button').id.includes('submit')) return
+  const clsLst = [...e.target.classList]
+  if (
+    e.type !== 'keydown' &&
+    !clsLst.includes('bold') &&
+    !clsLst.includes('underline')
+  ) {
+    console.log('in')
+    if (!e.target.closest('button').id.includes('submit')) return
+  }
   const category = getCategory(e)
   const input = document.querySelector(`#add-${category}-task`)
   // check to see if box contains real text:
   if (input.value.replace(/\s/g, '').length < 1) {
-    console.log('empty string') // this will later sub with alert()
+    alert('You forgot to fill out the box')
     return
   }
   const newLiElement = createLiElement(input.value, ['task'])
@@ -121,12 +111,18 @@ function inputListener(e) {
     newLiElement.className = 'list-item task'
   }
   newLiElement.addEventListener('mouseenter', altHandlerFunction) // makes sure you don't have to refresh
-  // newly added! line 124
   newLiElement.addEventListener('dblclick', makeEditable)
   newLiElement.addEventListener('dragstart', addDragging)
   newLiElement.addEventListener('dragend', removeDragging)
+  if ([...e.target.classList].includes('bold')) {
+    newLiElement.classList.add('bold-font') // make bold
+  }
+  if ([...e.target.classList].includes('underline')) {
+    newLiElement.classList.add('underlined') // make bold
+  }
   document.querySelector(`.${category}-tasks`).prepend(newLiElement)
-  updateLocalStorage(category, input, 'value')
+  updateParsedTasksAndSetLocalStorage()
+  input.value = ''
 }
 
 function createLiElement(text, classes = []) {
@@ -136,7 +132,7 @@ function createLiElement(text, classes = []) {
   element.setAttribute('draggable', 'true')
   return element
 }
-
+// continue going over code here
 liS.forEach((li) => li.addEventListener('dblclick', makeEditable))
 function makeEditable(e) {
   e.target.addEventListener('blur', setEditedText)
@@ -153,6 +149,7 @@ function makeEditable(e) {
       blurEvent.target.textContent
     )
     localStorage.setItem('tasks', JSON.stringify(parsedTasks))
+    e.target.setAttribute('contenteditable', 'false')
   }
 }
 
@@ -176,7 +173,7 @@ function createLoader() {
   const container = document.querySelector('#container')
   const loader = document.createElement('img')
   loader.className = 'loader'
-  loader.src = 'https://miro.medium.com/max/1400/1*CsJ05WEGfunYMLGfsT2sXA.gif'
+  loader.src = '../gifs/loader.gif'
   loader.alt = 'image of loader'
   document.body.insertBefore(loader, container)
   return loader
@@ -218,7 +215,6 @@ async function loadFromApi() {
 async function saveToApi() {
   try {
     const { tasks } = localStorage
-    console.log(tasks)
     const loader = createLoader()
     const url = 'https://json-bins.herokuapp.com/bin/614afda34021ac0e6c080cc9'
     const response = await fetch(url, {
@@ -255,54 +251,20 @@ liS.forEach((li) => {
     li.classList.remove('dragging')
   })
 })
-let tempLi
-liS.forEach((li) => {
-  li.addEventListener('dragend', () => {
-    if (tempLi) {
-      tempLi.remove()
-      tempLi = null
-    }
-  })
-})
 
 uls.forEach((ul) => {
-  ul.addEventListener('dragover', (e) => {
-    if (uls[0].textContent === '') {
-      tempLi = createLiElement(' ', ['task'])
-      tempLi.style = 'background-color: rgb(212, 212, 212)'
-      uls[0].prepend(tempLi)
-      // this is start of solution but still has a way to go
-      // also you need to add a dragstart dragend event listener on this liElement
-      // you can first create the element and then style it with grey background so it will basically be invisible
-    }
+  ul.addEventListener('dragover', function dragOver(e) {
     e.preventDefault()
     const immediatelyBelowElement = getDragAfterElement(ul, e.clientY) // Gets the element you're immediately above
     const draggable = document.querySelector('.dragging') // only one el with class 'dragging' at a time
     if (immediatelyBelowElement == 'null') {
       ul.append(immediatelyBelowElement)
+    } else if (ul.className === 'trash-container') {
+      if (draggable) draggable.remove()
     } else {
       ul.insertBefore(draggable, immediatelyBelowElement)
     }
-    let droppedAt = ul.className.split('-tasks')[0]
-    if (droppedAt === 'to-do') droppedAt = 'todo'
-    for (const key in parsedTasks) {
-      let takenFrom = key
-      parsedTasks[key].forEach((string, i) => {
-        let wantedIndex
-        if (draggable.textContent === string) {
-          if (!immediatelyBelowElement) {
-            parsedTasks[droppedAt].push(draggable.textContent)
-          } else {
-            wantedIndex = parsedTasks[droppedAt].indexOf(
-              immediatelyBelowElement.textContent
-            )
-            parsedTasks[droppedAt].splice(wantedIndex, 0, draggable.textContent)
-          }
-          parsedTasks[key].splice(i, 1)
-          localStorage.setItem('tasks', JSON.stringify(parsedTasks))
-        }
-      })
-    }
+    updateParsedTasksAndSetLocalStorage()
   })
 })
 
@@ -332,6 +294,64 @@ function removeDragging(e) {
   e.target.classList.remove('dragging')
 }
 
-function makeObjectOutOfUls() {
+function updateParsedTasksAndSetLocalStorage() {
   const arrayOfUls = [...uls]
+  for (let i = 0; i < arrayOfUls.length; i++) {
+    let category = arrayOfUls[i].classList[0].split('-tasks')[0]
+    for (let key in parsedTasks) {
+      if (key.split('-').join('') === category.split('-').join('')) {
+        const arrayOfLis = [...arrayOfUls[i].querySelectorAll('li')]
+        parsedTasks[key] = []
+        arrayOfLis.forEach((li) => {
+          parsedTasks[key].push(li.textContent)
+        })
+      }
+    }
+    localStorage.setItem('tasks', JSON.stringify(parsedTasks))
+  }
 }
+
+let sectionToPaint
+const colorPalettes = document.querySelectorAll('.color')
+colorPalettes.forEach((cp) => {
+  cp.addEventListener('click', (e) => {
+    const colorPicker = document.querySelector('#picker')
+    colorPicker.style = 'display: flex;'
+    const closestSection = e.target.closest('section')
+    sectionToPaint = closestSection
+    setTimeout(() => {
+      colorPicker.style = 'display: none;'
+    }, 5000)
+  })
+})
+
+const colorPicker = new iro.ColorPicker('#picker', {
+  width: 90,
+})
+colorPicker.on('color:change', (color) => {
+  sectionToPaint.style = `background-color: ${color.hexString}`
+})
+
+const inputs = document.querySelectorAll('input')
+inputs.forEach((input) => {
+  input.addEventListener('focus', (e) => {
+    if (e.target === searchBar) return
+    input.addEventListener('keydown', makeEnterSubmit)
+  })
+})
+
+function makeEnterSubmit(keydownEvent) {
+  if (keydownEvent.key === 'Enter') {
+    inputListener(keydownEvent)
+  }
+}
+
+const boldIcons = document.querySelectorAll('.bold')
+boldIcons.forEach((icon) => {
+  icon.addEventListener('click', inputListener)
+})
+
+const underlinedIcons = document.querySelectorAll('.underline')
+underlinedIcons.forEach((icon) => {
+  icon.addEventListener('click', inputListener)
+})
