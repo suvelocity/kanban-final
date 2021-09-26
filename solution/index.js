@@ -9,7 +9,6 @@ if (!localStorage.tasks) {
 
 const parsedTasks = JSON.parse(localStorage.getItem('tasks'))
 
-// add better explanation here later
 function paintDomFromLocalStorage(dataObject) {
   const neaterUlNames = []
   uls.forEach((ul) => neaterUlNames.push(ul.className.split('-tasks')[0]))
@@ -69,8 +68,8 @@ function altHandlerFunction(e) {
         updateParsedTasksAndSetLocalStorage()
       }
     })
-    document.addEventListener('keyup', (e) => {
-      keyPressedObject[e.key] = false
+    document.addEventListener('keyup', (keyboardEvent) => {
+      keyPressedObject[keyboardEvent.key] = false
     }) // makes sure BOTH keys are simultaneously pressed.
   }
 
@@ -132,7 +131,7 @@ function createLiElement(text, classes = []) {
   element.setAttribute('draggable', 'true')
   return element
 }
-// continue going over code here
+
 liS.forEach((li) => li.addEventListener('dblclick', makeEditable))
 function makeEditable(e) {
   e.target.addEventListener('blur', setEditedText)
@@ -154,6 +153,7 @@ function makeEditable(e) {
 }
 
 document.querySelector('#search').addEventListener('input', globalSearch)
+
 function globalSearch(e) {
   const liList = document.querySelectorAll('li')
   liList.forEach((li) => {
