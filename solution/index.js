@@ -1,5 +1,5 @@
 //initilizes the local storage object
-if(!localStorage.tasks || localStorage){
+if(!localStorage.tasks || localStorage.tasks.length == 0){
     localStorage.setItem('tasks', JSON.stringify({
         "todo": [],
         "in-progress": [],
@@ -8,17 +8,9 @@ if(!localStorage.tasks || localStorage){
           })
         );
 }  
-localStorage.setItem('tasks', JSON.stringify({
-    "todo": [],
-    "in-progress": [],
-    "done": [],
-    'deleted':[]
-      })
-    );
 
 
-
-    //localStorage.clear();
+//localStorage.clear();
 
     console.log(localStorage.tasks);
     console.log(JSON.parse(localStorage.tasks).todo);
