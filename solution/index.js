@@ -191,24 +191,18 @@ function searchTask(e){
   let toDoTaskArray = Array.from(document.querySelectorAll('.to-do-tasks > .task'));
   let inProgressTaskArray = Array.from(document.querySelectorAll('.in-progress-tasks > .task'));
   let doneTaskArray = Array.from(document.querySelectorAll('.done-tasks > .task'));
-  for(let li of toDoTaskArray){
-      li.hidden = false;
-      if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
-        li.hidden = true;
+  function hideTask(tasksList){
+      for(let li of tasksList){
+          li.hidden = false;
+          if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
+            li.hidden = true;
+          }
       }
   }
-  for(let li of inProgressTaskArray){
-    li.hidden = false;
-    if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
-        li.hidden = true;
-      }
-  }
-  for(let li of doneTaskArray){
-    li.hidden = false;
-    if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
-        li.hidden = true;
-      }
-  }
+  hideTask(toDoTaskArray);
+  hideTask(inProgressTaskArray);
+  hideTask(doneTaskArray);
+  
 }
 //search bar animations
 searchBar.addEventListener('focus', () => {
