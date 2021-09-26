@@ -132,12 +132,14 @@ async function handleRequest(req) {
 
 /**************** Classes ****************/
 
-/** Initializes a class for the custom element 'task-box'.
- */
+/** Initializes a class for the custom element 'task-box'.*/
 class TaskBox extends HTMLElement {
   constructor() {
     super()
   }
+  /**
+   * Add a div element whenever the element is added to the DOM.
+   */
   connectedCallback() {
     let container = document.createElement('div')
     this.append(container)
@@ -150,7 +152,7 @@ customElements.define('task-box', TaskBox)
 
 /** Creates a new task-box element and adds it to the list passed.
  *
- * @param {HTMLElement} list - the element that will contain the task-box
+ * @param {Element} list - the element that will contain the task-box
  * @param {String} text - the text to be inserted inside the task-box
  */
 function addTaskBox(list, text) {
@@ -166,8 +168,8 @@ function addTaskBox(list, text) {
 
 /**
  * Moves a given task to a given list. Saves to localStorage after moving.
- * @param {HTMLElement} task - task element to be moved
- * @param {HTMLElement} list - list element to move the task to
+ * @param {Element} task - task element to be moved
+ * @param {Element} list - list element to move the task to
  */
 function moveTask(task, list) {
   addTaskBox(list, stripTaskBox(task))
@@ -177,7 +179,7 @@ function moveTask(task, list) {
 
 /**
  * Removes a task element.
- * @param {HTMLElement} task - the task element to remove.
+ * @param {Element} task - the task element to remove.
  */
 function removeTask(task) {
   task.remove()
@@ -193,29 +195,31 @@ function cleanSection(sections) {
   )
 }
 
-//to hide, state = true, to view, state = false
+/**
+ * Sets the hidden attribute of an element to true or false.
+ * @param {Element} task - the task element to hide
+ * @param {Boolean} state - Boolean representing what the hidden attribute should be set to
+ */
 function isTaskHidden(task, state) {
   task.parentElement.hidden = state
 }
 
-/** takes a section and makes an object containig the section name and it's taskBoxes values
- *
- * @param {HTMLElement} section - the section element to extract data from
- * @returns an object containing the section name as key and taskBox texts as value
+/**
+ * Gets a section and creates an object containig the section name as a key and an array with it's taskBoxes texts as a value.
+ * The key name is the sections class name without the string '-section'
+ * @param {Element} section - the section element to extract data from
+ * @returns an object containing the section name as key and taskBox texts array as value
  */
-function stripData(section) {
-  const classNames = [...section.classList].join('')
-  const readyClassName = classNames.replace('-section', '')
-  const list = section.querySelectorAll('task-box')
-  const tasksArray = [...list]
+function extractData(section) {
+  const sectionName = getSectionName(section)
+  const tasksArray = getTaskList(section)
   const strippedTasksArray = tasksArray.map(stripTaskBox)
-  const keyValuePair = { [readyClassName]: strippedTasksArray }
-  return keyValuePair
+  return { [sectionName]: strippedTasksArray }
 }
 
-/** Gets a taskBox and extracts the text from it.
- *
- * @param {HTMLElement} taskBox
+/**
+ * Gets a taskBox and extracts text from it.
+ * @param {Element} taskBox
  * @returns the text from the taskBox
  */
 function stripTaskBox(taskBox) {
@@ -223,9 +227,25 @@ function stripTaskBox(taskBox) {
   return text
 }
 
-function getTasksFromSection(section) {
+/**
+ * Gets the essential section name by cutting off the '-section' string.
+ * @param {Element} section the section HTMLElement
+ * @returns string representing the section name
+ */
+function getSectionName(section) {
+  const sectionClassName = [...section.classList].join('')
+  const sectionName = sectionClassName.replace('-section', '')
+  return sectionName
+}
+
+/**
+ * Return an array with a given section's taskBoxes
+ * @param {Element} section the section HTMLElement
+ * @returns an array containing the section's taskBox elements
+ */
+function getTaskList(section) {
   const tasks = section.querySelectorAll('task-box')
-  return tasks
+  return [...tasks]
 }
 
 /**************** Storage Functions ****************/
@@ -235,7 +255,7 @@ function getTasksFromSection(section) {
  */
 function captureData() {
   const sections = [...document.querySelectorAll('section')]
-  const resultsArray = sections.map(stripData)
+  const resultsArray = sections.map(extractData)
   // resultsArray.reverse()
   console.log(resultsArray)
   const dataObject = {}
@@ -296,7 +316,7 @@ function filterTasks(text) {
   const sections = document.querySelectorAll('section')
 
   sections.forEach((section) => {
-    const tasks = getTasksFromSection(section)
+    const tasks = getTaskList(section)
     tasks.forEach((task) => {
       if (!stripTaskBox(task).toLowerCase().includes(text)) {
         console.log('does not match query!')
