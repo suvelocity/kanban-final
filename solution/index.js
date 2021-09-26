@@ -1,5 +1,5 @@
 //initilizes the local storage object
-if(!localStorage.tasks || !localStorage.tasks.length == 0){
+if(!localStorage.tasks || localStorage){
     localStorage.setItem('tasks', JSON.stringify({
         "todo": [],
         "in-progress": [],
