@@ -108,46 +108,26 @@ function handleSearchInput(event) {
 }
 
 /**Handles click events targeting an option button.
+ * Passes a request by checking the button's class name.
  * @param {Object} event - event object recieved from the event listener
  */
-async function handleOptionClick(event) {
-  if (event.target.className === 'load') {
-    console.log('load')
-    displayLoader()
-    await getAnswer()
-    removeLoader()
-  }
-  if (event.target.className === 'save') {
-    console.log('save')
-    displayLoader()
-    await storeData()
-    removeLoader()
-  }
+function handleOptionClick(event) {
+  handleRequest(event.target.className)
 }
 
-function moveTask(task, list) {
-  addTaskBox(list, stripTaskBox(task))
-  removeTask(task)
-  captureData()
-}
-
-function removeTask(task) {
-  task.remove()
-}
-
-/** Clears the section's list from tasks completely
- *
- * @param {Array} sections - Array of sections to clear
+/**
+ * Sends an HTTP request. Gets a string describing the type of request.
+ * @param {String} req - the type of request to send
  */
-function cleanSection(sections) {
-  sections.forEach((section) =>
-    section.querySelectorAll('li').forEach((item) => removeTask(item))
-  )
-}
-
-//to hide, state = true, to view, state = false
-function isTaskHidden(task, state) {
-  task.parentElement.hidden = state
+async function handleRequest(req) {
+  displayLoader()
+  if (req === 'load') {
+    await getAnswer()
+  }
+  if (req === 'save') {
+    await storeData()
+  }
+  removeLoader()
 }
 
 /**************** Classes ****************/
@@ -183,6 +163,40 @@ function addTaskBox(list, text) {
 }
 
 /**************** Utility Functions ****************/
+
+/**
+ * Moves a given task to a given list. Saves to localStorage after moving.
+ * @param {HTMLElement} task - task element to be moved
+ * @param {HTMLElement} list - list element to move the task to
+ */
+function moveTask(task, list) {
+  addTaskBox(list, stripTaskBox(task))
+  removeTask(task)
+  captureData()
+}
+
+/**
+ * Removes a task element.
+ * @param {HTMLElement} task - the task element to remove.
+ */
+function removeTask(task) {
+  task.remove()
+}
+
+/**
+ *Clears the section's list from tasks completely
+ * @param {Array} sections - Array of sections to clear
+ */
+function cleanSection(sections) {
+  sections.forEach((section) =>
+    section.querySelectorAll('li').forEach((item) => removeTask(item))
+  )
+}
+
+//to hide, state = true, to view, state = false
+function isTaskHidden(task, state) {
+  task.parentElement.hidden = state
+}
 
 /** takes a section and makes an object containig the section name and it's taskBoxes values
  *
