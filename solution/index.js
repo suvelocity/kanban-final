@@ -28,6 +28,7 @@ function addItem(text, ulId) {
             phase: ulId
         }
         tasklist[ulId].unshift(li.object);
+        setupLi(li);
         li.className = "task";
         document.getElementById(ulId).appendChild(li);
         updateTaskList();
@@ -51,3 +52,40 @@ document.body.addEventListener('click', function (e) {
         
     }
 })
+
+function setupLi(li) {
+    const helper = (ev) => {
+        altNum(ev, li);
+    }
+    li.addEventListener('mouseenter', () => {
+        document.addEventListener('keydown', helper);
+    });
+    li.addEventListener('mouseleave', () => {
+        document.removeEventListener('keydown', helper);
+    });
+}
+
+function loadLocal() {
+    for (const key in tasklist) {
+        for (const task of tasklist[key]) {
+            let li = document.createElement("li");
+            li.appendChild(document.createTextNode(task.text));
+            li.className = "task";
+            li.object = task;
+            setupLi(li);
+            switch (key) {
+                case "todo":
+                    todoList.appendChild(li);
+                    break;
+                case "in-progress":
+                    inProgressList.appendChild(li);
+                    break;
+                case "done":
+                    doneList.appendChild(li);
+                    break;
+            }
+        }
+    }
+
+}
+loadLocal();
