@@ -209,18 +209,7 @@ function clickHandler(e){
     if(eventType(e.type) === "b" && e.target.className === "task"){
         editByDblClick(e.target);
     };
-    /*
-    //Remove task by clicking on delete button
-    if(eventType(e.type) === "a" && e.target.className === "delete-button"){
-        removeTask(e.target.parentElement.id);
-    };
-    //Opens a form to put the deadline for the task
-    if(eventType(e.type) === "a" && e.target.className === "deadline-button"){
-        const form = document.getElementById("deadline-form");
-        form.style.display = "block";
-        addMultipleEventListener(form, ["change", "click"], dateChange )
-    };
-    */
+   
 };
 
 //Event type identifier
@@ -317,12 +306,6 @@ function addTask(e, input){
     const taskElement = createTaskElement(task, siblingId);
     attachId(taskElement);
 
-    /*
-    // Adds 3 buttons to the element
-    const dateButton = createElement("button", ["Dates"], ["dates-button"],{}, taskElement.id);
-    const editButton = createElement("button", ["Deadline"], ["deadline-button"],{}, taskElement.id);
-    const deleteButton = createElement("button", ["Delete"], ["delete-button"],{}, taskElement.id);
-    */
     //Get time stamp of the action
     const stampDate = getDateStamp();
     
@@ -483,33 +466,6 @@ function searchHandler(e){
     });
 };
 
-/*
-//Event handler for the form 
-function dateChange(e){
-    let day;
-    let month;
-    let year;
-    let date = {};
-    if(e.type === "change"){
-        if(e.target.id == "day"){
-            day = e.target.value;
-        }
-        if(e.target.id == "month"){
-            month = e.target.value;
-        }
-        if(e.target.id == "year"){
-            year = e.target.value;
-        }
-        if(e.type === "change" && e.target.id == "send-form")
-            date = {
-            day: day,
-            month: month,
-            year: year
-        }
-    }
-    console.log(date);
-}
-*/
 
 
 //--------API---------\\
@@ -590,127 +546,3 @@ function getDateStamp(){
     }
     return date;
 };
-/*
-//Convert date Object to dd-mm-yyyy format
-function convertDateFormat(dateObject) {
-    let day = dateObject.day;
-    if(day < 10){
-        day = "0" + day;
-    }
-    let month = dateObject.month;
-    if(month < 10){
-        month = "0" + month;
-    }
-    let year = dateObject.year;
-    return day + "-" + month + "-" + year;
-}
-
-//Reverse date converor from string to object
-function reverseDateFormat(dateString) {
-    let dateArr = dateString.split("-");
-    for(let i = 0; i < dateArr.length; i++){
-        dateArr[i] = parseInt(dateArr[i], 10)
-    };
-    let date = {
-        day: dateArr[0],
-        month: dateArr[1],
-        year: dateArr[2],
-    }
-    return date;
-}
-
-//----------------Date Selector--------------\\
-
-//Create references to the dropdown's
-const yearSelect = document.getElementById("year");
-const monthSelect = document.getElementById("month");
-const daySelect = document.getElementById("day");
-
-const months = ['January', 'February', 'March', 'April', 
-'May', 'June', 'July', 'August', 'September', 'October',
-'November', 'December'];
-
-//Months are always the same
-(function populateMonths(){
-    for(let i = 0; i < months.length; i++){
-        const option = document.createElement('option');
-        option.textContent = months[i];
-        monthSelect.appendChild(option);
-    }
-    monthSelect.value = "January";
-})();
-
-let previousDay;
-
-function populateDays(month){
-    //Delete all of the children of the day dropdown
-    //if they do exist
-    while(daySelect.firstChild){
-        daySelect.removeChild(daySelect.firstChild);
-    }
-    //Holds the number of days in the month
-    let dayNum;
-    //Get the current year
-    let year = yearSelect.value;
-
-    //Splits between months with 30 days and months with 31 days
-    if(month === 'January' || month === 'March' || 
-    month === 'May' || month === 'July' || month === 'August' 
-    || month === 'October' || month === 'December') {
-        dayNum = 31;
-    } else if(month === 'April' || month === 'June' 
-    || month === 'September' || month === 'November') {
-        dayNum = 30;
-    }else{
-        //Check for a leap year
-        if(new Date(year, 1, 29).getMonth() === 1){
-            dayNum = 29;
-        }else{
-            dayNum = 28;
-        }
-    }
-    //Insert the correct days into the day <select>
-    for(let i = 1; i <= dayNum; i++){
-        const option = document.createElement("option");
-        option.textContent = i;
-        daySelect.appendChild(option);
-    }
-    if(previousDay){
-        daySelect.value = previousDay;
-        if(daySelect.value === ""){
-            daySelect.value = previousDay - 1;
-        }
-        if(daySelect.value === ""){
-            daySelect.value = previousDay - 2;
-        }
-        if(daySelect.value === ""){
-            daySelect.value = previousDay - 3;
-        }
-    }
-}
-
-function populateYears(){
-    //Get the current year as a number
-    let year = new Date().getFullYear();
-    //Make the previous 100 years be an option
-    for(let i = 0; i < 101; i++){
-        const option = document.createElement("option");
-        option.textContent = year + i;
-        yearSelect.appendChild(option);
-    }
-}
-
-populateDays(monthSelect.value);
-populateYears();
-
-//Change listeners in select element
-yearSelect.onchange = function() {
-    populateDays(monthSelect.value);
-}
-monthSelect.onchange = function() {
-    populateDays(monthSelect.value);
-}
-daySelect.onchange = function() {
-    previousDay = daySelect.value;
-}
-*/
