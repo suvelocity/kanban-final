@@ -6,12 +6,14 @@
 
 body {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  background-color: rgb(182, 191, 197);
 }
 
 section {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  align-items: center;
   height: 70%;
   min-height: 400px;
   width: 300px;
@@ -41,8 +43,28 @@ button {
   width: 100px;
 }
 
-input {
-  width: 170px;
+button:hover {
+  transition: 0.3s;
+  background-color: rgba(156, 156, 156, 0.459);
+}
+
+button:focus {
+  transform: translateY(5px);
+}
+
+.remove-btn:hover,
+.change-color-btn:hover,
+.clean-section-btn:hover {
+  background-color: rgba(255, 255, 255, 0);
+}
+
+#search,
+.add-task-input {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border: 2px solid rgb(42, 42, 42);
+  border-radius: 50px;
+  width: 200px;
+  height: 30px;
   margin: 10px 0;
 }
 
@@ -52,13 +74,19 @@ task-box {
   align-items: center;
   width: 250px;
   height: 50px;
-  border: 5px solid black;
+  border-radius: 30px;
+  background-color: whitesmoke;
+  padding: 0 5px;
+  transition: 0.3s;
+  border: 4px solid rgb(53, 53, 53);
   margin: 10px auto;
   cursor: move;
 }
 
 task-box:hover {
-  background-color: cornflowerblue;
+  background-color: rgba(131, 131, 131, 0.171);
+
+  transition: 0.3s;
 }
 
 task-box > div {
@@ -91,7 +119,12 @@ i {
   transition: 0.5s;
 }
 
+.section-options > button:focus {
+  transform: translateY(0);
+}
+
 .header {
+  color: rgb(29, 29, 29);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -106,8 +139,6 @@ i {
 
 .dragging {
   opacity: 0.5;
-  box-shadow: black;
-  color: red;
 }
 
 .task-list {
@@ -171,8 +202,10 @@ i {
 .highlight-section {
   background-color: red;
 }
-
+#save-btn,
+#load-btn,
 .submit-task {
+  transition: 0.3s;
   background-color: rgb(255, 255, 255);
   border-radius: 50px;
   border: 3px solid rgba(105, 105, 105, 0.746);
@@ -184,8 +217,6 @@ i {
 .option-box {
   margin: 0 2rem;
 }
-
-sectio
 
 /* LOADER STYLING */
 

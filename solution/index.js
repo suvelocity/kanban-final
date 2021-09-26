@@ -36,10 +36,9 @@ function handleClick(event) {
     if (event.target.className.includes('submit-task')) {
       const list = event.target.parentElement.querySelector('ul')
       assertInputNotEmpty(list)
-      console.log(event.target)
       const taskText = event.target
         .closest('section')
-        .querySelector('.add-task-button').value
+        .querySelector('.add-task-input').value
       addTaskBox(list, taskText)
       captureData()
     }
@@ -54,14 +53,12 @@ function handleClick(event) {
     if (event.target.parentElement.className === 'change-color-btn') {
       if (!event.target.closest('section').querySelector('.color-picker')) {
         displayColorPicker(event)
-        console.log('changecolor')
       } else {
         removeColorPicker(event)
       }
     }
   } catch (error) {
     alert(error)
-    console.log(error)
   }
 }
 
@@ -100,7 +97,6 @@ function handleFocusOut(event) {
  */
 function handleInput(event) {
   if (document.querySelector('div:focus')) {
-    console.log('focus detected')
     captureData()
   }
   if (document.querySelector('.color-picker')) {
@@ -460,9 +456,7 @@ function assertDataNotEmpty() {
  * @param {Element} list - the list that shares the input element's parent
  */
 function assertInputNotEmpty(list) {
-  console.log(list)
-  const input = list.parentElement.querySelector('.add-task-button')
-  console.log(input)
+  const input = list.parentElement.querySelector('.add-task-input')
   if (input.value === '') {
     throw 'you must enter a value'
   }
