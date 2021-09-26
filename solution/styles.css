@@ -6,23 +6,6 @@ body {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-.task-list {
-  display: flex;
-  flex-direction: column;
-  list-style-type: none;
-
-  margin-block: 0;
-  margin-inline: 0;
-  padding-inline: 0;
-}
-
-.main-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  height: 1000px;
-}
-
 section {
   display: flex;
   flex-direction: column;
@@ -70,6 +53,36 @@ task-box > div {
   opacity: 0.5;
   box-shadow: black;
   color: red;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+
+  margin-block: 0;
+  margin-inline: 0;
+  padding-inline: 0;
+}
+
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 1000px;
+}
+
+.remove-btn {
+  height: fit-content;
+  width: fit-content;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+}
+
+.remove-btn:active {
+  color: red;
+  transform: translateY(2px);
 }
 
 /* LOADER STYLING */

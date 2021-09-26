@@ -41,6 +41,9 @@ function handleClick(event) {
       addTaskBox(list, taskText)
       captureData()
     }
+    if (event.target.parentElement.className === 'remove-btn') {
+      removeTask(event.target.parentElement.parentElement.parentElement)
+    }
   } catch (error) {
     alert(error)
   }
@@ -151,13 +154,7 @@ class TaskBox extends HTMLElement {
   constructor() {
     super()
   }
-  /**
-   * Add a div element whenever the element is added to the DOM.
-   */
-  connectedCallback() {
-    let container = document.createElement('div')
-    this.append(container)
-  }
+  connectedCallback() {}
 }
 
 customElements.define('task-box', TaskBox)
@@ -173,7 +170,7 @@ function DisplayInfo(text) {
  * @param {String} text - the text to be inserted inside the task-box
  */
 function addTaskBox(list, text) {
-  const taskBox = document.createElement('task-box')
+  const taskBox = prepareTaskBox()
   const listItem = document.createElement('li')
   listItem.classList.add('task')
   listItem.append(taskBox)
@@ -261,6 +258,21 @@ function insertData(data) {
       addTaskBox(listElement, text)
     })
   })
+}
+
+/**
+ * Creates a taskbox component with all the required sub-elements
+ * @returns {Element} an html taskbox element prepared for appending
+ */
+function prepareTaskBox() {
+  const taskBox = document.createElement('task-box')
+  let container = document.createElement('div')
+  let button = document.createElement('button')
+  button.classList.add('remove-btn')
+  button.innerHTML = '<i class="far fa-times-circle fa-2x"></i>'
+  taskBox.append(container)
+  taskBox.append(button)
+  return taskBox
 }
 
 /**
