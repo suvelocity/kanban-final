@@ -28,7 +28,7 @@ function localStorageSave(){
     localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
     localStorageObjectForUpdate.done[0] = doneTasksUl.outerHTML;
     localStorageObjectForUpdate.deleted[0] = deletedTasksUl.outerHTML;
-    console.log(localStorageObjectForUpdate);
+    //console.log(localStorageObjectForUpdate);
     localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
 }
 
@@ -351,7 +351,7 @@ document.addEventListener('keydown', (e) => {
 let themeButton = document.getElementById('new-theme-btn');
 let cssLink = document.head.querySelector('link');
 themeButton.addEventListener('click', (e) => {
-    if(cssLink.href === 'http://127.0.0.1:5500/solution/styles.css' || cssLink.href === "./styles.css"){
+    if(cssLink.href == 'http://127.0.0.1:5500/solution/styles.css' || cssLink.href == "./styles.css"){
         cssLink.setAttribute('href', './cssFornewTheme.css');
     }else{
         cssLink.setAttribute('href', './styles.css');
