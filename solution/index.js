@@ -93,6 +93,7 @@ function onKeyUpHandler(event){
     if (event.target.id === "search"){
         let searchQuery = document.getElementById("search").value    
         reloadTasksPage(searchQuery);
+        displayError(false);  
     }    
 }    
 
@@ -340,6 +341,10 @@ function loaderDisplay(display){
             divArray.push(createElement("div"));   
         }
         let loaderDiv = createElement("div", divArray, ["loader"]);
+        const { clientX: mouseX, clientY: mouseY } = event;
+    
+        loaderDiv.style.top = `${mouseY}px`;
+        loaderDiv.style.left = `${mouseX}px`;        
         body.append(loaderDiv);
     }
     else{
