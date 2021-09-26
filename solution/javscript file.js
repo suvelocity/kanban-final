@@ -24,12 +24,7 @@ function upperBlockStart() {
         if(upperBlockLeft === blockLeft){
             upperBlock.style.animation = '';
             upperBlock.style = `animation: block 1.5s linear infinite;`
-        }/*else if(upperBlockSpeed > 1){
-            upperBlockSpeed = upperBlockSpeed - 0.05; 
-            console.log(upperBlockSpeed);
-            upperBlock.style.animation = '';
-            upperBlock.style = `animation: block ${upperBlockSpeed * 1000}ms linear infinite;`
-        }*/
+        }
         console.log(upperBlock.style.animation);
     }, 1);
 }
@@ -80,14 +75,3 @@ function restartGame(){
     window.location.reload();
 }
 restartButton.addEventListener('click', restartGame);
-
-/* window.addEventListener('keypress',(e) => {
-    if(e.key === ' '){
-          charecter.style.transform = 'rotate(90deg)'
-    }
-   //charecter.style.transform = 'rotate(90deg)'
-   charecter.style.transform = 'translateY(-100px)'
-   //charecter.style.transform = 'scaleY(0.5)'
-   console.log(charecter.style.height)
-}) 
-*/
