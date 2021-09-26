@@ -135,6 +135,7 @@ const doneInput = document.getElementById("add-done-task");
 const toDoList = document.getElementById("to-do-tasks");
 const inProgressList = document.getElementById("in-progress-tasks");
 const doneList = document.getElementById("done-tasks");
+const serachInput = document.getElementById("search-input");
 
 //Creates a task object
 function createTaskObject(taskElementId, task){
@@ -177,6 +178,7 @@ addMultipleEventListener(mainContainer, ["click", "dblclick"], eventHandler);
 //addMultipleEventListener(toDoList, ["mouseover"], changeByAlt);
 //addMultipleEventListener(inProgressList, ["mouseover"], changeByAlt);
 //addMultipleEventListener(doneList, ["mouseover"], changeByAlt);
+serachInput.addEventListener("input", searchHandler)
 
 //The event handler function
 function eventHandler(e){
@@ -422,9 +424,24 @@ function changeByAlt(e){
 };
 */
 
-//Hide irrelevant tasks 
-function hideTasks(query){
-    console.log(toDoList.childNodes);
+
+//Task content scan and match to query
+function searchHandler(e){
+    //Get input value and convert to lower case
+    const inputValue = e.target.value.toLowerCase();
+    //Get list of tasks 
+    const tasks = mainContainer.getElementsByClassName("task");
+    //Convert list to array and create a taskName variable for each task 
+    Array.from(tasks).forEach(function(task){
+        const taskName = task.firstChild.textContent;
+        //Compare between taskName (lower case) and the inputValue
+        if(taskName.toLowerCase().indexOf(inputValue) != -1){
+            //If isn't indexOf - block
+            task.style.display = 'block';
+        }else{
+            //If indexOf - none
+            task.style.display = 'none';
+        }
+    });
 };
 
-hideTasks("x");
