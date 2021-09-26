@@ -1,3 +1,4 @@
+
 if(localStorage.length == 0){
     localStorage.setItem('tasks', JSON.stringify({
         "todo": [],
@@ -21,6 +22,7 @@ document.body.addEventListener('mouseover' ,addHoverReplace);
 document.body.addEventListener('dblclick',gainFocus);
 document.body.addEventListener('focusout', saveValueBlur);
 document.body.addEventListener('contextmenu', removeLi);
+document.addEventListener('click', sortAz);
 
 //local storage save function
 function localStorageSave(){
@@ -379,5 +381,23 @@ showRecycleBin.addEventListener('click', (e)=>{
     recycleBin.hidden = !recycleBin.hidden;
 })
 
+//sort LI alphabetically
+function sortAz(e){
+    let target = e.target;
+ if(target.className != 'sort-az'){
+     return;
+ }
+  Array.from(target.parentElement.lastElementChild.firstElementChild.children).sort((a,b) => {
+    if (a.textContent < b.textContent) {
+        target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
+        return -1;
+      }
+      if (b.textContent > a.textContent) {
+          target.parentElement.insertBefor(b, a);
+        return 1;
+      }
+      })
+
+}
 
 
