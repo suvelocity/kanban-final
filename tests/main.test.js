@@ -209,7 +209,7 @@ describe(projectName, () => {
     expect(localStorageData).toEqual(expectedData)
   })
 
-  test.skip('User should be able to edit task with double click and the new task data will be saved in the local storage', async () => {
+  test('User should be able to edit task with double click and the new task data will be saved in the local storage', async () => {
     const firstTask = await page.$('.task')
     const getTaskText = async () =>
       (await firstTask.getProperty('innerText')).jsonValue()

@@ -12,11 +12,6 @@ if (localStorage.getItem('tasks') === null) {
 let tasksObj = JSON.parse(localStorage.getItem('tasks'))
 generateTasks()//generates all tasks in the localStorage
 divSections.addEventListener('click', addTasks)// adding the addTasks to the click eventlistener 
-divSections.addEventListener('dblclick', changeTask)
-divSections.addEventListener('keydown', moveTask)
-search.addEventListener('input', searchTask)
-
-
 function addTasks(e) {
     const target = e.target
     if (target.tagName === 'BUTTON') {
@@ -75,70 +70,70 @@ function generateTasks() {
 }
 
 
+divSections.addEventListener('dblclick', changeTask)
 function changeTask(e) {
     e.preventDefault()
-    const task = e.target
-    if (task.className === 'task') {
-        let newInput = document.createElement('input')
-        // newInput.setAttribute('id','chageTaskInput')
-        const oldcontent = task.textContent
-        newInput.value = oldcontent
-        task.innerText = ''
-        let listType = []
-        task.append(newInput)
-        newInput.addEventListener('blur', () => {
-            task.innerText = newInput.value
-            switch (task.parentElement.id) {
-                case "todo":
-                    listType = tasksObj.todo
-                    break
-                case "in-progress":
-                    listType = tasksObj['in-progress']
-                    break
-                case "done":
-                    listType = tasksObj.done
-                    break
-            }
-            listType[listType.findIndex(a => a === oldcontent)] = task.innerText
-            localStorage.setItem('tasks', JSON.stringify(tasksObj))
-        })
-    }
+    const target = e.target
+    const saveKey = tasksObj[target.closest('ul').id]
+    const oldText = target.textContent
+    target.setAttribute('contentEditable', 'true')
+    target.addEventListener('blur', () => {
+        let newText = target.textContent
+        if (newText === '') target.textContent = oldText
+        newText = target.textContent
+        saveKey[saveKey.findIndex((a) => a === oldText)] = newText
+        localStorage.setItem('tasks', JSON.stringify(tasksObj))
+    })
 }
 
+divSections.addEventListener('keydown', moveTask)
 function moveTask(event) {
-    if (!(event.key === '1' && event.altKey || event.key === '2' && event.altKey || event.key === '3' && event.altKey)) return
+    if (
+        !(
+            (event.key === '1' && event.altKey) ||
+            (event.key === '2' && event.altKey) ||
+            (event.key === '3' && event.altKey)
+        )
+    )
+        return
     let task = event.target
     if (task.className !== 'task') return
     const newTask = makeTaskElement(task.innerText)
+
     switch (task.parentElement.id) {
-        case "todo":
-            tasksObj.todo = tasksObj.todo.filter(a => a !== newTask.textContent)
+        case 'todo':
+            tasksObj.todo = tasksObj.todo.filter((a) => a !== newTask.textContent)
             break
-        case "in-progress":
-            tasksObj['in-progress'] = tasksObj['in-progress'].filter(a => a !== newTask.textContent)
+        case 'in-progress':
+            tasksObj['in-progress'] = tasksObj['in-progress'].filter(
+                (a) => a !== newTask.textContent
+            )
             break
-        case "done":
-            tasksObj.done = tasksObj.done.filter(a => a !== newTask.textContent)
+        case 'done':
+            tasksObj.done = tasksObj.done.filter((a) => a !== newTask.textContent)
             break
     }
 
+    const ulPogress = document.getElementById('in-progress')
     if (event.key === '1' && event.altKey) {
-        todo.append(newTask)
+        todo.prepend(newTask)
         task.remove()
-        tasksObj.todo.push(newTask.textContent)
+        tasksObj.todo.unshift(newTask.textContent)
     }
     if (event.key === '2' && event.altKey) {
-        document.getElementById("in-progress").append(newTask)
+        ulPogress.prepend(newTask)
         task.remove()
-        tasksObj['in-progress'].push(newTask.textContent)
+        tasksObj['in-progress'].unshift(newTask.textContent)
     }
     if (event.key === '3' && event.altKey) {
-        done.append(newTask)
+        done.prepend(newTask)
         task.remove()
-        tasksObj.done.push(newTask.textContent)
+        tasksObj.done.unshift(newTask.textContent)
     }
     localStorage.setItem('tasks', JSON.stringify(tasksObj))
 }
+
+search.addEventListener('input', searchTask)
 function searchTask() {
     let tasks = document.getElementsByClassName('task')
     const length = tasks.length
@@ -159,7 +154,10 @@ function makeTaskElement(text) {
     const task = document.createElement("li")
     task.setAttribute('tabindex', '0')
     task.setAttribute('class', 'task')
+    task.setAttribute('draggable', 'true')
     task.textContent = text
     return task
 }
+function drag(e) {
 
+}
