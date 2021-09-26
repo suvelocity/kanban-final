@@ -160,6 +160,19 @@ function addNewTask({target}){
     addNewTaskData(sectionUl, newTask)
     updateLocalSaveData()
 }
+let thisNewTaskButton
+function focusOnNewTaskInput({target}){
+    const section = target.closest("section")
+    thisNewTaskButton = section.querySelector(".new-task-button")
+    document.addEventListener("keydown", enterToAddNewTask)
+}
+function enterToAddNewTask(event){
+    if (event.key === "Enter"){
+        event.preventDefault()
+        thisNewTaskButton.click()
+        thisNewTaskButton = null
+    }
+}
 
 //  Initializing DOM  //
 function generateLists(){
@@ -277,6 +290,11 @@ const mobileLabelButton = document.getElementById("label-opener-img")
 mobileLabelButton.addEventListener("click", mobileLabelMenuOpen)
 const addNewCustomLabel = document.getElementById("custom-label-btn-add")
 addNewCustomLabel.addEventListener("click", customLabel)
+const newTaskInputs = document.querySelectorAll(".new-task-input")
+for (const newTaskInput of newTaskInputs){
+    newTaskInput.addEventListener("focus", focusOnNewTaskInput)
+}
+
 
 // Handelers
 function hoverHandler({target}){
@@ -303,6 +321,7 @@ function editTask(){
         selectedTask.classList.add("editable")
         removeTaskData(selectedTask.innerText)
         updateLocalSaveData()
+        document.addEventListener("keydown", enterToBlur)
     }
 }
 function finishedit(){  // Saves the new task in local storage
@@ -312,6 +331,13 @@ function finishedit(){  // Saves the new task in local storage
         const editedTaskUl = task.parentElement
         addNewTaskData(editedTaskUl , task.innerText)
         updateLocalSaveData()
+        document.removeEventListener("keydown", enterToBlur)
+    }
+}
+function enterToBlur(event){
+    if (event.key === "Enter") {
+        event.preventDefault()
+        selectedTask.blur()
     }
 }
 
@@ -343,6 +369,9 @@ function search({key}){
 
 // API storage
 async function storeTasks(){
+    const loader = createElement("div", [], [], {id: "loading"})
+    const header = document.getElementById("header")
+    header.appendChild(loader)
     const tasks = {taskObj, labelsObj: labeledTasksObj}
     const pushToCloud = await fetch("https://json-bins.herokuapp.com/bin/614ad8b24021ac0e6c080c0b", {
         method: "PUT",
@@ -355,11 +384,13 @@ async function storeTasks(){
     if (!pushToCloud.ok) {
         alert(`Failed! Error ${response.status}: ${response.statusText}`);
     }
+    header.removeChild(loader)
 }
 
 async function loadTasks(){
-    const loader = document.getElementById("loading")
-    loader.classList.add("display")
+    const loader = createElement("div", [], [], {id: "loading"})
+    const header = document.getElementById("header")
+    header.appendChild(loader)
     const tasksRequest = await fetch("https://json-bins.herokuapp.com/bin/614ad8b24021ac0e6c080c0b", {
         method: "GET",
         headers: {
@@ -375,7 +406,7 @@ async function loadTasks(){
     taskObj = loaded.tasks
     generateLists()
     updateLocalSaveData()
-    loader.classList.remove("display")
+    header.removeChild(loader)
 }
 
             ////////////////////////
@@ -481,7 +512,7 @@ function callMenu({target}){
     document.body.addEventListener("click", exitMenu)
 }
 function createMenuElem(left, top){
-    const menuElem = createElement("div", [], ["menu"], {style: `top: ${top+10}px; left: ${left}px`})
+    const menuElem = createElement("div", [], ["menu"], {style: `top: ${top+10}px; left: ${left-10}px`})
     for (const label in labels){
         const labelElem = createElement("button", [`${label}`], ["in-menu-botton"], {style: `background-color: ${labels[label]}`}, {click: setLabel})
         menuElem.appendChild(labelElem)
