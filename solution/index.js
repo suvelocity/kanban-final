@@ -16,11 +16,12 @@ if(localStorage.length == 0){
     console.log(JSON.parse(localStorage.tasks).todo);
     let localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
 
-
+//adding event listeners to the body
 document.body.addEventListener('mouseover' ,addHoverReplace);
 document.body.addEventListener('dblclick',gainFocus);
 document.body.addEventListener('focusout', saveValueBlur);
 document.body.addEventListener('contextmenu', removeLi);
+
 //local storage save function
 function localStorageSave(){
     localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
@@ -31,7 +32,7 @@ function localStorageSave(){
     localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
 }
 
-//setting variables for the document elements
+//setting global variables for the document elements
 let taskDiv = document.getElementById('tasks-div')
 let taskSectionsArray = Array.from(document.querySelectorAll('.task-section'));
 let submitButtonArray = Array.from(document.getElementsByClassName('add-task'));
@@ -41,34 +42,44 @@ let loadButton = document.getElementById('load-button');
 let showRecycleBin = document.getElementById('show-recycle');
 let loader = document.querySelector('.api-buttons').lastElementChild;
 let recycleBin = document.querySelector('.recycle-bin');
+let toDoContainer = document.getElementById('to-do-container');
+let inProgressContainer = document.getElementById('in-progress-container');
+let doneContainer = document.getElementById('done-container');
  
  //localstorage loading function
- if(localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null){
-    let toDoSection = document.getElementById('to-do-container');
-    let inProgressContainer = document.getElementById('in-progress-container');
-    let donContainer = document.getElementById('done-container');
-    toDoSection.innerHTML = localStorageObjectForUpdate.todo[0];
-    inProgressContainer.innerHTML = localStorageObjectForUpdate['in-progress'][0];
-    donContainer.innerHTML = localStorageObjectForUpdate.done[0];
-    recycleBin.innerHTML = localStorageObjectForUpdate.deleted[0];
-    var toDoTasksUl = toDoSection.firstChild;
+ if(localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null || localStorageObjectForUpdate.deleted[0] != null){
+   
+
+    
+    function appendToContainer(container, ul){
+        if(localStorageObjectForUpdate[ul][0] == null){
+            container.innerHTML = '';
+        }else{
+            container.innerHTML = localStorageObjectForUpdate[ul][0];
+        }
+    }
+    appendToContainer(toDoContainer, 'todo');
+    appendToContainer(inProgressContainer,'in-progress');
+    appendToContainer(doneContainer, 'done');
+    appendToContainer(recycleBin, 'deleted');
+
+    
+    var toDoTasksUl = toDoContainer.firstChild;
     var inProgressTasksUl = inProgressContainer.firstChild;
-    var doneTasksUl = donContainer.firstChild;
-    var deletedTasksUl = document.querySelector('.recycle-Ul');
+    var doneTasksUl = doneContainer.firstChild;
+    var deletedTasksUl = recycleBin.firstChild;
 
  }else{
-    var toDoTasksUl = createElement('ul', children = [], classes = ['to-do-tasks'], attributes = {})
-    var inProgressTasksUl = createElement('ul', children = [], classes = ['in-progress-tasks'], attributes = {})
-    var doneTasksUl = createElement('ul', children = [], classes = ['done-tasks'], attributes = {})
-    var deletedTasksUl = document.querySelector('.recycle-Ul');
-    document.getElementById('to-do-container').appendChild(toDoTasksUl);
-    document.getElementById('in-progress-container').appendChild(inProgressTasksUl);
-    document.getElementById('done-container').appendChild(doneTasksUl);
+    var toDoTasksUl = createElement('ul', children = [], classes = ['to-do-tasks'], attributes = {});
+    var inProgressTasksUl = createElement('ul', children = [], classes = ['in-progress-tasks'], attributes = {});
+    var doneTasksUl = createElement('ul', children = [], classes = ['done-tasks'], attributes = {});
+    var deletedTasksUl = createElement('ul', children = [], classes = ['recycle-Ul'], attributes = {});
+    toDoContainer.appendChild(toDoTasksUl);
+    inProgressContainer.appendChild(inProgressTasksUl);
+    doneContainer.appendChild(doneTasksUl);
+    recycleBin.appendChild(deletedTasksUl);
  }
-//load local storage
 
-console.log
- //adding the section lists to the DOM
 
 //adding a list item functionality
 function addTask(e){
@@ -79,7 +90,6 @@ function addTask(e){
        if(inputText === ''){
             alert("You haven't entered any text");
        }else{
-            //let newTaskInnerItem = createElement('input', children = [], classes = ['taskItemInner'], attributes = {value: `${target.previousElementSibling.value}`, 'disabled' :''});
             let newTask = createElement('li',children = [/*newTaskInnerItem */ `${target.previousElementSibling.value}`], classes = ['task'], attributes = {'draggable': 'true'});
             console.log(target.nextElementSibling.firstChild);
             target.nextElementSibling.firstChild.insertBefore(newTask, target.nextElementSibling.firstChild.firstChild);
@@ -88,6 +98,7 @@ function addTask(e){
               localStorageSave();
               // end of local storage insertion
 
+            //individual eventListeners for drag and Drop
               newTask.addEventListener('dragstart', dragItem);
               newTask.addEventListener('dragend', endDrag);
 
@@ -200,7 +211,7 @@ function searchTask(e){
       }
   }
 }
-
+//search bar animations
 searchBar.addEventListener('focus', () => {
    let placeholder = document.querySelector('.placeholder');
    let label = document.querySelector('.placeholder-label');
@@ -265,13 +276,14 @@ async function loadApi(){
 
     localStorageSave();
 
+    //resettin the individual eventListeners
     for(let li of Array.from(document.querySelectorAll('.task'))){
         li.addEventListener('dragstart', dragItem);
         li.addEventListener('dragend', endDrag);
       };
    });
 }
-
+//adding the event listeners to the load and save buttons
 saveButton.addEventListener('click', saveApi);
 loadButton.addEventListener('click', loadApi);
 //
