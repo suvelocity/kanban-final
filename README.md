@@ -60,25 +60,25 @@ User from mobile get their own design, the problem is with Double Click and Drag
 
 ## What i learned while working
 
-- [V] How to detect what the test exactly want from me.
-- [V] Dive deep(relative) to JS, arrow functions, Array and Objects, and much more. 
-- [V] Http request and errors, because it took me hours to understand how to put correctly i learned more about Http methods.
-- [V] Window Object and eventlistner related to him.
-- [V] SVG, A lot about SVG. from learing about it at all, to adding Animation and starting to change it by myself.
-- [V] Drag And Drop. This was the most open minded mission i work one, in Google there isn't exactly what i needed so i learn about it alot and make my own Drag And Drop.
-- [V] How to implement Theme To site. CSS var!
-- [V] CSS position rules, so many of them
-- [V] Mobile compatibility 
-- [V] Working with API, i try to work with draggable API to do drag And drop. until i succssed to access the API i didn't had enough time to learn the API.
+- [x] How to detect what the test exactly want from me.
+- [x] Dive deep(relative) to JS, arrow functions, Array and Objects, and much more. 
+- [x] Http request and errors, because it took me hours to understand how to put correctly i learned more about Http methods.
+- [x] Window Object and eventlistner related to him.
+- [x] SVG, A lot about SVG. from learing about it at all, to adding Animation and starting to change it by myself.
+- [x] Drag And Drop. This was the most open minded mission i work one, in Google there isn't exactly what i needed so i learn about it alot and make my own Drag And Drop.
+- [x] How to implement Theme To site. CSS var!
+- [x] CSS position rules, so many of them
+- [x] Mobile compatibility 
+- [x] Working with API, i try to work with draggable API to do drag And drop. until i succssed to access the API i didn't had enough time to learn the API.
 
 ## My Extras(things not on tests)
- - [V] Theme Changer!
- - [V] X and V buttons to work with Tasks!
- - [V] Sidebar with animated(!) SVG
- - [V] Responsive Info for users about the site.
- - [V] Press "Enter" also adding tasks!
- - [V] Drag and Drop
- - [V] Sick Design
+ - [x] Theme Changer!
+ - [x] X and V buttons to work with Tasks!
+ - [x] Sidebar with animated(!) SVG
+ - [x] Responsive Info for users about the site.
+ - [x] Press "Enter" also adding tasks!
+ - [x] Drag and Drop
+ - [x] Sick Design
 
  ## Things i wanted to add and why didn't
  - [ ] Drag and Drop API - Time.
