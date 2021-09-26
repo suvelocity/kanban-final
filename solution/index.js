@@ -39,7 +39,6 @@ loadButton.addEventListener('click', onLoadClickHandler);
 searchInput.addEventListener('keyup', onKeyUpHandler);
 
 document.addEventListener('click', onScreenClick);
-document.addEventListener('drop', onTaskDrop);
 document.addEventListener("dragover", onTaskDragOver);
 
 let myTasks = localStorage.getItem('tasks');
@@ -66,15 +65,15 @@ function onAddClickHandler(event){
     switch (target.id){
         case "submit-add-to-do":
             inputValue = getTextFromInputId("add-to-do-task");            
-            AddToSection(inputValue, "todo", true);    
+            AddToSection(inputValue, "todo", 0, true);    
             break;
         case "submit-add-in-progress":
             inputValue = getTextFromInputId("add-in-progress-task");
-            AddToSection(inputValue, "in-progress","user"); 
+            AddToSection(inputValue, "in-progress", 0, true); 
             break;
         case "submit-add-done":
             inputValue = getTextFromInputId("add-done-task");
-            AddToSection(inputValue, "done",true);  
+            AddToSection(inputValue, "done", 0, true);  
             break;  
     }   
     reloadTasksPage(searchInput.value);
@@ -214,54 +213,35 @@ function OnContextMenuClick(event){
     document.removeEventListener("click", OnContextMenuClick);    
 }
 
+function dragEnter(event){
+    event.target.classList.add('droppable-hovered');    
+}
+
+function dragLeave(event){    
+   event.target.classList.remove('droppable-hovered');   
+}
+
+function dragDrop(event){
+    event.target.classList.remove('droppable-hovered');
+    const taskManagerDataJSON = getLocalStorageTasks(); 
+    const sectionArray = taskManagerDataJSON[SelectedTask.dataset.section];
+    let index = sectionArray.indexOf(SelectedTaskName);
+    sectionArray.splice(index, 1);
+    localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
+    if(event.target.dataset.section === SelectedTask.dataset.section && event.target.dataset.drop_div !== '0'){
+        AddToSection(SelectedTask.textContent, event.target.dataset.section, event.target.dataset.drop_div - 1);
+    }
+    else{
+        AddToSection(SelectedTask.textContent, event.target.dataset.section, event.target.dataset.drop_div);
+    }
+    reloadTasksPage(searchInput.textContent);        
+}
+
 function onTaskDragStart(event){
     //event.preventDefault();
     changeSelectedTask(event.target);
     
-    event.target.style.opacity = .8;    
-}
-
-function onTaskDrop(event){
-    event.preventDefault();
-    let target = event.target  
-    console.log(target);
-    if(target.hasAttribute("data-section")){
-        if(target.dataset.section === "todo"){            
-            if(SelectedTask.dataset.section !== "todo"){
-                const taskManagerDataJSON = getLocalStorageTasks(); 
-                const sectionArray = taskManagerDataJSON[SelectedTask.dataset.section];
-                let index = sectionArray.indexOf(SelectedTaskName);
-
-                sectionArray.splice(index, 1);
-                localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
-                AddToSection(SelectedTaskName, 'todo');                 
-            }             
-        }           
-        if(target.dataset.section === "in-progress"){
-            if(SelectedTask.dataset.section !== "in-progress"){
-                const taskManagerDataJSON = getLocalStorageTasks(); 
-                const sectionArray = taskManagerDataJSON[SelectedTask.dataset.section];
-                let index = sectionArray.indexOf(SelectedTaskName);
-
-                sectionArray.splice(index, 1);
-                localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
-                AddToSection(SelectedTaskName, 'in-progress');                 
-            }            
-        }
-        if(target.dataset.section === "done") {
-            if(SelectedTask.dataset.section !== "done"){
-                const taskManagerDataJSON = getLocalStorageTasks(); 
-                const sectionArray = taskManagerDataJSON[SelectedTask.dataset.section];
-                let index = sectionArray.indexOf(SelectedTaskName);
-
-                sectionArray.splice(index, 1);
-                localStorage.setItem('tasks', JSON.stringify(taskManagerDataJSON));
-                AddToSection(SelectedTaskName, 'done'); 
-                
-            }
-        }
-    }
-    reloadTasksPage(searchInput.textContent);         
+    event.target.style.opacity = .9;    
 }
 
 function onTaskDragEnd(event){
@@ -381,17 +361,21 @@ function ResetLocalStorage() {
 *   ===> Adding task to LocalStorage <===
 *   taskName: String
 *   key: String, where to add (to-do, in-prograss, done);*/
-function AddToSection(taskName, key, showError = false){
+function AddToSection(taskName, key, index = 0 ,showError = false){
     const tasksObject = getLocalStorageTasks();    
     const pSectionTasksArray = tasksObject[key];    
     if(taskName === ""){
         displayError(showError, "Add failed, task is empty.");    
         return;
     }
-    
+    if(index === 0){
+        pSectionTasksArray.unshift(taskName);
+    }
+    else{
+        pSectionTasksArray.splice(index, 0, taskName);
+    }
     //pass input validation tests
-    //update tasks and store in local storage
-    pSectionTasksArray.unshift(taskName);    
+    //update tasks and store in local storage        
     localStorage.setItem('tasks', JSON.stringify(tasksObject)); 
     displayError(showError,"Task was added succesfully","notification");    
 }
@@ -432,18 +416,23 @@ function reloadTasksPage(query){
 //filter case insensative
 function createTaskList(filter, key, css_classes){
     const tasksObject = getLocalStorageTasks();
-    let li_Array = [];     
-    let tabindex = 0;        
+    let ul_Elements_Array = [];     
+    let counter = 0; 
+    let div_Listeners = {
+        'drop': dragDrop,
+        'dragenter': dragEnter,
+        'dragleave': dragLeave
+    }       
     for(let task of tasksObject[key]){         
         let taskLowerCase = task.toLowerCase();
         let filterLowerCase =  filter.toLowerCase();
         if(taskLowerCase.includes(filterLowerCase)){              
             let attributs = {
                 "data-section": key,                 
-                'tabIndex': tabindex,
+                'tabIndex': counter,
                 'draggable': true                
             }  
-            let listeners = {
+            let task_Listeners = {
                 'keydown': (event) => {onTaskKeyDownHandler(event)},
                 'contextmenu': (event) => {contextMenuTask(event)},
                 'click': (event) => {onTaskClickHandler(event)},
@@ -451,14 +440,15 @@ function createTaskList(filter, key, css_classes){
                 'dragstart': (event) => {onTaskDragStart(event)},
                 'dragend': (event) => {onTaskDragEnd(event)}                
             } 
-                                              
-            li_Array.push(createElement("li", [task], ["regular-task", "task"], attributs, listeners));
+            ul_Elements_Array.push(createElement('div', [], ["droppable-div"], {"data-section": key, 'data-drop_div': counter}, div_Listeners));                                  
+            ul_Elements_Array.push(createElement("li", [task], ["regular-task", "task"], attributs, task_Listeners));
             //reset before next Items
-            tabindex++;             
+            counter++;             
         }        
     }
+    ul_Elements_Array.push(createElement('div', [], ["droppable-div"], {"data-section": key, 'data-drop_div': counter}, div_Listeners)); 
     
-    return createElement("ul", li_Array, [...css_classes], {"data-section": key});  
+    return createElement("ul", ul_Elements_Array, [...css_classes], {"data-section": key});  
 }
 
 // ===> returns JSON of tasks <===
