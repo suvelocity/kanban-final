@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="./index.js" defer></script>
-    <link rel="stylesheet" href="./styles.css" />
-    <title>Tasks manager</title>
-</head>
-<body>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="./index.js" defer></script>
+        <link rel="stylesheet" href="./styles.css" />
+        <title>Tasks manager</title>
+    </head>
+    <body>
+        <h1 id="page-title">Task manager ✔ </h1>
+        <input type="text" id="search" placeholder="search tasks here" />
+        <div id="sections" tabindex="0">
+            <section id="section1">
+                <h3> 1. To do: </h3>
+                <input type="text" id="add-to-do-task" placeholder="type some tasks here" />
+                <button id="submit-add-to-do">add</button>
+                <div></div>
+                <ul class="to-do-tasks" id="todo"></ul>
+            </section>
+
+            <section id="section2">
+                <h3> 2. In progress: </h3>
+                <input type="text" id="add-in-progress-task" placeholder="type some tasks here" />
+                <button id="submit-add-in-progress">add</button>
+                <br>
+                <ul class="in-progress-tasks" id="in-progress"></ul>
+            </section>
+
+            <section id="section3">
+                <h3> 3. Done: </h3>
+                <input type="text" id="add-done-task" placeholder="type some tasks here" />
+                <button id="submit-add-done">add</button>
+                <br>
+                <ul class="done-tasks" id="done"></ul>
+            </section>
+        </div>
+    </body>
 </html>
