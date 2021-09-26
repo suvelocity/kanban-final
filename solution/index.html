@@ -12,15 +12,23 @@
     <title>Tasks manager</title>
 </head>
 <body>
-    <h1 id="page-title">Zwift</h1>
-    <div class="search-box">
-        <input type="text" name="search-query" id="search">
+    <!-- I wanted this div to be a header, but doing so failed the tests. -->
+    <div class="header">
+        <div class="left">
+            <h1 id="page-title">Zwift</h1>
+            <div class="search-box">
+                Search task: <input type="text" name="search-query" id="search">
+            </div>
+
+        </div>
+        <div class="right">
+
+            <div class="option-box">
+                <button id="save-btn" class="save">save</button>
+                <button id="load-btn" class="load">load</button>
+            </div>
+        </div>
     </div>
-    <div class="option-box">
-        <button id="save-btn" class="save">save</button>
-        <button id="load-btn" class="load">load</button>
-    </div>
-    <!-- <div hidden class="loader">Loading...</div> -->
     <div class="main-container">
         <section class="todo-section">
             <h3>Todo Tasks</h3>
