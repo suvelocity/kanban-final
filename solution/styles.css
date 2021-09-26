@@ -3,7 +3,7 @@ header{
     text-align: center;
     font-size: 38px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: orangered;
+    color: black;
 }
 .main-div{    
     text-align: center;
@@ -13,11 +13,11 @@ header{
     width: 100%;
 }
 .section-div{
-    margin-top: 1%;
+    margin-top: 2%;
     display: inline-grid;
     width: 30%;
     margin-left: 30px;    
-    border: 3px solid blueviolet;
+    border: 2px solid black;
 }
 /* every li should have this class */
 .task{
@@ -39,8 +39,8 @@ header{
 .topic{
     margin-top: 10px;
     margin-bottom: 10px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: cornflowerblue;
+    font-family: sans-serif,'Segoe UI', Tahoma, Geneva, Verdana ;
+    color: black;
 }
 .edit-input{
     width: 90%;

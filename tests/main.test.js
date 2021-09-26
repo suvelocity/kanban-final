@@ -266,7 +266,7 @@ describe(projectName, () => {
     const initialTasksCount = await countTasks()
     expect(initialTasksCount).toBe(3)
     await page.click(saveTasksToApiBtn)
-    await page.waitForTimeout(300)
+    await page.waitForTimeout(1000)
     await expectLoaderCount(0)
     expect(wasInPut).toBe(true)
   })
