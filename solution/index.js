@@ -14,7 +14,6 @@ const taskBox = document.createElement('div')
 //Utility Elements
 const searchInput = document.querySelector('#search')
 const optionBox = document.querySelector('.option-box')
-const loader = document.querySelector('.loader')
 
 /**************** Constants ****************/
 
@@ -43,6 +42,7 @@ function handleClick(event) {
     }
     if (event.target.parentElement.className === 'remove-btn') {
       removeTask(event.target.parentElement.parentElement.parentElement)
+      captureData()
     }
   } catch (error) {
     alert(error)
@@ -302,15 +302,19 @@ function filterTasks(text) {
  */
 function displayLoader() {
   const loader = document.createElement('div')
+  const loaderContainer = document.createElement('div')
+  loaderContainer.classList.add('loader-container')
   loader.classList.add('loader')
-  mainContianer.append(loader)
+
+  loaderContainer.append(loader)
+  document.body.append(loaderContainer)
 }
 
 /**
  * Removes the loader animation by removing the element.
  */
 function removeLoader() {
-  const loader = document.querySelector('.loader')
+  const loader = document.querySelector('.loader-container')
   loader.remove()
 }
 
