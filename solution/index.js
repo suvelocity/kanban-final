@@ -64,7 +64,6 @@ function handleBlur(event) {
 }
 
 function handleInput(event) {
-  console.log('input man')
   captureData()
 }
 
@@ -89,29 +88,31 @@ function handleSearchInput(event) {
   filterTasks(event.target.value)
 }
 
-async function handleOptionClick(event) {
-  if (event.target.className === 'load') {
-    console.log('load')
-    //show loader
-    // loader.hidden = false
-    cleanSection(document.querySelectorAll('section'))
+///
 
-    cleanLocalStorage()
+// async function handleOptionClick(event) {
+//   if (event.target.className === 'load') {
+//     console.log('load')
+//     //show loader
+//     // loader.hidden = false
+//     cleanSection(document.querySelectorAll('section'))
 
-    await getAnswer()
+//     cleanLocalStorage()
 
-    //hide loader
-    // loader.hidden = true
-  }
-  if (event.target.className === 'save') {
-    console.log('save')
-    //show loader
-    // loader.hidden = false
-    await storeData()
-    //hide loader
-    // loader.hidden = true
-  }
-}
+//     await getAnswer()
+
+//     //hide loader
+//     // loader.hidden = true
+//   }
+//   if (event.target.className === 'save') {
+//     console.log('save')
+//     //show loader
+//     // loader.hidden = false
+//     await storeData()
+//     //hide loader
+//     // loader.hidden = true
+//   }
+// }
 
 function moveTask(task, list) {
   addTaskBox(list, stripTaskBox(task))
@@ -283,6 +284,7 @@ function filterTasks(text) {
   })
 }
 
+//this function is used to satisfy test requirements. For some reason the test demands to get a clear board and clear storage right after loading. This function makes it happen.
 function cleanLocalStorage() {
   storeLocally(EMPTY_TASKS_DATA)
 }
@@ -310,7 +312,9 @@ function assertInputNotEmpty(list) {
 mainContianer.addEventListener('click', handleClick)
 // mainContianer.addEventListener('mouseover', handleHover)
 
-optionBox.addEventListener('click', handleOptionClick)
+//
+// optionBox.addEventListener('click', handleOptionClick)
+//
 
 window.addEventListener('load', loadData())
 
@@ -329,7 +333,10 @@ searchInput.addEventListener('input', handleSearchInput)
 
 async function getAnswer() {
   const response = await fetch(
-    'https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61'
+    'https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61',
+    {
+      method: 'GET',
+    }
   )
   const data = await response.json()
   console.log(data.tasks)
@@ -350,6 +357,7 @@ async function storeData() {
       body: JSON.stringify(prepareRemoteDataBody()),
     }
   )
+  console.log('store data initiated')
   console.log(response)
 }
 
@@ -369,3 +377,39 @@ function prepareRemoteDataBody() {
 this means that the order of parsing data from local storage is the opposite of parsing data from remote storage. so we need to reverse the order of remotestorage array before parsing
 
 */
+///TEST ZONE
+
+const loadBtn = document.querySelector('#load-btn')
+const saveButton = document.querySelector('#save-btn')
+
+saveButton.addEventListener('click', handleSave)
+loadBtn.addEventListener('click', loadHandle)
+
+async function handleSave() {
+  console.log('save button clicked')
+  displayLoader()
+  await storeData()
+  removeLoader()
+}
+
+async function loadHandle() {
+  displayLoader()
+  cleanSection(document.querySelectorAll('section'))
+
+  cleanLocalStorage()
+
+  await getAnswer()
+  removeLoader()
+}
+
+///
+function displayLoader() {
+  const loader = document.createElement('div')
+  loader.classList.add('loader')
+  mainContianer.append(loader)
+}
+
+function removeLoader() {
+  const loader = document.querySelector('.loader')
+  loader.remove()
+}
