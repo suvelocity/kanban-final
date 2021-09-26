@@ -357,15 +357,6 @@ themeButton.addEventListener('click', (e) => {
         cssLink.setAttribute('href', './styles.css');
     }
 })
-themeButton.addEventListener('click', (e) => {
-    if(cssLink.href == 'https://arnonasquira.github.io/kanban-final/solution/styles.css'){
-        console.log("123");
-        cssLink.setAttribute('href', 'https://arnonasquira.github.io/kanban-final/solution/cssFornewTheme.css');
-    }else{
-        cssLink.setAttribute('href', './styles.css');
-    }
-})
-
 
 
 //right click for erasing li function
