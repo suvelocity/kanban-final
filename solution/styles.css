@@ -1,10 +1,14 @@
-
+/* Header */
+/* ======= */
 header{
     text-align: center;
     font-size: 38px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: black;
 }
+
+/* Html Divs */
+/* ========= */
 .main-div{    
     text-align: center;
 }
@@ -22,15 +26,6 @@ header{
     width: 100%;
     text-align: center;
 }
-/* every li should have this class */
-.task{
-    color: black;
-    text-align: left;
-    list-style-type:decimal;    
-    margin-right: 8%;
-    padding: 7px 7px;
-    border: 1px solid black;
-}
 .droppable-div{
     margin-right: 8%;
     height: 10px;
@@ -42,12 +37,9 @@ header{
     margin-top: 5px;
     width: 100%;
 }
-.topic{
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-family: sans-serif,'Segoe UI', Tahoma, Geneva, Verdana ;
-    color: black;
-}
+
+/* Inputs */
+/* ====== */
 .edit-input{
     width: 90%;
     padding: 5px 5px;
@@ -80,6 +72,9 @@ header{
     border: 1px solid green;
     box-shadow: 3px 3px 5px #aaaaaa;
 }
+
+/* Buttons */
+/* ======= */
 .submit-button{
     border-radius: 3px;
     padding: 5px 10px;
@@ -90,17 +85,6 @@ header{
 .submit-button:hover{
     background-color: lightseagreen;
     box-shadow: 3px 3px 5px #aaaaaa;
-}
-.delete-button{
-    text-align: right;       
-    margin-right: 2%;
-    font-weight: 600;
-    background-color:blueviolet;
-    color: red;
-    padding: 10px 10px;
-}
-.regular-task{
-    border: 1px solid black;    
 }
 .save-button{
     padding: 8px 8px;
@@ -120,33 +104,9 @@ header{
     background-color: lightseagreen;
     color: white;
 }
-.error{
-    color: white;
-    background-color: red;    
-    text-align: center;
-    font-size: 14px;
-    padding: 10px 100px 10px 100px;
-    margin-bottom: 10px;      
-}
-.notification{
-    color: white;
-    background-color:limegreen;
-    width: 20%;
-    text-align: center;
-    font-size: 14px;
-    padding: 10px 100px 10px 100px;
-    margin-bottom: 10px;   
-}
-.hidden{
-    visibility: hidden;
-    opacity: 0;
-    /* transition: visibility 0s linear 600ms, opacity 600ms; */
-}
-.visible{
-    visibility: visible;
-    opacity: 1;
-    transition: visibility 0s linear 0s, opacity 600ms;
-}
+
+/* right click context-menu */
+/* ========================== */
 #context-menu{
     position: fixed;
     z-index: 10000;
@@ -172,6 +132,7 @@ header{
 }
 
 /* Loader */
+/* ========= */
 .hide-loader{
     display: none;    
 }
@@ -212,8 +173,66 @@ header{
       transform: rotate(360deg);
     }
   }
+
+/* ======================
+   == Regular Classes ===
+   =====================*/
+
+/* every task has this class */
+.task{
+    color: black;
+    text-align: left;
+    list-style-type:decimal;    
+    margin-right: 8%;
+    padding: 7px 7px;
+    border: 1px solid black;
+}
+
+/* Section Topic class */
+.topic{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-family: sans-serif,'Segoe UI', Tahoma, Geneva, Verdana ;
+    color: black;
+}
+
+/* error label class */
+.error{
+    color: white;
+    background-color: red;    
+    text-align: center;
+    font-size: 14px;
+    padding: 10px 100px 10px 100px;
+    margin-bottom: 10px;      
+}
+
+/* notification label class (inside #error-label) */
+.notification{
+    color: white;
+    background-color:limegreen;
+    width: 20%;
+    text-align: center;
+    font-size: 14px;
+    padding: 10px 100px 10px 100px;
+    margin-bottom: 10px;   
+}
+
+/* For error label */
+.hidden{
+    visibility: hidden;
+    opacity: 0;    
+}
+.visible{
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s linear 0s, opacity 600ms;
+}
+
+/* Selected task */
 .selected{
     border: 3px solid royalblue;
     background-color: #ecf7f7;
 }
+
+
   

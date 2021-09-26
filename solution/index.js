@@ -5,7 +5,6 @@ const KEY_1 = 49;
 const KEY_2 = 50;
 const KEY_3 = 51;
 const BACKSPCE_KEYCODE = 8;
-const URL_API = "https://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3";
 
 //==========================
 // ===== Global Vars =======
@@ -79,8 +78,8 @@ function onAddClickHandler(event){
     reloadTasksPage(searchInput.value);
 }
 
-function onSaveClickHandler(){ 
-    SaveTasksOnServer(); 
+async function onSaveClickHandler(){ 
+    await SaveTasksOnServer(); 
     reloadTasksPage(searchInput.value);  
 }
 
@@ -89,9 +88,10 @@ async function onLoadClickHandler(){
     reloadTasksPage(searchInput.value); 
 }
 
+// ===> Search - search every key up <===
 function onKeyUpHandler(event){       
     if (event.target.id === "search"){
-        let searchQuery = document.getElementById("search").value    
+        let searchQuery = document.getElementById("search").value;    
         reloadTasksPage(searchQuery);
         displayError(false);  
     }    
@@ -184,6 +184,7 @@ function onTaskBlur(event){
     }
 }
 
+// ===> On right click <===
 function contextMenuTask(event){
     event.preventDefault();          
 
@@ -200,8 +201,7 @@ function contextMenuTask(event){
 
 }
 
-function OnContextMenuClick(event){
-    const tasksObject = getLocalStorageTasks();
+function OnContextMenuClick(event){    
     if (event.target.offsetParent == contextMenu){ 
         if (event.target.dataset.type === "Delete" ){                        
             if(confirm("Are you sure you want to delete " + SelectedTaskName + " task?")){
@@ -333,6 +333,7 @@ async function getServerTasks(){
 // ==================================
 
 function loaderDisplay(display){
+    // Creating:
     //<div class="loader"><div></div><div></div><div></div><div></div></div>
     if(display){
         let body = document.querySelector("body");
@@ -341,7 +342,7 @@ function loaderDisplay(display){
             divArray.push(createElement("div"));   
         }
         let loaderDiv = createElement("div", divArray, ["loader"]);
-        const { clientX: mouseX, clientY: mouseY } = event;
+        const { clientX: mouseX, clientY: mouseY } = window.event;
     
         loaderDiv.style.top = `${mouseY}px`;
         loaderDiv.style.left = `${mouseX}px`;        
@@ -363,14 +364,13 @@ function ResetLocalStorage() {
         "todo": [],
         "in-progress": [],
         "done": [],        
-    }
+    };
     localStorage.setItem('tasks', JSON.stringify(tasks)); 
 }
 
 /* 
 *   ===> Adding task to LocalStorage <===
-*   taskName: String
-*   key: String, where to add (to-do, in-prograss, done);*/
+*/
 function AddToSection(taskName, key, index = 0 ,showError = false){
     const tasksObject = getLocalStorageTasks();    
     const pSectionTasksArray = tasksObject[key];    
@@ -432,7 +432,7 @@ function createTaskList(filter, key, css_classes){
         'drop': dragDrop,
         'dragenter': dragEnter,
         'dragleave': dragLeave
-    }       
+    };       
     for(let task of tasksObject[key]){         
         let taskLowerCase = task.toLowerCase();
         let filterLowerCase =  filter.toLowerCase();
@@ -441,7 +441,7 @@ function createTaskList(filter, key, css_classes){
                 "data-section": key,                 
                 'tabIndex': counter,
                 'draggable': true                
-            }  
+            };  
             let task_Listeners = {
                 'keydown': (event) => {onTaskKeyDownHandler(event)},
                 'contextmenu': (event) => {contextMenuTask(event)},
@@ -449,9 +449,9 @@ function createTaskList(filter, key, css_classes){
                 'dblclick': (event) => {onTaskDBClickHandler(event)},
                 'dragstart': (event) => {onTaskDragStart(event)},
                 'dragend': (event) => {onTaskDragEnd(event)}                
-            } 
+            }; 
             ul_Elements_Array.push(createElement('div', [], ["droppable-div"], {"data-section": key, 'data-drop_div': counter}, div_Listeners));                                  
-            ul_Elements_Array.push(createElement("li", [task], ["regular-task", "task"], attributs, task_Listeners));
+            ul_Elements_Array.push(createElement("li", [task], ["task"], attributs, task_Listeners));
             //reset before next Items
             counter++;             
         }        
@@ -465,7 +465,6 @@ function createTaskList(filter, key, css_classes){
 function getLocalStorageTasks(){
     return JSON.parse(localStorage.getItem('tasks'));
 }
-
 
 // Display an error on screen
 function displayError(visible, text = "", type = "error"){
