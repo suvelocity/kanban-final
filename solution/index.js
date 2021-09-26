@@ -25,8 +25,8 @@ const EMPTY_TASKS_DATA = { todo: [], 'in-progress': [], done: [] }
 /**************** Event Handlers ****************/
 
 /**Handles click events by delegation.
- * Checks if input is not empty before allowing to add.
- * Captures and saves data after adding a task.
+ ** Checks if input is not empty before allowing to add.
+ ** Captures and saves data after adding a task.
  * @param {Object} event - event object recieved from the event listener
  */
 function handleClick(event) {
@@ -122,10 +122,10 @@ function handleOptionClick(event) {
 async function handleRequest(req) {
   displayLoader()
   if (req === 'load') {
-    await getAnswer()
+    await getRemoteData()
   }
   if (req === 'save') {
-    await storeData()
+    await storeRemoteData()
   }
   removeLoader()
 }
@@ -148,7 +148,7 @@ class TaskBox extends HTMLElement {
 
 customElements.define('task-box', TaskBox)
 
-/**************** Main Functions ****************/
+/**************** Utility Functions ****************/
 
 /** Creates a new task-box element and adds it to the list passed.
  *
@@ -160,11 +160,10 @@ function addTaskBox(list, text) {
   const listItem = document.createElement('li')
   listItem.classList.add('task')
   listItem.append(taskBox)
+  listItem.setAttribute('draggable', true)
   list.insertBefore(listItem, list.firstChild)
   taskBox.querySelector('div').textContent = text
 }
-
-/**************** Utility Functions ****************/
 
 /**
  * Moves a given task to a given list. Saves to localStorage after moving.
@@ -246,6 +245,45 @@ function insertData(data) {
 }
 
 /**
+ * Filters tasks based on a given string.
+ ** Hides tasks that do not match the query.
+ ** Updates result on every keystroke.
+ ** Case insensitive.
+ * @param {String} text the text to filter the tasks by
+ */
+function filterTasks(text) {
+  text = text.toLowerCase()
+  const sections = document.querySelectorAll('section')
+  sections.forEach((section) => {
+    const tasks = getTaskList(section)
+    tasks.forEach((task) => {
+      if (!stripTaskBox(task).toLowerCase().includes(text)) {
+        isTaskHidden(task, true)
+      } else {
+        isTaskHidden(task, false)
+      }
+    })
+  })
+}
+
+/**
+ * Creates a loader animation and displays it.
+ */
+function displayLoader() {
+  const loader = document.createElement('div')
+  loader.classList.add('loader')
+  mainContianer.append(loader)
+}
+
+/**
+ * Removes the loader animation by removing the element.
+ */
+function removeLoader() {
+  const loader = document.querySelector('.loader')
+  loader.remove()
+}
+
+/**
  * Gets the essential section title by cutting off the '-section' string.
  * @param {Element} section the section HTMLElement
  * @returns string representing the section name
@@ -256,6 +294,11 @@ function getSectionTitle(section) {
   return sectionName
 }
 
+/**
+ * Gets the section element of the given essential title by adding a '-section' string to it
+ * @param {String} title string representing the essential section name
+ * @returns {Element} the given title's corresponding section HTMLElement
+ */
 function getSectionElementByTitle(title) {
   const sectionName = title + '-section'
   const sectionElement = document.querySelector(`.${sectionName}`)
@@ -304,7 +347,8 @@ function loadData() {
 }
 
 /**
- *  Loads given data object from a remote source and displays it on the board.
+ *  Loads a given data object from a remote source and displays it on the board.
+ *  Begins by clearing the board, then inserting the data, and the storing the loaded data locally.
  * @param {Object} data the data object to load
  */
 function loadRemoteData(data) {
@@ -312,52 +356,93 @@ function loadRemoteData(data) {
   insertData(data)
   storeLocally(data)
 }
+/**************** Drag & Drop Functions ****************/
 
-function filterTasks(text) {
-  text = text.toLowerCase()
-  console.log(text + ' to filter by..')
-  const sections = document.querySelectorAll('section')
+//////////////////////////////////////////////
 
-  sections.forEach((section) => {
-    const tasks = getTaskList(section)
-    tasks.forEach((task) => {
-      if (!stripTaskBox(task).toLowerCase().includes(text)) {
-        console.log('does not match query!')
-        console.log(task)
-        isTaskHidden(task, true)
-      } else {
-        isTaskHidden(task, false)
-      }
-    })
-  })
-}
+var dragged
 
-function displayLoader() {
-  const loader = document.createElement('div')
-  loader.classList.add('loader')
-  mainContianer.append(loader)
-}
+/* events fired on the draggable target */
+document.addEventListener('drag', function (event) {})
 
-function removeLoader() {
-  const loader = document.querySelector('.loader')
-  loader.remove()
-}
+document.addEventListener(
+  'dragstart',
+  function (event) {
+    dragged = event.target
+    event.target.style.opacity = 0.5
+  },
+  false
+)
 
-//this function is used to satisfy test requirements. For some reason the test demands to get a clear board and clear storage right after loading. This function makes it happen.
-function cleanLocalStorage() {
-  storeLocally(EMPTY_TASKS_DATA)
-}
+document.addEventListener(
+  'dragend',
+  function (event) {
+    event.target.style.opacity = ''
+  },
+  false
+)
 
-/**
- *  Checks if localStorage contains any related data. If not, stores a template data object.
- */
+/* events fired on the drop targets */
+document.addEventListener(
+  'dragover',
+  function (event) {
+    event.preventDefault()
+  },
+  false
+)
+
+document.addEventListener(
+  'dragenter',
+  function (event) {
+    // highlight potential drop target when the draggable element enters it
+    if (event.target.className.includes('section')) {
+      event.target.style.background = 'purple'
+    }
+  },
+  false
+)
+
+document.addEventListener(
+  'dragleave',
+  function (event) {
+    // reset background of potential drop target when the draggable element leaves it
+    if (event.target.className.includes('section')) {
+      event.target.style.background = ''
+    }
+  },
+  false
+)
+
+document.addEventListener(
+  'drop',
+  function (event) {
+    event.preventDefault()
+    // move dragged elem to the selected drop target
+    if (event.target.className.includes('section')) {
+      event.target.style.background = ''
+      dragged.parentNode.removeChild(dragged)
+      const list = event.target.querySelector('ul')
+      list.insertBefore(dragged, list.firstChild)
+    }
+  },
+  false
+)
+
+/////////////////////////////////////////////////
+
+/**************** Assert Functions ****************/
+
+/** Checks if localStorage contains any related data. If not, stores an empty template data object.*/
 function assertDataNotEmpty() {
   if (!localStorage.getItem('tasks')) {
     captureData()
-    console.log('no local data found. creating new data item.')
   }
 }
 
+/**
+ * Gets a list. Checks if that list's input is not empty.
+ * @param {Element} list - the list that shares the input element's parent
+ */
 function assertInputNotEmpty(list) {
   const input = list.parentElement.querySelector('input')
   if (input.value === '') {
@@ -366,16 +451,12 @@ function assertInputNotEmpty(list) {
 }
 
 /**************** Event Listeners ****************/
-//TODO: replace all single quotes (') with double quotes ("")
 
 mainContianer.addEventListener('click', handleClick)
-// mainContianer.addEventListener('mouseover', handleHover)
 
-//
 optionBox.addEventListener('click', handleOptionClick)
-//
 
-window.addEventListener('load', loadData())
+window.addEventListener('load', loadData)
 
 window.addEventListener('keydown', handleKeyPress)
 
@@ -383,14 +464,13 @@ mainContianer.addEventListener('dblclick', handleDoubleClick)
 
 mainContianer.addEventListener('focusout', handleFocusOut)
 
-//TODO: give a better name to "handleInput" to differentiate it from any other general input event
 mainContianer.addEventListener('input', handleInput)
 
 searchInput.addEventListener('input', handleSearchInput)
 
 /**************** HTTP Requests ****************/
 
-async function getAnswer() {
+async function getRemoteData() {
   const response = await fetch(
     'https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61',
     {
@@ -398,26 +478,19 @@ async function getAnswer() {
     }
   )
   const data = await response.json()
-  console.log(data.tasks)
   loadRemoteData(data.tasks)
   return data.tasks
 }
 
-//TODO: give better name that signals it's remote api
-async function storeData() {
-  const response = await fetch(
-    'https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61',
-    {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(prepareRemoteDataBody()),
-    }
-  )
-  console.log('store data initiated')
-  console.log(response)
+async function storeRemoteData() {
+  await fetch('https://json-bins.herokuapp.com/bin/614aea974021ac0e6c080c61', {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(prepareRemoteDataBody()),
+  })
 }
 
 function prepareRemoteDataBody() {
