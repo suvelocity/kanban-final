@@ -1,9 +1,19 @@
 * {
   box-sizing: border-box;
+  margin: 0;
+  margin: 0;
 }
 
 body {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+header {
+  position: fixed;
+  width: 70%;
+  height: 3rem;
+  background-color: royalblue;
+  margin-left: auto;
 }
 
 section {
