@@ -6,8 +6,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./index.js" defer></script>
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@600&family=Nunito&display=swap" rel="stylesheet">
     <title>Tasks manager</title>
+    <link rel="icon" href="favicon (3).ico" type="image/x-icon">
 </head>
 <body>
+    <!-- upper section -->
+ <div id="upper-section">
+    <img id="logoBlack" src="./logoBlack.png" alt="blacklogo">
+    <h1 id="page-title">Kanban</h1>
+    <input id="search" type="search" placeholder="Search" >
+ </div>
+ <div id="wrapper" class="wrapper">
+    <!-- to do section -->
+    <section class="box" id="to-do-section">
+        <h2>To do</h2> 
+        <ul id="todo" class="to-do-tasks anyUL"></ul>
+        <div class="lower-of-section">
+         <input class="add-input" id="add-to-do-task" type="text" placeholder="add to do">
+         <br>
+         <button class="addBT addBT-fill" id="submit-add-to-do"  >Add</button>
+        </div>
+    </section>
+    <div class="middler"></div>
+    <!-- in progress section -->
+    <section  class="box" id="in-progress-section"> 
+        <h2>In progress</h2>
+        <ul id="in-progress" class="in-progress-tasks anyUL"></ul>
+        <div class="lower-of-section">
+         <input class="add-input" id="add-in-progress-task" type="text" placeholder="add in progress">
+         <br>
+         <button class="addBT addBT-fill" id="submit-add-in-progress" >Add</button>
+        </div>
+    </section>
+    <div class="middler"></div>
+    <!-- done section -->
+    <section  class="box" id="done-section"> 
+        <h2>Done</h2>
+        <ul id="done" class="done-tasks anyUL"></ul>
+        <div class="lower-of-section">
+         <input class="add-input anyUL" id="add-done-task" type="text" placeholder="add done">
+         <br>
+         <button class="addBT addBT-fill" id="submit-add-done" >Add</button>
+        </div>
+    </section>
+    <button id="load-btn" class="addBT addBT-fill apiBT">Load</button>
+    <button id="save-btn" class="addBT addBT-fill apiBT">Save</button>
+    <div id="rightDiv"></div>
+    <img src="./grey_trash2.jpg" alt="grey_trash" id="trashImg" class="greyTrashImg">
+ </div>
 </body>
 </html>
