@@ -49,7 +49,12 @@ function handleClick(event) {
       captureData()
     }
     if (event.target.parentElement.className === 'change-color-btn') {
-      console.log('changecolor')
+      if (!event.target.closest('section').querySelector('.color-picker')) {
+        displayColorPicker(event)
+        console.log('changecolor')
+      } else {
+        removeColorPicker(event)
+      }
     }
   } catch (error) {
     alert(error)
@@ -89,10 +94,14 @@ function handleFocusOut(event) {
 /**
  * Saves the board for every element edit event.
  */
-function handleInput() {
+function handleInput(event) {
   if (document.querySelector('div:focus')) {
     console.log('focus detected')
     captureData()
+  }
+  if (document.querySelector('.color-picker')) {
+    const colorPicker = event.target
+    colorPicker.closest('section').style.backgroundColor = colorPicker.value
   }
 }
 
@@ -213,6 +222,27 @@ function cleanSections(sections) {
   sections.forEach((section) =>
     section.querySelectorAll('li').forEach((item) => removeTask(item))
   )
+}
+
+/**
+ * Displays the color picker
+ * @param {Object} event the event dispatched by the event listener
+ */
+function displayColorPicker(event) {
+  const div = document.createElement('div')
+  div.classList.add('color-picker-container')
+  const input = document.createElement('input')
+  input.classList.add('color-picker')
+  input.setAttribute('type', 'color')
+  div.append(input)
+  event.target.closest('.section-options').append(div)
+}
+
+function removeColorPicker(event) {
+  const colorPickerContainer = event.target
+    .closest('section')
+    .querySelector('.color-picker-container')
+  colorPickerContainer.remove()
 }
 
 /**************** Utility Functions ****************/

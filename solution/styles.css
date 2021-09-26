@@ -68,8 +68,11 @@ task-box > div {
   align-items: center;
 }
 
-section > h3 {
+.section-header {
   height: 10%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .header {
@@ -109,6 +112,8 @@ section > h3 {
   padding: 3rem;
 }
 
+.clean-section-btn,
+.change-color-btn,
 .remove-btn {
   height: fit-content;
   width: fit-content;
@@ -117,6 +122,8 @@ section > h3 {
   border: none;
 }
 
+.clean-section-btn:active,
+.change-color-btn:active,
 .remove-btn:active {
   color: red;
   transform: translateY(2px);
@@ -126,6 +133,16 @@ section > h3 {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.color-picker {
+  width: 25px;
+  height: 25px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0);
+  color: rgba(255, 255, 255, 0);
+  border-radius: 50px;
+  margin: 0;
 }
 
 #page-title,
