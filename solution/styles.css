@@ -25,19 +25,16 @@ form {
     left: 10px;
 }
 
-ul {
-    max-height: 58px;
-    overflow-y: auto;
-}
-#toDo{
+
+/* #toDo{
     background-color: rgba(255, 255, 255, 0.508);
     text-align: center;
     border: 1px solid rgb(87, 87, 87);
     box-shadow:rgb(53, 53, 53) 10px 0 10px 
     
-}
+} */
 
-#in-Progress{
+/* #in-Progress{
     background-color: rgba(255, 255, 255, 0.508);
     text-align: center;
     border: 1px solid rgb(130, 130, 130);
@@ -51,7 +48,7 @@ ul {
     border: 1px solid rgb(87, 87, 87);
     box-shadow:rgb(53, 53, 53) 10px 0 10px ;
     
-}
+} */
 #search-container {
     right: -45%;
     position: relative;
@@ -95,7 +92,7 @@ ul {
 #container {
     width: 300px;
     text-align: center;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.611);
     box-shadow: 0px 0px 5px 0px;
     padding: 30px;
     max-height: 600px;
@@ -124,7 +121,7 @@ label {
 }
 
 .submit-btn {
-    color: lightseagreen;
+    color: rgb(32, 178, 146);
     cursor: pointer;
     font-weight: bold;
     position: relative;

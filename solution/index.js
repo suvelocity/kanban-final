@@ -9,6 +9,50 @@ const mapper = {
     '3': 'done'
 }
 
+let mouseHover;
+let onAlt = false;
+
+document.onkeydown = (e) => {
+    if (e.key === 'Alt') {
+        onAlt = true;
+    }
+}
+document.onkeyup = (e) => {
+    if (e.key === 'Alt') {
+        onAlt = false;
+    }
+}
+
+window.onkeydown = (e) => {
+    if (mouseHover && ['1', '2', '3'].includes(e.key) && onAlt) {
+        if (mapper[e.key] === 'to-do') {
+            mapper[e.key] = 'todo';
+        }
+        const currentId = `${mapper[e.key]}-${Tasks[mapper[e.key]].length + 1}`;
+        let prevId = mouseHover.id.substr(0, mouseHover.id.lastIndexOf('-'));
+        prevId = prevId === 'to-do' ? prevId = 'todo' : prevId;
+        Tasks[prevId].splice(Tasks[prevId].indexOf(mouseHover.textContent), 1);
+        Tasks[mapper[e.key]].push(mouseHover.textContent);
+        localStorage.tasks = JSON.stringify(Tasks);
+
+        mouseHover.setAttribute('id', currentId);
+
+        if (mapper[e.key] === 'todo') {
+            mapper[e.key] = 'to-do';
+        }
+
+        document.getElementById(`${mapper[e.key]}-tasks`).append(mouseHover);
+
+        mouseHover.removeEventListener('dblclick', () => dblClickFunction(currentId));
+        mouseHover.addEventListener('dblclick', () => dblClickFunction(currentId));
+
+        mouseHover.removeEventListener('blur', () => blurFunction(currentId));
+        mouseHover.addEventListener('blur', () => blurFunction(currentId));
+
+    
+    }
+}
+
 const load = () => {
     if (localStorage.tasks) {
         Tasks = JSON.parse(localStorage.tasks);
@@ -33,7 +77,14 @@ const load = () => {
                 // double click
                 li.addEventListener('dblclick', () => dblClickFunction(`${updatedId}-${i + 1}`));
                 ///when blur
-                li.addEventListener('blur', () =>  blurFunction(`${updatedId}-${i + 1}`));
+                li.addEventListener('blur', () => blurFunction(`${updatedId}-${i + 1}`));
+
+                li.addEventListener("mouseover", () => {
+                    mouseHover = li;
+                });
+                li.addEventListener("mouseleave", () => {
+                    mouseHover = undefined;
+                });
             });
         });
     } else {
@@ -50,17 +101,14 @@ const blurFunction = (currTaskId) => {
     const idForUse = currTaskId.substr(0, currTaskId.lastIndexOf('-')) === 'to-do' ?
         'todo' : currTaskId.substr(0, currTaskId.lastIndexOf('-'))
 
-        const foundId = parseInt(currTaskId.substr(currTaskId.lastIndexOf('-') + 1));
-        Tasks[idForUse][foundId] = document.getElementById(currTaskId).textContent;
-        let remove = foundId-1;
-        Tasks[idForUse].splice(Tasks[idForUse][remove],1,Tasks[idForUse][foundId]);
-        localStorage.tasks = JSON.stringify(Tasks);
-    
+    const foundId = parseInt(currTaskId.substr(currTaskId.lastIndexOf('-') + 1)) - 1;
+
+    Tasks[idForUse][foundId] = document.getElementById(currTaskId).textContent;
+    localStorage.tasks = JSON.stringify(Tasks);
+
 
     document.getElementById(currTaskId).setAttribute('contenteditable', false);
-    // document.getElementById(currTaskId + '-input').style.display = 'none';
 }
-
 
 const add = (idToAdd) => {
     let currValue = document.getElementById(`add-${idToAdd}-task`).value;
@@ -106,50 +154,13 @@ const add = (idToAdd) => {
     Li.addEventListener('blur', () => blurFunction(currTaskId));
 
     // makes values go from done to todo if you mouseOver + press "ALT" + 1,2,3
-    let mouseHover = false;
-    let onAlt = false;
 
     Li.addEventListener("mouseover", () => {
-        mouseHover = true;
+        mouseHover = Li;
     });
     Li.addEventListener("mouseleave", () => {
-        mouseHover = false;
+        mouseHover = undefined;
     });
-
-    document.onkeydown = (e) => {
-        if (e.key === 'Alt') {
-            onAlt = true;
-        }
-    }
-    document.onkeyup = (e) => {
-        if (e.key === 'Alt') {
-            onAlt = false;
-        }
-    }
-
-    window.onkeydown = (e) => {
-        if (mouseHover && ['1', '2', '3'].includes(e.key) && onAlt) {
-            if (mapper[e.key] === 'to-do') {
-                mapper[e.key] = 'todo';
-            }
-            const currentId = `${mapper[e.key]}-${Tasks[mapper[e.key]].length + 1}`;
-            console.log(Tasks[idToAdd]);
-            Tasks[idToAdd].splice(Tasks[idToAdd].indexOf(Li.textContent), 1);
-            Tasks[mapper[e.key]].push(Li.textContent);
-
-            Li.setAttribute('id', currentId);
-            // inputLi.setAttribute("id", `${currentId}-input`);
-            console.log(document.getElementById(`${mapper[e.key]}-tasks`));
-            if (mapper[e.key] === 'todo') {
-                mapper[e.key] = 'to-do';
-            }
-            document.getElementById(`${mapper[e.key]}-tasks`).append(Li);
-            // document.getElementById(`${mapper[e.key]}-tasks`).append(inputLi);
-
-            Li.removeEventListener('dblclick', () => dblClickFunction(currentId));
-            Li.addEventListener('dblclick', () => dblClickFunction(currentId));
-        }
-    }
 }
 const search = () => {
     let input = document.getElementById('search');
@@ -173,7 +184,7 @@ const drag = (ev) => {
 const drop = (ev) => {
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
-    ev.target.appendChild(document.getElementById(data));
+    ev.target.prepend(document.getElementById(data));
 }
 // Localstorage function 
 load();
