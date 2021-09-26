@@ -1,0 +1,39 @@
+section{
+    border: 3px solid black;
+    width: 600px;
+    height: 600px;
+    margin: 50px;
+    display: block inline-table;
+    
+}
+input{
+    width: 65%;
+}
+button{
+    width: 35%;
+    height: 35px;
+}
+body{
+    background-image: url(https://image.shutterstock.com/image-photo/writers-table-flat-lay-composition-260nw-1017732259.jpg);
+    background-size: cover;
+    background-position:center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+
+}
+h1{
+    text-align: center;
+}
+li{
+    border: 2px solid black;
+}
+#allSection{
+    display: flex;
+}
+
+
+#search{
+    height: 50px;
+    width: 200px;
+    border: 2px solid black;
+}
