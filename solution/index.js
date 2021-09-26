@@ -32,7 +32,7 @@ window.onkeydown = (e) => {
         let prevId = mouseHover.id.substr(0, mouseHover.id.lastIndexOf('-'));
         prevId = prevId === 'to-do' ? prevId = 'todo' : prevId;
         Tasks[prevId].splice(Tasks[prevId].indexOf(mouseHover.textContent), 1);
-        Tasks[mapper[e.key]].push(mouseHover.textContent);
+        Tasks[mapper[e.key]].unshift(mouseHover.textContent);
         localStorage.tasks = JSON.stringify(Tasks);
 
         mouseHover.setAttribute('id', currentId);
@@ -41,7 +41,7 @@ window.onkeydown = (e) => {
             mapper[e.key] = 'to-do';
         }
 
-        document.getElementById(`${mapper[e.key]}-tasks`).append(mouseHover);
+        document.getElementById(`${mapper[e.key]}-tasks`).insertBefore(mouseHover, document.getElementById(`${mapper[e.key]}-tasks`).firstChild);
 
         mouseHover.removeEventListener('dblclick', () => dblClickFunction(currentId));
         mouseHover.addEventListener('dblclick', () => dblClickFunction(currentId));
@@ -126,8 +126,8 @@ const add = (idToAdd) => {
     // const inputLi = document.createElement('input');
 
     idToAdd === 'to-do' ?
-        Tasks['todo'].push(currValue) :
-        Tasks[idToAdd].push(currValue);
+        Tasks['todo'].unshift(currValue) :
+        Tasks[idToAdd].unshift(currValue);
     localStorage.tasks = JSON.stringify(Tasks);
 
     // making a unique id 
@@ -145,7 +145,7 @@ const add = (idToAdd) => {
     // inputLi.value = currValue;
     // inputLi.style.display = 'none';
 
-    ul.appendChild(Li);
+    ul.insertBefore(Li, ul.firstChild);
     // ul.appendChild(inputLi);
 
     Li.addEventListener('dblclick', () => dblClickFunction(currTaskId));
