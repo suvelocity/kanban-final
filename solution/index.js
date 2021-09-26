@@ -8,6 +8,13 @@ if(!localStorage.tasks || localStorage){
           })
         );
 }  
+localStorage.setItem('tasks', JSON.stringify({
+    "todo": [],
+    "in-progress": [],
+    "done": [],
+    'deleted':[]
+      })
+    );
 
 
 
