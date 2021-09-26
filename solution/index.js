@@ -1,5 +1,5 @@
-
-if(localStorage.length == 0){
+//initilizes the local storage object
+if(!localStorage.tasks || !localStorage.tasks.length == 0){
     localStorage.setItem('tasks', JSON.stringify({
         "todo": [],
         "in-progress": [],
@@ -15,6 +15,7 @@ if(localStorage.length == 0){
 
     console.log(localStorage.tasks);
     console.log(JSON.parse(localStorage.tasks).todo);
+
     let localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
 
 //adding event listeners to the body
