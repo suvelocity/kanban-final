@@ -71,6 +71,7 @@ const load = () => {
                 li.setAttribute('id', `${updatedId}-${i + 1}`);
                 li.setAttribute('draggable', 'true');
                 li.setAttribute('ondragstart', 'drag(event)');
+                // li.setAttribute('ondragover', 'allowDrop(event)');
                 li.setAttribute('class', 'task');
                 li.textContent = currTask;
 
@@ -139,6 +140,8 @@ const add = (idToAdd) => {
     Li.setAttribute('class', 'task');
     Li.setAttribute('draggable', 'true');
     Li.setAttribute('ondragstart', 'drag(event)');
+    // Li.setAttribute('ondragover', 'allowDrop(event)');
+    
 
     const ul = document.getElementById(`${idToAdd}-tasks`);
 
@@ -178,13 +181,20 @@ const allowDrop = (ev) => {
     ev.preventDefault();
 }
 const drag = (ev) => {
+    // console.log(ev.dataTransfer)
     ev.dataTransfer.setData("text", ev.target.id);
 }
 
 const drop = (ev) => {
+    
+    let nearLi = ev.target;
+    let ul = ev.path[0];
+    console.log(ev.target)
     ev.preventDefault();
     var data = ev.dataTransfer.getData("text");
-    ev.target.prepend(document.getElementById(data));
+       Tasks[data] =  ul.append(document.getElementById(data));
+        localStorage.tasks = JSON.stringify(Tasks);
+    
 }
 // Localstorage function 
 load();
