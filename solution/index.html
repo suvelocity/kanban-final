@@ -125,17 +125,19 @@
          <input id="search" placeholder="Search for tasks..." value="" required></input>
 
          
-
+         <button id="load" style="float:left;margin-top: 5%;">Load</button>
+         <button id="save" style="float:left;margin-top: 5%;">Save</button> 
          <!-- To Do Tasks Section!-->
+            
          <fieldset id="lists-feildset">
 
             <legend id="lists-field-title">To Do...Doing...Done</legend>
-            
+
             <h3>To Do Tasks</h3>
             
             <section id="to-do-tasks-section">
 
-               <div>
+               <div class="list-input-inserter">
                   <input type="text" id="add-to-do-task" placeholder="Insert a To-Do task" value="">
 
                   <button id="submit-add-to-do" type="submit">Add</button>
@@ -155,7 +157,7 @@
 
             <section id="in-progress-tasks-section">
 
-               <div>
+               <div class="list-input-inserter"> 
                   <input type="text" id="add-in-progress-task" placeholder="Insert an In-Progress...task" value="">
                
                   <button id="submit-add-in-progress" type="submit">Add</button>
@@ -163,25 +165,24 @@
 
                <ul id="in-progress-tasks" class="draggable-list"></ul>
                
-               <div class="mountain">
-                  <div class="mountain-top">
-                  <div class="mountain-cap-1"></div>
-                  <div class="mountain-cap-2"></div>
-                  <div class="mountain-cap-3"></div>
+               <div class="mountain" style="pointer-events: none;">
+                  <div class="mountain-cap-1" style="pointer-events: none;"></div>
+                  <div class="mountain-cap-2" style="pointer-events: none;"></div>
+                  <div class="mountain-cap-3" style="pointer-events: none;"></div>
                   </div>
                </div>
-               <div class="mountain-two">
-                  <div class="mountain-top">
-                  <div class="mountain-cap-1"></div>
-                  <div class="mountain-cap-2"></div>
-                  <div class="mountain-cap-3"></div>
+               <div class="mountain-two" style="pointer-events: none;">
+                  <div class="mountain-top" style="pointer-events: none;">
+                  <div class="mountain-cap-1" style="pointer-events: none;"></div>
+                  <div class="mountain-cap-2" style="pointer-events: none;"></div>
+                  <div class="mountain-cap-3" style="pointer-events: none;"></div>
                   </div>
                </div>
-               <div class="mountain-three">
-                  <div class="mountain-top">
-                  <div class="mountain-cap-1"></div>
-                  <div class="mountain-cap-2"></div>
-                  <div class="mountain-cap-3"></div>
+               <div class="mountain-three" style="pointer-events: none;">
+                  <div class="mountain-top" style="pointer-events: none;">
+                  <div class="mountain-cap-1" style="pointer-events: none;"></div>
+                  <div class="mountain-cap-2" style="pointer-events: none;"></div>
+                  <div class="mountain-cap-3" style="pointer-events: none;"></div>
                   </div>
                </div>
                <div class="cloud"></div>
@@ -195,7 +196,7 @@
 
             <section id="done-tasks-section">
 
-               <div>
+               <div class="list-input-inserter">
                   <input type="text" id="add-done-task" placeholder="Insert a Done task" value="">
                
                   <button id="submit-add-done" type="submit">Add</button>
@@ -207,16 +208,16 @@
             </section>
 
 
-            <div>*Click on a task 4 times to remove it</div>
+            <div class="comment">*Click on a task 4 times to remove it</div>
 
             <button id="delete-all-tasks" style="background-color:red">Delete all tasks</button>
 
             
       </fieldset>
-
-         
+    
 
          </main>
+
 
     </body>
 

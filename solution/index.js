@@ -1,8 +1,4 @@
-
 'use strict'
-
-
-
 
 
 const dark = document.getElementById("themeSwitch"); //theme saver && reloader
@@ -28,93 +24,130 @@ const todo = document.getElementById('add-to-do-task');
 const inProgress = document.getElementById('add-in-progress-task');
 const done = document.getElementById('add-done-task');
 
-// event listeners
-todoBtn.addEventListener("click", () => addTask('todo'));
-inProgressBtn.addEventListener("click", () => addTask('inProgress'));
-doneBtn.addEventListener("click", () => addTask('done'));
+// // event listeners
+// todoBtn.addEventListener("click", () => addTask('todo'));
+// inProgressBtn.addEventListener("click", () => addTask('inProgress'));
+// doneBtn.addEventListener("click", () => addTask('done'));
 
 // WEB API(S) 
-async function fetchTasks() {
-  const res = await fetch(API);
-  const data = await res.json();
+// async function fetchTasks() {
+//   const res = await fetch(API);
+//   const data = await res.json();
 
-  localStorage.setItem("tasks", JSON.stringify(data));
-  ['todo', 'in-progress', 'done'].forEach(listName => {
-    data.tasks[listName].forEach(task => {
-        const li = document.createElement('li');
-        li.innerText = task;
-        if (listName === 'todo') todoList.append(li);
-        if (listName === 'in-progress') inProgressList.append(li);
-        if (listName === 'done') doneList.append(li);
-    });
-  })
+//   localStorage.setItem("tasks", JSON.stringify(data));
+//   ['todo', 'in-progress', 'done'].forEach(listName => {
+//     data.tasks[listName].forEach(task => {
+//         const li = document.createElement('li');
+//         li.innerText = task;
+//         console.log(li.innerText)
+//         if (listName === 'todo') todoList.append(li);
+//         if (listName === 'in-progress') inProgressList.append(li);
+//         if (listName === 'done') doneList.append(li);
+//     });
+//   })
 
-}
-fetchTasks();
+// }
+// fetchTasks();
 
-async function addTask(type) {
-    const li = document.createElement('li');
-    const data = JSON.parse(localStorage.getItem("tasks"));
-    if (type === 'todo') {
-        if (!todo.value) return;
-        data.tasks.todo.push(todo.value);
-        li.innerText = todo.value;
-        console.log(li.innerText);
-        todoList.append(li);
-        todo.value = '';
-    } else if (type === 'inProgress') {
-        if (!inProgress.value) return;
-        data.tasks['in-progress'].push(inProgress.value);
-        li.innerText = inProgress.value;
-        inProgressList.append(li);
-        inProgress.value = '';
-    } else {
-        if (!done.value) return;
-        data.tasks.done.push(done.value);
-        li.innerText = done.value;
-        doneList.append(li);
-        done.value = '';
-    }
+// async function addTask(type) {
+//     const li = document.createElement('li');
+//     const data = JSON.parse(localStorage.getItem("tasks"));
+//     if (type === 'todo') {
+//         if (!todo.value) return;
+//         data.tasks.todo.push(todo.value);
+//         li.innerText = todo.value;
+//         todoList.append(li);
+//         todo.value = '';
+//     } else if (type === 'inProgress') {
+//         if (!inProgress.value) return;
+//         data.tasks['in-progress'].push(inProgress.value);
+//         li.innerText = inProgress.value;
+//         inProgressList.append(li);
+//         inProgress.value = '';
+//     } else {
+//         if (!done.value) return;
+//         data.tasks.done.push(done.value);
+//         li.innerText = done.value;
+//         doneList.append(li);
+//         done.value = '';
+//     }
 
-    try {
-        const res = await fetch(API, {
-            method: "PUT",
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            },
-            body: JSON.stringify(data),
-        });
-        if (res.status >= 400) throw new Error('Something went wrong');
-    } catch (error) {
-        console.log(error);
-    }
-    localStorage.setItem('tasks', JSON.stringify(data));
-}
+//     try {
+//         const res = await fetch(API, {
+//             method: "PUT",
+//             headers: {
+//                 "Content-type": "application/json; charset=UTF-8",
+//             },
+//             body: JSON.stringify(data),
+//         });
+//         if (res.status >= 400) throw new Error('Something went wrong');
+//     } catch (error) {
+//         console.log(error);
+//     }
+//     localStorage.setItem('tasks', JSON.stringify(data));
+// }
 
 
 const search = document.getElementById('search'); //search bar input section holder
 
+
+
+
+// localStorage.setItem("tasks", `{
+//     'todo': '[]', 'in-progess': '[]', 'done': '[]'}`);
+
 let dataStr = localStorage.getItem("tasks");
+console.log(dataStr)
 let data = dataStr
     ? JSON.parse(dataStr) 
     : {
-        "todo": [],
+        todo: [],
         "in-progress": [],
-        "done": []
+        done: []
     };
+console.log(data)
 
+
+function onLoad() 
+{   
+    console.log(data)
+    if(data)//if data array not empty.. meaning user has inserted tasks.
+    {
+        
+        for(const listName in data["tasks"])
+        {
+            for(const elData of data["tasks"][`${listName}`])
+            {   
+                    const listEl = document.getElementById(`${listName}-tasks`);
+                    localStorageLoader(listEl,elData.task,elData.date,elData.time);
+            }  
+        }
+    }  
+    else
+    {
+        localStorage.setItem("tasks", `{
+            todo: [],
+            inprogess: [],
+            done: []
+        }`);
+    }
+}
+onLoad();
 
 
 // add to do task content to matchin list/s  & saving in local storage //
-todoBtn.addEventListener('click', () => {
+todoBtn.addEventListener('click', (e) => {
     
-    liGenerator( todo, todoList ); 
+        console.log(UserContentInputArray)
+        liGenerator( todo, todoList ); 
+        search.value = '';  // reseting search input value if there is...
 
-        data["tasks"]["todo"].push({
+        data["todo"].push({
             task: todoList.firstChild.firstChild.textContent,
             date: todoList.firstChild.childNodes[1].childNodes[1].textContent,
             time: todoList.firstChild.childNodes[1].childNodes[2].textContent
         });
+        console.log(data)
         setDataToLocalStorage();
     
 }, { passive: true });
@@ -123,26 +156,31 @@ todo.addEventListener('keydown' , (e) => {
 
     if(e.key === "Enter")
     {
+        //console.log(todo.value)
         liGenerator( todo, todoList )
-        data["tasks"]["todo"].push({
+        search.value = '';  // reseting search input value if there is...
+        
+        data["todo"].push({
             task: todoList.firstChild.firstChild.textContent,
             date: todoList.firstChild.childNodes[1].childNodes[1].textContent,
             time: todoList.firstChild.childNodes[1].childNodes[2].textContent
         });
         setDataToLocalStorage();
+        //console.log(todoList.firstChild.childNodes[1].childNodes[2].textContent)
+        //console.log(data)
     }
     
 }, { passive: true });
 
-console.log(inProgressList.firstChild)
 
 
 // add in progress task content to matchin list/s  & saving in local storage //
 inProgressBtn.addEventListener('click', () => {
 
     liGenerator( inProgress, inProgressList );
+    search.value = '';  // reseting search input value if there is...
 
-    data["tasks"]["in-progress"].push({
+    data["in-progress"].push({
         task: inProgressList.firstChild.firstChild.textContent,
         date: inProgressList.firstChild.childNodes[1].childNodes[1].textContent,
         time: inProgressList.firstChild.childNodes[1].childNodes[2].textContent
@@ -154,9 +192,10 @@ inProgress.addEventListener('keydown' , (e) => {
 
     if(e.key === "Enter") 
     {
-        liGenerator( inProgress, inProgressList )   
+        liGenerator( inProgress, inProgressList )
+        search.value = '';  // reseting search input value if there is...
         
-        data["tasks"]["in-progress"].push({
+        data["in-progress"].push({
             task: inProgressList.firstChild.firstChild.textContent,
             date: inProgressList.firstChild.childNodes[1].childNodes[1].textContent,
             time: inProgressList.firstChild.childNodes[1].childNodes[2].textContent
@@ -173,8 +212,9 @@ inProgress.addEventListener('keydown' , (e) => {
 doneBtn.addEventListener('click' , () => {
 
     liGenerator( done, doneList );
+    search.value = '';  // reseting search input value if there is...
 
-    data["tasks"]["done"].push({
+    data["done"].push({
         task: doneList.firstChild.firstChild.textContent,
         date: doneList.firstChild.childNodes[1].childNodes[1].textContent,
         time: doneList.firstChild.childNodes[1].childNodes[2].textContent
@@ -188,11 +228,15 @@ done.addEventListener('keydown' , (e) => {
     if(e.key === "Enter") 
     {
         liGenerator( done, doneList );
-        data["tasks"]["done"].push({
+        search.value = '';  // reseting search input value if there is...
+
+        data["done"].push({
             task: doneList.firstChild.firstChild.textContent,
             date: doneList.firstChild.childNodes[1].childNodes[1].textContent,
             time: doneList.firstChild.childNodes[1].childNodes[2].textContent
         });
+        console.log(data)
+        console.log(localStorage)
         setDataToLocalStorage();
     }
     
@@ -201,32 +245,12 @@ done.addEventListener('keydown' , (e) => {
 function setDataToLocalStorage()
 {
     //if(!isDataEmpty(data)) //if data not empty meaning user has inserted tasks. then insert it to local storage
-        localStorage.setItem("tasks", JSON.stringify(data));
+    console.log(data)
+    localStorage.setItem("tasks", JSON.stringify(data));
 }
 
 
-
-function onLoad() 
-{   
-    if(data)//if data array not empty.. meaning user has inserted tasks.
-    {
-        
-        for(const listName in data["tasks"])
-        {
-            for(const elData of data["tasks"][`${listName}`])
-            {   
-                    const listEl = document.getElementById(`${listName}-tasks`);
-                    localStorageLoader(listEl,elData.task,elData.date,elData.time);
-            }  
-        }
-    }  
-    else localStorage.insertItem("tasks", {
-        'todo': [], 'inprogess': [], 'done': []
-    });
-}
-onLoad();
-
-function localStorageLoader(listEl,task,date,time)
+function localStorageLoader(listEl,task,date,time) //from localstorage to the DOM
 {
     const liEl = elCreator( 'li', [task], ['list'], {} ); //creating and inserting li el to list from user input
 
@@ -238,15 +262,16 @@ function localStorageLoader(listEl,task,date,time)
                 ' }'
             ], ['full-date']);
     try{
-        eleDOMAppender(liEl, fulldateEl); //apending full date to the task list
-        if(listEl.childList === 'undefined') //if it doesnt have a  child, append it.
-        {
-            eleDOMAppender( listEl , liEl ); //sets the value of the input to the currrent state of it
+        console.log(liEl)
+            eleDOMAppender(liEl, fulldateEl); //apending full date to the task list
+            if(listEl.childList === 'undefined') //if it doesnt have a  child, append it.
+            {
+                eleDOMAppender( listEl , liEl ); //sets the value of the input to the currrent state of it
+            }
+            else{ //if it does  have a child insert the generated li from user to the top of the ul
+                listEl.insertBefore(liEl, listEl.firstChild);
+            }
         }
-        else{ //if it does  have a child insert the generated li from user to the top of the ul
-            listEl.insertBefore(liEl, listEl.firstChild);
-        }
-    }
     catch(err)
     {
         console.error(err)
@@ -263,6 +288,7 @@ function isDataEmpty(data)
 
 //delete all tasks button
 deleteAllTasksButton.addEventListener('click', () => {
+    
     if(UserContentInputArray.length > 0) //if lists are not empty.. continue.
     {
         if(confirm("Are you sure you want to delete all buttons in your lists!? THIS ACTION CANNOT BE REVERSED!")) //ask user if he sure he want delete
@@ -327,7 +353,7 @@ function eleDOMAppender( destintionEle, currentEle ){
 
                     //!!~~**DONT FORGET TO UPDATE WHEN ITEM DELETED**~~!!//
                     UserContentInputArray.push(liTask); //pushin newcontent to array to store its value
-
+                    console.log(liTask)
                     liTask.addEventListener('click', (e) => { //event when user click 4 times in a row it removes the specific list item from the specific lsit
                         if(e.detail === 4)
                         {
@@ -338,10 +364,13 @@ function eleDOMAppender( destintionEle, currentEle ){
 
                     liTask.addEventListener( 'dblclick', () => { //add event listener to the first child every time 
 
-                        liTask.setAttribute("contenteditable", true); //make it editable
+                        
+                        liTask.firstChild.setAttribute("contenteditable", true); //excluding date
                         liTask.classList.remove('hover') // remove element  hovering effect when doublclicked 
                         liTask.classList.add('no_selection') // remove element selection backgroun color when doublclicked 
-                        liTask.nextSibling.classList.add('no_selection')
+                        liTask.firstChild.classList.add('no_selection')
+                        liTask.firstChild.nextSibling.classList.add('no_selection')
+
                         localstorageScanner();
     
                           liTask.addEventListener( 'keydown', (e) => { //when Enter hit prevent its default
@@ -360,8 +389,6 @@ function eleDOMAppender( destintionEle, currentEle ){
                             {
                                 for(const elData of data["tasks"][`${listName}`])
                                 {   
-                                        console.log(elData)
-                                        console.log(liTask)
                                         if(elData.task !== liTask.textContent) localStorage.setItem("tasks", elData.task)
                                 }  
                             }
@@ -369,12 +396,21 @@ function eleDOMAppender( destintionEle, currentEle ){
                     }
 
 
-                    liTask.addEventListener( 'blur', () => { //vent when user loses focus off the editable field
-                        liTask.setAttribute("contenteditable", false); //return it to its initial state
-                        liTask.classList.add('hover');
-                        liTask.classList.remove('no_selection')
-                        localstorageScanner();
-                        liTask.nextSibling.classList.remove('no_selection')
+                    liTask.firstChild.addEventListener( 'blur', () => { //vent when user loses focus off the editable field
+
+                        console.log(liTask.firstChild.textContent.length)
+                        console.log(liTask.firstChild.textContent[0])
+                        if(liTask.firstChild.textContent.length === 0 || liTask.firstChild.textContent[0] === ' ') liTask.remove();
+
+                        else{
+                            liTask.firstChild.setAttribute("contenteditable", false); //return it to its initial state
+                            liTask.firstChild.classList.add('hover');
+                            liTask.classList.remove('no_selection');
+                            localstorageScanner();
+                            liTask.firstChild.classList.remove('no_selection');
+                            liTask.firstChild.nextSibling.classList.remove('no_selection');
+                        }
+
                     }, { passive: true });
 
 
@@ -409,7 +445,8 @@ function liGenerator( inputElement, listElement )
     else
     {
         inputsArray.forEach( inputField => inputField.classList.remove('error'));  // if not empty (& and submitted one form) remove error style attribute to all input fieldds 
-        const userInputSection = elCreator('span', [inputElement.value], ['li-task', 'hover', 'draggable']); //section of user input only creator
+
+        const userInputSection = elCreator('span', [inputElement.value.trim()], ['li-task', 'hover', 'draggable']); //section of user input only creator
         const liEl = elCreator( 'li', [userInputSection], ['list', 'draggable'], {} ); //creating and inserting li el to list from user input
 
         
@@ -428,6 +465,7 @@ function liGenerator( inputElement, listElement )
 
         //apend FULLDATE to list!
         eleDOMAppender(liEl, fulldateEl); //apending full date to the task list
+
         
         // listElement.forEach( listElement => {
 
@@ -461,9 +499,11 @@ window.addEventListener( 'keydown', (e) => { // detectin keyboard events are onl
     if( e.altKey || e.altGraphKey )
     {   
         e.preventDefault(); //preventing default so it wont switch to other objects and wont capture the windows events!
-        
+
         if(isHover && e.key === '1' && currentHoveredEl.parentElement.parentElement.parentElement.id !== "todo-tasks-section")    
         {
+            console.log(currentHoveredEl)
+
             if(todoList.firstElementChild === 'null') //if it doesnt have a  child, append it.
             {
                 eleDOMAppender(todoList,currentHoveredEl.parentElement);  //if current task is hovered and not in the same list of the destination list then pass it over.. 
@@ -506,7 +546,7 @@ UserContentInputArray.forEach((inList) => { //making input lists lower case behi
 //Search bar event//
 search.addEventListener('keyup', e => {
 
-    console.log(search)
+    
     if(e.key !== "Enter"){
         if(isElementEmpty(search)){
            //checking if field empty and assignin error class style if it is.
@@ -516,16 +556,19 @@ search.addEventListener('keyup', e => {
     }
 
     const searchQuery = e.target.value;
+    console.log(UserContentInputArray)
         UserContentInputArray.forEach( (listTask) =>{
             if(searchQuery.length > 0)
             {
-                if(!listTask.textContent.toLowerCase().includes(searchQuery.toLowerCase())) listTask.parentElement.classList.add('hidden')
-                if(listTask.textContent.toLowerCase().includes(searchQuery.toLowerCase()))listTask.parentElement.classList.remove('hidden')     
+                if(!listTask.firstChild.textContent.toLowerCase().includes(searchQuery.toLowerCase())) listTask.parentElement.classList.add('hidden');
+                if(listTask.firstChild.textContent.toLowerCase().includes(searchQuery.toLowerCase())) listTask.parentElement.classList.remove('hidden');    
             }
             else listTask.parentElement.classList.remove('hidden')
         }); 
     
 }, { passive: true })
+
+
 
 
 //---------------------------------------------------------FUNCTIONS---------------------------------------------------------------------//
@@ -537,7 +580,7 @@ search.addEventListener('keyup', e => {
 function isElementEmpty(el)
 {
     
-    if(el.value === '' || el.value.toLowerCase() === el.value.toUpperCase()) //checing if field empty or only has spaces in it
+    if(el.value === '' || (el.value.toLowerCase() === el.value.toUpperCase())) //checing if field empty or only has spaces in it
     {
         el.classList.add('error');
         return true;
