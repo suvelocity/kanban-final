@@ -27,11 +27,11 @@ function addItem(text, ulId) {
         let li = document.createElement("li");
         li.addEventListener('dblclick',edit);
         li.appendChild(document.createTextNode(text));
-        li.object = {
-            text,
-            phase: ulId
-        }
-        tasklist[ulId].unshift(li.object);
+        // li.object = {
+        //     text,
+        //     phase: ulId
+        // }
+        tasklist[ulId].unshift(text);
         setupLi(li);
         li.className = "task";
         let ulS=document.getElementById(ulId);
@@ -137,6 +137,7 @@ function setItemPhase(task, phase) {
             case 'done':
                 doneList.appendChild(elem);
                 break;
+
             }
 }
 
@@ -183,13 +184,13 @@ function altNum(e, li) {
     if (e.altKey) {
         switch (e.key) {
             case '1':
-                setItemPhase(li.object, "todo");
+                setItemPhase(text, "todo");
                 break;
             case '2':
-                setItemPhase(li.object, "in-progress");
+                setItemPhase(text, "in-progress");
                 break;
             case '3':
-                setItemPhase(li.object, "done");
+                setItemPhase(text, "done");
                 break;
             case '4':
                 li.remove();
