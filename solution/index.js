@@ -27,11 +27,11 @@ function addItem(text, ulId) {
         let li = document.createElement("li");
         li.addEventListener('dblclick',edit);
         li.appendChild(document.createTextNode(text));
-        // li.object = {
-        //     text,
-        //     phase: ulId
-        // }
-        tasklist[ulId].unshift(text);
+        li.object = {
+            text,
+            phase: ulId
+        }
+        tasklist[ulId].unshift(li.object);
         setupLi(li);
         li.className = "task";
         let ulS=document.getElementById(ulId);
@@ -137,7 +137,6 @@ function setItemPhase(task, phase) {
             case 'done':
                 doneList.appendChild(elem);
                 break;
-
             }
 }
 
@@ -158,38 +157,38 @@ function setupLi(li) {
     });
 }
 
-
-
-
-    function edit() {
-        let val = this.innerHTML;
-        let input = document.createElement("input");
-        input.id="edit-input";
-        input.value = val;
-        input.onblur = function () {
-            // Setting the new value in the state
-            this.parentNode.object.text = input.value;
-            this.parentNode.innerText = input.value;
-            updateTaskList();
-        }
-        this.innerHTML = "";
-        this.appendChild(input);
-        input.focus();
+// document.querySelectorAll("li").forEach(function (liEdit) {
+//     liEdit.ondblclick = 
+function edit() {
+    let val = this.innerHTML;
+    let input = document.createElement("input");
+    input.id="edit-input";
+    input.value = val;
+    input.onblur = function () {
+        // Setting the new value in the state
+        this.parentNode.object.text = input.value;
+        this.parentNode.innerText = input.value;
+        updateTaskList();
     }
+    this.innerHTML = "";
+    this.appendChild(input);
+    input.focus();
+}
 ;
+
 
 
 function altNum(e, li) {
     if (e.altKey) {
         switch (e.key) {
             case '1':
-                setItemPhase(text, "todo");
+                setItemPhase(li.object, "todo");
                 break;
             case '2':
-                setItemPhase(text, "in-progress");
+                setItemPhase(li.object, "in-progress");
                 break;
             case '3':
-                setItemPhase(text, "done");
+                setItemPhase(li.object, "done");
                 break;
             case '4':
                 li.remove();
@@ -199,7 +198,7 @@ function altNum(e, li) {
 }
 
 
-
+// let searchButton = document.getElementById('search-button');
 let searchInput = document.getElementById("search")
 searchInput.addEventListener('keyup', function () {
     
