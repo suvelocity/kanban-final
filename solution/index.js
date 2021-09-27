@@ -398,9 +398,8 @@ function eleDOMAppender( destintionEle, currentEle ){
 
                     liTask.firstChild.addEventListener( 'blur', () => { //vent when user loses focus off the editable field
 
-                        console.log(liTask.firstChild.textContent.length)
-                        console.log(liTask.firstChild.textContent[0])
-                        if(liTask.firstChild.textContent.length === 0 || liTask.firstChild.textContent[0] === ' ') liTask.remove();
+
+                        if(liTask.firstChild.textContent.length === 0 || liTask.firstChild.textContent[0] === ' ') liTask.remove(); // if user blur when input empty. delete task
 
                         else{
                             liTask.firstChild.setAttribute("contenteditable", false); //return it to its initial state
