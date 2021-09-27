@@ -160,8 +160,7 @@ function setupLi(li) {
 
 
 
-// document.querySelectorAll("li").forEach(function (liEdit) {
-//     liEdit.ondblclick = 
+
     function edit() {
         let val = this.innerHTML;
         let input = document.createElement("input");
@@ -200,7 +199,7 @@ function altNum(e, li) {
 }
 
 
-// let searchButton = document.getElementById('search-button');
+
 let searchInput = document.getElementById("search")
 searchInput.addEventListener('keyup', function () {
     
