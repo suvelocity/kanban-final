@@ -3,6 +3,8 @@ let Tasks = {
     'in-progress': [],
     'done': []
 };
+
+// maping the ul names to make genrated code 
 const mapper = {
     '1': 'todo',
     '2': 'in-progress',
@@ -11,7 +13,7 @@ const mapper = {
 
 let mouseHover;
 let onAlt = false;
-
+// making on keydown and key up global 
 document.onkeydown = (e) => {
     if (e.key === 'Alt') {
         onAlt = true;
@@ -22,18 +24,18 @@ document.onkeyup = (e) => {
         onAlt = false;
     }
 }
-
+// defindeing what happning when you hover with mouse and press alt + number 
 window.onkeydown = (e) => {
     if (mouseHover && ['1', '2', '3'].includes(e.key) && onAlt) {
         if (mapper[e.key] === 'to-do') {
             mapper[e.key] = 'todo';
         }
-        const currentId = `${mapper[e.key]}-${Tasks[mapper[e.key]].length + 1}`;
-        let prevId = mouseHover.id.substr(0, mouseHover.id.lastIndexOf('-'));
-        prevId = prevId === 'to-do' ? prevId = 'todo' : prevId;
-        Tasks[prevId].splice(Tasks[prevId].indexOf(mouseHover.textContent), 1);
-        Tasks[mapper[e.key]].unshift(mouseHover.textContent);
-        localStorage.tasks = JSON.stringify(Tasks);
+        const currentId = `${mapper[e.key]}-${Tasks[mapper[e.key]].length + 1}`;  //preparing new id 
+        let prevId = mouseHover.id.substr(0, mouseHover.id.lastIndexOf('-'));    //getting id 
+        prevId = prevId === 'to-do' ? prevId = 'todo' : prevId;    //make sure our function unserstands what place we talking about
+        Tasks[prevId].splice(Tasks[prevId].indexOf(mouseHover.textContent), 1); //replacing the new text with the old one 
+        Tasks[mapper[e.key]].unshift(mouseHover.textContent);  //making the new value first 
+        localStorage.tasks = JSON.stringify(Tasks);   //entring new value to localstorage
 
         mouseHover.setAttribute('id', currentId);
 
@@ -49,10 +51,10 @@ window.onkeydown = (e) => {
         mouseHover.removeEventListener('blur', () => blurFunction(currentId));
         mouseHover.addEventListener('blur', () => blurFunction(currentId));
 
-    
+
     }
 }
-
+// localstorage function here is all the mgaic 
 const load = () => {
     if (localStorage.tasks) {
         Tasks = JSON.parse(localStorage.tasks);
@@ -62,7 +64,7 @@ const load = () => {
                 'to-do-tasks' : `${categoryKey}-tasks`;
             const updatedId = categoryKey === 'todo' ?
                 'to-do' : categoryKey;
-
+            // setting attributes and events on ul and li 
             Tasks[categoryKey].forEach((currTask, i) => {
                 const ul = document.getElementById(updatedCategory);
                 const li = document.createElement('li');
@@ -91,12 +93,12 @@ const load = () => {
         localStorage.tasks = JSON.stringify(Tasks);
     }
 }
-
+// double click function here 
 const dblClickFunction = (currTaskId) => {
     document.getElementById(currTaskId).setAttribute('contenteditable', true);
     document.getElementById(currTaskId).focus();
 }
-
+// blure function here 
 const blurFunction = (currTaskId) => {
     const idForUse = currTaskId.substr(0, currTaskId.lastIndexOf('-')) === 'to-do' ?
         'todo' : currTaskId.substr(0, currTaskId.lastIndexOf('-'))
@@ -109,7 +111,7 @@ const blurFunction = (currTaskId) => {
 
     document.getElementById(currTaskId).setAttribute('contenteditable', false);
 }
-
+// add to task element function 
 const add = (idToAdd) => {
     let currValue = document.getElementById(`add-${idToAdd}-task`).value;
 
@@ -135,18 +137,14 @@ const add = (idToAdd) => {
 
     Li.setAttribute('id', currTaskId);
     Li.setAttribute('class', 'task');
-    // inputLi.setAttribute('id', `${currTaskId}-input`);
     Li.setAttribute('draggable', 'true');
     Li.setAttribute('ondragstart', 'drag(event)');
 
     const ul = document.getElementById(`${idToAdd}-tasks`);
 
     Li.textContent = currValue;
-    // inputLi.value = currValue;
-    // inputLi.style.display = 'none';
 
     ul.insertBefore(Li, ul.firstChild);
-    // ul.appendChild(inputLi);
 
     Li.addEventListener('dblclick', () => dblClickFunction(currTaskId));
 
@@ -162,6 +160,7 @@ const add = (idToAdd) => {
         mouseHover = undefined;
     });
 }
+// search function 
 const search = () => {
     let input = document.getElementById('search');
     let filtered = input.value;
@@ -174,6 +173,7 @@ const search = () => {
         }
     });
 }
+// drag and drop helpers 
 const allowDrop = (ev) => {
     ev.preventDefault();
 }

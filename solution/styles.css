@@ -54,16 +54,13 @@ form {
     position: relative;
     margin-bottom: 60px;
 }
-body {
-    margin: 0;
-    background-color:#FAFAFA;
-    font-family: arial;
-}
 
 #page-title{
-    font-size: 25px;
+    font-size: 5em;
+    margin: 30px 0 0;
+    
     margin: auto;
-    background-color: #29B6F6;
+    background-color: #bf9429;
     padding:20px;
     box-shadow: 0px 0px 4px 0px;
     right: 0px;
@@ -93,15 +90,17 @@ ul {
     width: 300px;
     text-align: center;
     background-color: rgba(255, 255, 255, 0.611);
-    box-shadow: 0px 0px 5px 0px;
+    box-shadow: 0px 0px 10px 0px;
     padding: 30px;
     max-height: 600px;
 }
 
 #search-container {
+    margin-right: 0%;
     padding: 35px;
     display: flex;
     justify-content: center;
+    right: 50px;
 }
 
 .search-icon {
@@ -140,3 +139,41 @@ li:nth-child(odd) {
 #search {
     font-size: 17px;
 }
+body{
+    background: url(https://media.istockphoto.com/photos/fall-foliage-picture-id157294711?k=20&m=157294711&s=612x612&w=0&h=PlcSv4E7UvaBIWjnVYqzdTxBQiJlTaWuFR0ebAGbRUY=)    no-repeat center / cover;
+   background-color: rgba(86, 173, 255, 0.446);
+  font: 14px sans-serif;
+  max-width: 100%;
+  overflow-x: hidden;
+
+  
+}
+ ul > li{
+    display: block;
+    min-height: 48px;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+    
+    li:hover {
+      color: #d53613;
+      transition: color 0.2s;
+    }
+    
+    ul:hover {
+      display: block;
+    }
+  
+     ul{
+      display: block;
+      left: 0;
+      position: relative;
+      width: 100%;
+      top: 0;
+      overflow:hidden; 
+      animation: animate-height 1.2s 1 ease-in-out;
+    }
+    .tasks.over {
+        border: 3px dotted #666;
+      }
