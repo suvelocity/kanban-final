@@ -33,7 +33,14 @@ function addItem(text, ulId) {
         tasklist[ulId].unshift(li.object);
         setupLi(li);
         li.className = "task";
-        document.getElementById(ulId).appendChild(li);
+        let ulS=document.getElementById(ulId);
+        if(ulS.hasChildNodes){
+            ulS.insertAdjacentElement('beforebegin',li);
+        }
+        else{
+            ulS.append(li);
+        }
+        
         updateTaskList();
     }
 }
@@ -137,20 +144,6 @@ function setItemPhase(task, phase) {
 
 loadLocal();
 
-// let clear=document.createElement("button");
-// clear.innerText="clear all";
-// clear.id="clear";
-// document.body.append(clear);
-// clear.addEventListener('click',clearTaskList);
-
-// function clearTaskList() {
-//     tasklist.todo = [];
-//     tasklist["in-progress"] = [];
-//     tasklist.done = [];
-//     updateTaskList();
-//     location.reload();
-// }
-
 
 // Adding events to new tasks elements
 function setupLi(li) {
@@ -171,6 +164,7 @@ document.querySelectorAll("li").forEach(function (liEdit) {
     liEdit.ondblclick = function () {
         let val = this.innerHTML;
         let input = document.createElement("input");
+        input.id="edit-input";
         input.value = val;
         input.onblur = function () {
             // Setting the new value in the state
@@ -197,18 +191,22 @@ function altNum(e, li) {
             case '3':
                 setItemPhase(li.object, "done");
                 break;
-        }
+            case '4':
+                li.remove();
+                break;    
+        }    
     }
 }
 
 
 let searchButton = document.getElementById('search-button');
-searchButton.addEventListener('click', function () {
-    let searchInput = document.getElementById("search").value.toLowerCase();
-    let allLi = document.querySelectorAll("li");
+let searchInput = document.getElementById("search")
+searchInput.addEventListener('keyup', function () {
+    
+    let allLi = Array.from(document.querySelectorAll("li"));
     let Counter = 0;
     allLi.forEach((li) => {
-        if ((li.innerText.toLowerCase()).includes(searchInput, 0) === false) {
+        if ((li.innerText.toLowerCase()).includes(searchInput.value.toLowerCase(), 0) === false) {
             li.style.display = "none";
         } else {
             li.style.display = "list-item";
@@ -225,18 +223,13 @@ searchButton.addEventListener('click', function () {
 })
 
 
-let saveApi=document.createElement('button');
-saveApi.addEventListener('click',saveToServer);
-saveApi.innerText='save';
-saveApi.id='save-api';
-document.getElementById('api').appendChild(saveApi);
-// Sending the current state to the server
 
-let loadApi=document.createElement('button');
-loadApi.addEventListener('click',loadFromServer);
-loadApi.innerText='load';
-loadApi.id='load-api';
-document.getElementById('api').appendChild(loadApi);
+document.getElementById('save-api').addEventListener('click',saveToServer);
+
+
+
+document.getElementById('load-api').addEventListener('click',loadFromServer);
+
 
 
 
@@ -262,11 +255,8 @@ function loadFromServer() {
     })
 }
 
-let clear=document.createElement("button");
-clear.innerText="clear all";
-clear.id="clear";
-document.body.append(clear);
-clear.addEventListener('click',clearTaskList);
+
+document.getElementById('clear-button').addEventListener('click',clearTaskList);
 
 function clearTaskList() {
     tasklist.todo = [];
