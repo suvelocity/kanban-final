@@ -25,6 +25,7 @@ function addItem(text, ulId) {
     }
     else {
         let li = document.createElement("li");
+        li.addEventListener('dblclick',edit);
         li.appendChild(document.createTextNode(text));
         li.object = {
             text,
@@ -35,6 +36,8 @@ function addItem(text, ulId) {
         li.className = "task";
         let ulS=document.getElementById(ulId);
        ulS.replaceChildren(li, ...ulS.children);
+
+        // }
         
         updateTaskList();
     }
@@ -63,6 +66,7 @@ function loadLocal() {
     for (const key in tasklist) {
         for (const task of tasklist[key]) {
             let li = document.createElement("li");
+            li.addEventListener('dblclick',edit);
             li.appendChild(document.createTextNode(task.text));
             li.className = "task";
             li.object = task;
@@ -155,8 +159,9 @@ function setupLi(li) {
 
 
 
-document.querySelectorAll("li").forEach(function (liEdit) {
-    liEdit.ondblclick = function () {
+// document.querySelectorAll("li").forEach(function (liEdit) {
+//     liEdit.ondblclick = 
+    function edit() {
         let val = this.innerHTML;
         let input = document.createElement("input");
         input.id="edit-input";
@@ -171,7 +176,7 @@ document.querySelectorAll("li").forEach(function (liEdit) {
         this.appendChild(input);
         input.focus();
     }
-});
+;
 
 
 function altNum(e, li) {
