@@ -65,9 +65,9 @@ In addition the page should contain:
 - [x] Implement drag-and-drop sorting of tasks.
 - [ ] Add API integration:
 
-  - [ ] Add save and load buttons that sync the current tasks to the API (see details in the [api-data.txt](#api-integration) file).
+  - [x] Add save and load buttons that sync the current tasks to the API (see details in the [api-data.txt](#api-integration) file).
   - [ ] Remove the `.skip` from the two last tests in `main.test.js`.
-  - [ ] While waiting for a response from the API display a loader with the class `loader`.
+  - [x] While waiting for a response from the API display a loader with the class `loader`.
   - [ ] If an error occurs show an alert.
   - [ ] If the data loaded from the API is different from the local data, replace the local data with the API data. Make sure you update both the `localStorage` and the DOM.
 
