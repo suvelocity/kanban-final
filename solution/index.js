@@ -34,12 +34,7 @@ function addItem(text, ulId) {
         setupLi(li);
         li.className = "task";
         let ulS=document.getElementById(ulId);
-        if(ulS.hasChildNodes){
-            ulS.insertAdjacentElement('beforebegin',li);
-        }
-        else{
-            ulS.append(li);
-        }
+       ulS.replaceChildren(li, ...ulS.children);
         
         updateTaskList();
     }
@@ -199,7 +194,7 @@ function altNum(e, li) {
 }
 
 
-let searchButton = document.getElementById('search-button');
+// let searchButton = document.getElementById('search-button');
 let searchInput = document.getElementById("search")
 searchInput.addEventListener('keyup', function () {
     

@@ -18,3 +18,6 @@ You can use external API in order to save and load data.
 All tasks can be deleted by clicking the "Clear all" button, the tasks will also be deleted from local storage
 
 
+![Alt text](C:\Users\USER\Desktop\work\project-final.png?raw=true "Optional Title")
+
+
