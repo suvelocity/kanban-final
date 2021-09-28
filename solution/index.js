@@ -30,12 +30,12 @@ window.onkeydown = (e) => {
         if (mapper[e.key] === 'to-do') {
             mapper[e.key] = 'todo';
         }
-        const currentId = `${mapper[e.key]}-${Tasks[mapper[e.key]].length + 1}`;  //preparing new id 
-        let prevId = mouseHover.id.substr(0, mouseHover.id.lastIndexOf('-'));    //getting id 
-        prevId = prevId === 'to-do' ? prevId = 'todo' : prevId;    //make sure our function unserstands what place we talking about
+        const currentId = `${mapper[e.key]}-${Tasks[mapper[e.key]].length + 1}`; //preparing new id 
+        let prevId = mouseHover.id.substr(0, mouseHover.id.lastIndexOf('-')); //getting id 
+        prevId = prevId === 'to-do' ? prevId = 'todo' : prevId; //make sure our function unserstands what place we talking about
         Tasks[prevId].splice(Tasks[prevId].indexOf(mouseHover.textContent), 1); //replacing the new text with the old one 
-        Tasks[mapper[e.key]].unshift(mouseHover.textContent);  //making the new value first 
-        localStorage.tasks = JSON.stringify(Tasks);   //entring new value to localstorage
+        Tasks[mapper[e.key]].unshift(mouseHover.textContent); //making the new value first 
+        localStorage.tasks = JSON.stringify(Tasks); //entring new value to localstorage
 
         mouseHover.setAttribute('id', currentId);
 
@@ -126,7 +126,7 @@ const add = (idToAdd) => {
 
     // creating li and input elments
     const Li = document.createElement("li");
-    // const inputLi = document.createElement('input');
+    const remover = document.createElement('span');
 
     idToAdd === 'to-do' ?
         Tasks['todo'].unshift(currValue) :
@@ -140,14 +140,21 @@ const add = (idToAdd) => {
     Li.setAttribute('class', 'task');
     Li.setAttribute('draggable', 'true');
     Li.setAttribute('ondragstart', 'drag(event)');
+
+    remover.setAttribute('class', 'removeLi');
+    remover.setAttribute('onclick', 'removeLi()');
+    remover.setAttribute('style', 'position:absolue !important;right:450px !important;');
+
     // Li.setAttribute('ondragover', 'allowDrop(event)');
-    
+
 
     const ul = document.getElementById(`${idToAdd}-tasks`);
 
     Li.textContent = currValue;
 
     ul.insertBefore(Li, ul.firstChild);
+    ul.insertBefore(remover, ul.firstChild);
+
 
     Li.addEventListener('dblclick', () => dblClickFunction(currTaskId));
 
@@ -176,25 +183,28 @@ const search = () => {
         }
     });
 }
-// drag and drop helpers 
+// drag and drop 
 const allowDrop = (ev) => {
     ev.preventDefault();
 }
 const drag = (ev) => {
-    // console.log(ev.dataTransfer)
     ev.dataTransfer.setData("text", ev.target.id);
 }
 
 const drop = (ev) => {
-    
-    let nearLi = ev.target;
-    let ul = ev.path[0];
-    console.log(ev.target)
     ev.preventDefault();
+    let ul = ev.path[0];
+    let findClass = ul.getAttribute('class').substr(0, ul.getAttribute('class').lastIndexOf('-'));
     var data = ev.dataTransfer.getData("text");
-       Tasks[data] =  ul.append(document.getElementById(data));
-        localStorage.tasks = JSON.stringify(Tasks);
-    
+    findClass = findClass === 'to-do' ? 'todo' : findClass;
+    ul.insertBefore(document.getElementById(data), ul.firstChild);
+    let lastPlaceID = document.getElementById(data).getAttribute('id')
+    Tasks[findClass].unshift(document.getElementById(data).innerHTML); //pushing to Tasks
+    let getOldplace = lastPlaceID.slice(0, -2);
+    getOldplace = getOldplace === 'to-do' ? 'todo' : getOldplace;
+    Tasks[getOldplace].splice(document.getElementById(lastPlaceID).innerHTML, 1); // removing from old place
+    localStorage.tasks = JSON.stringify(Tasks);
 }
+
 // Localstorage function 
 load();
