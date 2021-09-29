@@ -190,12 +190,12 @@ const allowDrop = (ev) => {
 const drag = (ev) => {
     ev.dataTransfer.setData("text", ev.target.id);
 }
-
 const drop = (ev) => {
     ev.preventDefault();
-    let ul = ev.path[0];
+    let ul = ev.path[1].getElementsByTagName('ul')[0];
     let findClass = ul.getAttribute('class').substr(0, ul.getAttribute('class').lastIndexOf('-'));
     var data = ev.dataTransfer.getData("text");
+    console.log(data)
     findClass = findClass === 'to-do' ? 'todo' : findClass;
     ul.insertBefore(document.getElementById(data), ul.firstChild);
     let lastPlaceID = document.getElementById(data).getAttribute('id')
@@ -205,6 +205,8 @@ const drop = (ev) => {
     Tasks[getOldplace].splice(document.getElementById(lastPlaceID).innerHTML, 1); // removing from old place
     localStorage.tasks = JSON.stringify(Tasks);
 }
+// Api
+
 
 // Localstorage function 
 load();
