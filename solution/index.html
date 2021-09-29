@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="./index.js" defer></script>
-    
+
     <link rel="stylesheet" href="./styles.css" />
     <title>Tasks manager</title>
     <link rel="shortcut icon" type="image/jpg" href="favicon.png" />
@@ -22,36 +22,38 @@
             <label>To do List</label> <br>
             <input type="text" id="add-to-do-task" placeholder="Enter a task...">
             <span class="submit-btn" id="submit-add-to-do" onclick="add('to-do')">✓</span>
-            <hr style="color: #CACACA !important;background-color: #CACACA !important;border-bottom: initial; border-top: 1px solid #DADADA;">
-            <ul class="to-do-tasks" id="to-do-tasks" ondrop="drop(event)" ondragover="allowDrop(event)" style="border: 1px solid rgba(0, 128, 0, 0);"></ul>
+            <hr
+                style="color: #CACACA !important;background-color: #CACACA !important;border-bottom: initial; border-top: 1px solid #DADADA;">
+            <ul class="to-do-tasks" id="to-do-tasks" ondrop="drop(event)" ondragover="allowDrop(event)"
+                style="border: 1px solid rgba(0, 128, 0, 0);"></ul>
         </div>
         <div id="container">
             <label>In Progress</label> <br>
             <input type="text" id="add-in-progress-task" placeholder="Enter a task...">
             <span class="submit-btn" id="submit-add-in-progress" onclick="add('in-progress')">✓</span>
-            <hr style="color: #CACACA !important;background-color: #CACACA !important;border-bottom: initial; border-top: 1px solid #DADADA;">
-            <ul class="in-progress-tasks" id="in-progress-tasks"ondrop="drop(event)" ondragover="allowDrop(event)" style="border: 1px solid rgba(0, 128, 0, 0);"></ul>
+            <hr
+                style="color: #CACACA !important;background-color: #CACACA !important;border-bottom: initial; border-top: 1px solid #DADADA;">
+            <ul class="in-progress-tasks" id="in-progress-tasks" ondrop="drop(event)" ondragover="allowDrop(event)"
+                style="border: 1px solid rgba(0, 128, 0, 0);"></ul>
         </div>
         <div id="container">
             <label>Done</label> <br>
             <input type="text" id="add-done-task" placeholder="Enter a task...">
             <span class="submit-btn" id="submit-add-done" onclick="add('done')">✓</span>
-            <hr style="color: #CACACA !important;background-color: #CACACA !important;border-bottom: initial; border-top: 1px solid #DADADA;">
-            <ul class="done-tasks" id="done-tasks" ondrop="drop(event)" ondragover="allowDrop(event)" style="border: 1px solid rgba(0, 128, 0, 0);"></ul>
+            <hr
+                style="color: #CACACA !important;background-color: #CACACA !important;border-bottom: initial; border-top: 1px solid #DADADA;">
+            <ul class="done-tasks" id="done-tasks" ondrop="drop(event)" ondragover="allowDrop(event)"
+                style="border: 1px solid rgba(0, 128, 0, 0);"></ul>
         </div>
     </div>
-   <div id = btn-container>
-    <div id="save-api"> 
-        <span id="save-btn">Save</span>
-    </div>
-    
-    
+    <div id=btn-container>
+        <div id="save-api">
+            <span id="save-btn">Save</span>
+        </div>
         <div id="load-api">
             <span id="load-btn">Load</span>
         </div>
-
-   </div>
-
+    </div>
 </head>
 
 <body>

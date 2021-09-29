@@ -45,10 +45,10 @@ window.onkeydown = (e) => {
 
         document.getElementById(`${mapper[e.key]}-tasks`).insertBefore(mouseHover, document.getElementById(`${mapper[e.key]}-tasks`).firstChild);
 
-        mouseHover.removeEventListener('dblclick', () => dblClickFunction(currentId));
+        // mouseHover.removeEventListener('dblclick', () => dblClickFunction(currentId));
         mouseHover.addEventListener('dblclick', () => dblClickFunction(currentId));
 
-        mouseHover.removeEventListener('blur', () => blurFunction(currentId));
+        // mouseHover.removeEventListener('blur', () => blurFunction(currentId));
         mouseHover.addEventListener('blur', () => blurFunction(currentId));
 
 
@@ -183,6 +183,13 @@ const search = () => {
         }
     });
 }
+// a remove function that will uses me for deleting values
+function arrayRemove(arr, value) { 
+    
+    return arr.filter(function(ele){ 
+        return ele != value; 
+    });
+}
 // drag and drop 
 const allowDrop = (ev) => {
     ev.preventDefault();
@@ -194,16 +201,19 @@ const drop = (ev) => {
     ev.preventDefault();
     let ul = ev.path[1].getElementsByTagName('ul')[0];
     let findClass = ul.getAttribute('class').substr(0, ul.getAttribute('class').lastIndexOf('-'));
-    var data = ev.dataTransfer.getData("text");
-    console.log(data)
+    let data = ev.dataTransfer.getData("text");
+    console.log(findClass);
     findClass = findClass === 'to-do' ? 'todo' : findClass;
     ul.insertBefore(document.getElementById(data), ul.firstChild);
-    let lastPlaceID = document.getElementById(data).getAttribute('id')
+    let lastPlaceID = document.getElementById(data).getAttribute('id');
     Tasks[findClass].unshift(document.getElementById(data).innerHTML); //pushing to Tasks
+  //removing spesfic value
     let getOldplace = lastPlaceID.slice(0, -2);
     getOldplace = getOldplace === 'to-do' ? 'todo' : getOldplace;
-    Tasks[getOldplace].splice(document.getElementById(lastPlaceID).innerHTML, 1); // removing from old place
+    Tasks[getOldplace]  = arrayRemove(Tasks[getOldplace],document.getElementById(lastPlaceID).textContent) 
+    // updating localstorage
     localStorage.tasks = JSON.stringify(Tasks);
+
 }
 // Api
 
