@@ -201,8 +201,7 @@ async function loadFromApi() {
     if (localStorage.tasks === data.tasks) {
       return loader.remove()
     } else {
-      const newString = makeNormalString(JSON.stringify(data.tasks)) // stringifies without `\\`
-      localStorage.setItem('tasks', newString)
+      localStorage.setItem('tasks', JSON.stringify(data.tasks))
     }
     loader.remove()
     location.reload()
@@ -221,7 +220,7 @@ async function saveToApi() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ tasks }),
+      body: JSON.stringify({ tasks: JSON.parse(tasks) }),
     })
     if (!response.ok) {
       alert(response.status)
@@ -231,12 +230,6 @@ async function saveToApi() {
   } catch (e) {
     console.log(e)
   }
-}
-
-function makeNormalString(tasks) {
-  tasks = tasks.replace('"{', '{')
-  tasks = tasks.replace('}"', '}')
-  return tasks.replaceAll('\\', '')
 }
 
 liS.forEach((li) => {
