@@ -19,6 +19,28 @@ body::-webkit-scrollbar {
   }
 
 
+li::before {  
+    transform: scaleX(0);
+    transform-origin: bottom right;
+  }
+  
+li:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+  
+  
+li::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    inset: 0 0 0 0;
+    background: hsl(200 100% 80%);
+    z-index: -1;
+    transition: transform .3s ease;
+  }
+
 label,
 main {
     background: var(--bg, white);
@@ -124,6 +146,11 @@ main {
     transform: translate3d(40px, 0, 0);
 }
 
+.over{
+    background-color:gray;
+    shadow-box: -3px 27px 12px rgb(0, 60, 255);
+}
+
 
 body {
     /* font-family: Merriweather, serif; */
@@ -135,6 +162,13 @@ h1{
     justify-content: center;
     background-color: white;
     box-shadow:-3px 3px 8px white;
+}
+
+footer{
+    font-size: 1rem;
+    font-family: monospace;
+    display: flex;
+    justify-content: center;
 }
 
 legend{
@@ -151,7 +185,7 @@ fieldset{
 
 ul{
     margin-right: 6%;
-    outline: hidden;
+    outline:hidden;
 }
 
 .list-input-inserter{
@@ -160,8 +194,8 @@ ul{
 
 li{
     z-index: 10;
-    display: block;
-    display: flex;
+    /* display: block; */
+    /* display: flex; */
     flex-direction: row;
     outline:none;
     outline-style: none;
@@ -173,7 +207,7 @@ li{
     list-style-type:decimal;
     margin-left:100px;
     position: relative;
-    display: flex;
+    /* display: flex; */
     justify-content: center;
 }
 
@@ -183,8 +217,8 @@ li>span:not(.li-task) {
 
 li>span{
     z-index: 10;
-    display: inline;
-    display: flex;
+    /* display: inline;
+    display: flex; */
     flex-direction: row;
     outline:none;
     outline-style: none;
@@ -205,7 +239,7 @@ li>span{
 
 .hidden
 {
-    display: none;
+    display: none !important;
 }
 
 li .li-task
@@ -255,7 +289,7 @@ li .li-task.hover:hover
 
 section#to-do-tasks-section{
     position: relative;
-    display: flexbox;
+    /* display: flexbox; */
     justify-content: flex-start;
     padding-top: 50px;
     padding-bottom: 50px;
@@ -305,7 +339,7 @@ section#to-do-tasks-section{
 
 #search-bar-text, #search{
     position: relative;
-    display:inline-flex;
+    /* display:inline-flex; */
     color: brown;
     box-shadow: -3px 3px 8px chartreuse;
     outline-width: 3px;
@@ -325,7 +359,7 @@ section#to-do-tasks-section{
 
 section#in-progress-tasks-section{
     position: relative;
-    display: flexbox;
+    /* display: flexbox; */
     justify-content: center;
     padding-top: 50px;
     padding-bottom: 50px;
@@ -376,7 +410,7 @@ section#in-progress-tasks-section{
 
 section#done-tasks-section{
     position: relative;
-    display: flexbox;
+    /* display: flexbox; */
     justify-content: flex-start;
     padding-top: 50px;
     padding-bottom: 50px;
@@ -509,12 +543,27 @@ top: -10px;
 }
 
 
+.block{
+    top: 70%;
+    position: absolute;
+    margin:0;
+    padding:0;
+    margin-left:200px;
+    pointer-events: none;
+    overflow: hidden;
+    width: 100px;
+    height: 50px;
+    background-color: #22eb08e8;
+    box-shadow: 50px 80px 105px rgb(0,0,0,0.2);
+}
+
 body ul#done-tasks {
     padding: 0;
 }
-body ul#done-tasks li {
-    list-style: none;
+body ul{
+    list-style: decimal;
 }
+
 body ul#done-tasks:nth-child(1) {
     position: absolute;
     top: calc(20vh - 1.6rem);
@@ -558,7 +607,6 @@ body ul#done-tasks:nth-child(2) li {
     right: 50%;
     width: 0.0625rem;
     background: linear-gradient(rgba(46, 204, 113, 0), rgba(46, 204, 113, 0.25));
-    list-style: none;
     transform-origin: 50% 0;
     animation: swing 4s ease-in-out infinite;
 }

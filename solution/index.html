@@ -10,7 +10,7 @@
             <link href="//db.onlinewebfonts.com/c/a8b12ce70152aaccba3c207851da9132?family=Army" rel="stylesheet" type="text/css"/> 
             <title id="page-title">Tasks Manager</title>
       </head>
-
+            
       <body>
 
           <!----------------- (TODAY') CALENDAR ------------->
@@ -110,7 +110,7 @@
 
 <!------- !* END OF CALENDAR *! -------->
 
-         <h1>Task Manager 💌</h1>
+         <h1 id="h1">Task Manager 💌</h1>
 
          <!-- Theme Changer !-->
          <input type="checkbox" id="themeSwitch" name="theme-switch" class="theme-switch__input"/>
@@ -212,13 +212,44 @@
 
             <button id="delete-all-tasks" style="background-color:red">Delete all tasks</button>
 
+         <script src="anime.min.js"></script>
+         <script>
+            const h1 = document.getElementById('todo-tasks');
+
+            for(let i=0; i<=50; i++) {
+               const blocks = document.createElement('div');
+               blocks.classList.add('block');
+               h1.appendChild(blocks);
+            }
+
+            function animateBlocks()
+            {
+               anime({
+                  targets: '.block',
+                  translateX: () => {
+                     return anime.random(-10,300)
+                  },
+                  translateY: () => {
+                     return anime.random(-2,500);
+                  },
+
+                  scale: () => {
+                     return anime.random(1,2)
+                  }
+               })
+            }
+
+            animateBlocks();
+         </script>
             
       </fieldset>
-    
+      
 
          </main>
 
 
     </body>
+
+    <footer>eitam1400&copy; 2021&reg Github Co</footer>
 
 </html>
