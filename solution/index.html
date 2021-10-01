@@ -9,5 +9,38 @@
     <title>Tasks manager</title>
 </head>
 <body>
+    <h1 id="page-title">Kanban</h1>
+    <input placeholder="search" id="search">
+    
+
+    <section id="first" class="sections">
+         <h2>To-do tasks</h2>
+<ul id="todo" class="to-do-tasks"></ul>
+<input type="text" placeholder="add" class="inputs" id="add-to-do-task">
+<button id="submit-add-to-do">submit</button>
+    </section>
+
+
+    <section id="second" class="sections"> <h2>In-progress tasks</h2>
+<ul id="in-progress" class="in-progress-tasks"></ul>
+<input type="text" placeholder="add" class="inputs" id="add-in-progress-task">
+<button id="submit-add-in-progress">submit</button>
+    </section>
+
+
+    <section id="third" class="sections"> <h2>Done tasks</h2>
+<ul id="done" class="done-tasks"></ul>
+<input type="text" placeholder="add" class="inputs" id="add-done-task">
+<button id="submit-add-done">submit</button>
+    </section>
+    <div id="api">
+        <button id='save-api'>save</button>
+        <button id='load-api'>load</button>
+        <h3>API</h3>
+    </div>
+    <div id="clear">
+        <button id='clear-button'>clear all</button>
+    </div>
+    
 </body>
-</html>
+</html> 
