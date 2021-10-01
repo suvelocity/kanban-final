@@ -1,0 +1,83 @@
+*{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder ;
+}
+body{
+    background-image:url("daily task manager.jpg");
+    background-size: cover;
+    position: relative;
+
+}
+section {
+     overflow: hidden;
+     float: left;   
+      margin:auto;
+      margin-left: 130px;
+      border-radius: 10px;   
+      background-color: wheat;
+      box-shadow: 1px 1px 20px red, 0 0 20px blue;
+    }
+
+    div section{
+        width: 20%; 
+        float:left;
+        
+    }
+    li{
+        border: 1px solid black;
+        text-align:center;
+        list-style: none;
+        margin:auto;
+        margin-bottom: 10px;
+        margin-right:5em;
+        background-color: lightgray;
+    }
+    button,input{
+        margin-bottom: 10px;
+       
+    }
+    button{
+        cursor: pointer;
+    }
+    section>button{
+        margin-left:10px;
+        border:none;
+        border-radius: 10px;
+        box-shadow:1px 1px 5px grey, 0 0 20px lightseagreen ;
+    }
+    input{
+        margin-left: 20px;
+    }
+    label{
+        justify-content: center;
+        display: flex;
+    }
+    #search{
+        display: flex;
+        text-align: center;
+        margin-left: 42%;
+        margin-bottom: 30px;
+        font-weight: bold;
+        }
+    #page-title{   
+        color:rgba(226, 223, 59, 0.986);
+        font-size:50px;
+        text-shadow: 7px 7px  rgb(39, 5, 133);
+        text-align: center;
+        margin-right: 7%;
+        }
+   #top-page>button{
+       display: flex;
+         margin:auto;
+         margin-left: 42%;
+         margin-bottom: 30px;
+         height: 30px;
+         width: 11%;
+         justify-content: space-around;
+         border-radius: 10px;
+         border:none;
+         box-shadow:1px 1px 5px blue, 0 0 20px blue ;
+         background-color: lightgray;
+         font-weight: bold;
+        }
+    
