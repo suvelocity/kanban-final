@@ -209,7 +209,7 @@ function clickHandler(e){
     if(eventType(e.type) === "b" && e.target.className === "task"){
         editByDblClick(e.target);
     };
-   
+    
 };
 
 //Event type identifier
