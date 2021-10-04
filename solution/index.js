@@ -10,7 +10,7 @@ window.localStorage.setItem('tasks', JSON.stringify({
     "in-progress": [],
     "done": []
 }));}
-//initialize dom by local storage
+//initialize dom by local  storage
 tasks=JSON.parse(localStorage.getItem("tasks"));
     for (let section in tasks) {
         tasks[section].forEach(text => {
