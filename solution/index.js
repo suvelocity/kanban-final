@@ -15,12 +15,12 @@ let mouseHover;
 let onAlt = false;
 // making on keydown and key up global 
 document.onkeydown = (e) => {
-    if (e.key === 'Alt') {
+    if (e.altKey) {
         onAlt = true;
     }
 }
 document.onkeyup = (e) => {
-    if (e.key === 'Alt') {
+    if (e.altKey) {
         onAlt = false;
     }
 }
