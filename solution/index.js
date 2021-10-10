@@ -14,13 +14,13 @@ const mapper = {
 let mouseHover;
 let onAlt = false;
 // making on keydown and key up global 
-document.onkeydown = (e) => {
-    if (e.key === 'Alt') {
+document.onkeydown = e => {
+    if (e.altKey) {
         onAlt = true;
     }
 }
-document.onkeyup = (e) => {
-    if (e.key === 'Alt') {
+document.onkeyup = e => {
+    if (e.altKey) {
         onAlt = false;
     }
 }
@@ -44,10 +44,8 @@ window.onkeydown = (e) => {
         }
 
         document.getElementById(`${mapper[e.key]}-tasks`).insertBefore(mouseHover, document.getElementById(`${mapper[e.key]}-tasks`).firstChild);
-
         // mouseHover.removeEventListener('dblclick', () => dblClickFunction(currentId));
         mouseHover.addEventListener('dblclick', () => dblClickFunction(currentId));
-
         // mouseHover.removeEventListener('blur', () => blurFunction(currentId));
         mouseHover.addEventListener('blur', () => blurFunction(currentId));
 
