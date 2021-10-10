@@ -212,7 +212,7 @@ function createElement(tagName, children = [], classes = [], attributes = {}) {
   }
 
 //search bar functions
-function hideTask(tasksList){
+function hideTask(tasksList,value){
     for(let li of tasksList){
         li.hidden = false;
         if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
@@ -223,7 +223,7 @@ function hideTask(tasksList){
 function searchTask(e){
   let value = e.target.value;
   let taskArray = Array.from(document.getElementsByTagName('li'));
-  hideTask(taskArray);
+  hideTask(taskArray, value);
 }
 //search bar animations
 searchBar.addEventListener('focus', () => {
