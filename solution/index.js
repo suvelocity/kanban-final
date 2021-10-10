@@ -3,39 +3,43 @@
 //function that check the user's name
 async function checkName()
 {
-
     let name=localStorage.getItem("tasks");
-    let tasks;
     bg=1;
     if(name===null)
     {
-        tasks={
-            "todo": [],
-            "in-progress": [],
-            "done": [],
-        };
-        localStorage.setItem("tasks",JSON.stringify(tasks));
+        buildTask();
     } 
     currentBg();
-    tasks=JSON.parse(localStorage.getItem("tasks"));
+    let tasks=JSON.parse(localStorage.getItem("tasks"));
     let tasksApi;
     /* try{tasksApi=getApi().json;
     if(tasks!==tasksApi)
         tasks=tasksApi;
     }
     catch{} */
-    for (let list in tasks) {
-        tasks[list].forEach(text => {
-            let task =createElement("li",[],["list-group-item","task"],{draggable:"true",ondragstart:"drag(event)"});
-            task.innerText=text;
-            document.getElementById(list).append(task);
-            task.addEventListener('dblclick', changeTask);
-            task.addEventListener('mouseover', moveTask);
-            task.addEventListener('mouseout', moveTaskEnd);
-        });}  
+    restoreData(tasks);
  
 }
-
+//insert restored data into lists
+function restoreData(tasks)
+{
+    for (let list in tasks) {
+        tasks[list].forEach(text => {
+            let task =createLiElement();
+            task.innerText=text;
+            document.getElementById(list).append(task);
+        });}
+}
+//build empty tasks 
+function buildTask()
+{
+    let tasks={
+        "todo": [],
+        "in-progress": [],
+        "done": [],
+    };
+    localStorage.setItem("tasks",JSON.stringify(tasks));
+}
 async function getApi(){
     showSpinner();
     let alltask=document.getElementsByTagName("li");
@@ -181,65 +185,54 @@ function createElement(tagName ,children = [], classes = [], attributes = {}) {
 // create a new task and put it in his list 
 function createTask(event)
 {
+    let task =createLiElement();
+    let section=event.target.parentElement.id,ul,text;
+    switch(section)
+    {
+        case "1":
+            task.innerText=document.getElementById("add-to-do-task").value;
+            insertToSection("done",task);
+            break;
+        case "2":
+            task.innerText=document.getElementById("add-in-progress-task").value;
+            insertToSection("in-progress",task);
+            break;
+        case "3":
+            task.innerText=document.getElementById("add-done-task").value;
+            insertToSection("done",task);
+            break;
+    }
+}
+function insertToSection(list,task)
+{
+    if(checkEmpty(task.innerText))
+    {
+        throw("Empty task");
+    }
+    addToUl(document.getElementById(list),task)
+    unshiftTask(task.innerText,list);
+}
+//create li element
+function createLiElement()
+{
     let task =createElement("li",[],["list-group-item","task"],{draggable:"true",ondragstart:"drag(event)"});
     task.addEventListener('dblclick', changeTask);
     task.addEventListener('mouseover', moveTask);
     task.addEventListener('mouseout', moveTaskEnd);
-    let section=event.target.parentElement.id;
-    let ul,text;
-    switch(section)
-    {
-        case "1":
-            text=document.getElementById("add-to-do-task").value;
-            if(checkEmpty(text))
-            {
-                alert("Task must has info");
-                break;
-            }
-            task.innerText=text;
-            ul=document.getElementById("todo");
-            ul.insertBefore(task,ul.firstChild); 
-            document.getElementById("add-to-do-task").value="";
-            list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-            list["todo"].unshift(text);
-            localStorage.setItem("tasks",JSON.stringify(list));
-            break;
-        case "2":
-            text=document.getElementById("add-in-progress-task").value;
-            if(checkEmpty(text))
-            {
-                alert("Task must has info");
-                break;
-            }
-            task.innerText=text;
-            ul=document.getElementById("in-progress");
-            ul.insertBefore(task,ul.firstChild); 
-            document.getElementById("add-in-progress-task").value="";
-            list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-            list["in-progress"].unshift(text);
-            localStorage.setItem("tasks",JSON.stringify(list));
-            break;
-        case "3":
-            text=document.getElementById("add-done-task").value;
-            if(checkEmpty(text))
-            {
-                alert("Task must has info");
-                break;
-            }
-            task.innerText=text;
-            ul=document.getElementById("done");
-            ul.insertBefore(task,ul.firstChild); 
-            document.getElementById("add-done-task").value="";
-            list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-            list["done"].unshift(text);
-            localStorage.setItem("tasks",JSON.stringify(list));
-            break;
-    }
+    return task;
+}
+//function that add the li to the correct list and clear the input
+function addToUl(ul,li)
+{
+    ul.insertBefore(li,ul.firstChild);
+    let input=ul.parentElement.getElementsByTagName("input");
+    input[0].value="";
 }
 //function that check if task is empty
 function checkEmpty(text)
 {
     if (!text.replace(/\s/g, '').length) {
+        alert("Task must has info");
         return true;
     }
     return false;
@@ -247,18 +240,20 @@ function checkEmpty(text)
 //function that changing task
 function changeTask(event)
 {
-    let task =this;
-    listId=task.parentElement.id;
-    deleteTaskByText(task.innerText,listId) 
-    task.contentEditable=true;
-    task.addEventListener('blur',(event)=>{
-        task.contentEditable=false;
-        list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-        list[listId].unshift(task.innerText);
-        localStorage.setItem("tasks",JSON.stringify(list));
+    deleteTaskByText(this.innerText,this.parentElement.id) 
+    this.contentEditable=true;
+    this.addEventListener('blur',(event)=>{
+        this.contentEditable=false;
+        unshiftTask(this.innerText,this.parentElement.id)
     })
 }
-
+//unshift task to storage;
+function unshiftTask(text,listId)
+{
+    list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
+    list[listId].unshift(text);
+    localStorage.setItem("tasks",JSON.stringify(list));
+}
 //function that delete task given by text
 function deleteTaskByText(text,listName)
 {
@@ -300,24 +295,28 @@ function moveTaskKeyPress(event)
     }
     if(event.keyCode===49&&event.altKey)
     {
-        moveTask(moveTaskLi,"todo");
+        moveTaskFinal(moveTaskLi,"todo");
     }
     if(event.keyCode===50&&event.altKey)
     {
-        moveTask(moveTaskLi,"in-progress");
+        moveTaskFinal(moveTaskLi,"in-progress");
     }
     if(event.keyCode===51&&event.altKey)
     {        
-        moveTask(moveTaskLi,"done"); 
+        moveTaskFinal(moveTaskLi,"done"); 
     }
 }
-function moveTask(moveTaskLi,list)
+function moveTaskFinal(moveTaskLi,listTemp)
 {
-    document.getElementById(list).prepend(moveTaskLi);
+    
+    document.getElementById(listTemp).prepend(moveTaskLi);
     list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-    list[list].unshift(moveTaskLi.innerText);
+    list[listTemp].unshift(moveTaskLi.innerText);
     localStorage.setItem("tasks",JSON.stringify(list));
 }
+
+
+
 //function search input 
 let searchText;
 function enterSearch(event)
