@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+#main{
+    background: url("https://img5.goodfon.com/wallpaper/nbig/f/1a/osen-listia-fon-derevo-colorful-doska-wood-background-autu-2.jpg") no-repeat center / cover;
+    box-shadow:rgb(53, 53, 53) 10px 0 10px ;
+  height: 100vh;
+  overflow: hidden;
+    margin: 0px 10px;
+    position: relative;
+    justify-content:space-evenly; 
+    height: 50vh;
+    display: flex;
+    flex-wrap: nowrap;
+     align-items: flex-start
+}
+
+
+h3 {
+    position: relative;
+    left: 10px;
+}
+
+form {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+}
+
+#search-container {
+    right: -45%;
+    position: relative;
+    margin-bottom: 60px;
+}
+
+#page-title{
+    /* font-size: 5em;
+    margin: 30px 0 0;
+    font-family: 'Abril Fatface', cursive;
+    margin: auto;
+    background-color: #bf9429;
+    padding:20px;
+    box-shadow: 0px 0px 4px 0px;
+    right: 0px; */
+    background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/990140/download.png) -20px -20px no-repeat;
+    -webkit-text-fill-color: #d4200011;
+    -webkit-background-clip: text;
+    display: block;
+    font-size: 90px;
+    font-family: arial;
+    text-align: left;
+    margin-top: -20px;
+    font-weight: bold;
+    letter-spacing: 5px;
+    background-size: cover;
+    text-shadow: 10px -2px 13px #0707073d;
+}
+
+
+
+
+
+h3 {
+    position: relative;
+    left: 10px;
+}
+
+form {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+}
+
+ul {
+    font-family: 'Abril Fatface', cursive;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 10px;
+    list-style-type: none;
+}
+#container {
+    width: 300px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.611);
+    box-shadow: 0px 0px 10px 0px;
+    padding: 30px;
+    max-height: 600px;
+}
+
+#search-container {
+    font-family: 'Abril Fatface', cursive;
+    margin-right: 0%;
+    padding: 35px;
+    display: flex;
+    justify-content: center;
+    right: 50px;
+}
+
+.search-icon {
+    font-family: 'Abril Fatface', cursive;
+    font-size: 21px;
+    position: relative;
+    right: 7px;
+    bottom: 2px;
+    cursor: default;
+}
+
+label {
+    font-family: 'Abril Fatface', cursive;
+    color: #7a7a7a;
+    font-weight: bold;
+    position: relative;
+    bottom: 12px;
+    font-size: 20px;
+}
+
+.submit-btn {
+    
+    color: rgb(32, 178, 146);
+    cursor: pointer;
+    font-weight: bold;
+    position: relative;
+    left: 10px;
+    top: 2px;
+}
+
+li {
+    padding: 7px;
+}
+
+li:nth-child(odd) {
+    background-color: #EAEAEA
+}
+
+#search {
+    font-size: 17px;
+}
+body{
+    font-family: 'Abril Fatface', cursive;
+    background: url(https://media.istockphoto.com/photos/fall-foliage-picture-id157294711?k=20&m=157294711&s=612x612&w=0&h=PlcSv4E7UvaBIWjnVYqzdTxBQiJlTaWuFR0ebAGbRUY=)    no-repeat center / cover;
+   background-color: rgba(86, 173, 255, 0.446);
+  font: 14px sans-serif;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+
+  
+}
+
+
+    
+    #container>ul>li:hover {
+      color: #d53613;
+      transition: color 0.2s; */
+    }
+    
+    ul:hover {
+      display: block;
+    }
+  
+ 
+    .tasks.over {
+        border: 3px dotted #666;
+      }
+      #btn-container{
+        margin-top: 120px;
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 97px;
+      }
+      #load-api:hover,#save-api:hover,#clear-api:hover{
+          color:rgba(255, 0, 0, 0.555);
+      }
+    
+
+      #load-api,#save-api,#clear-api {
+        background: url(https://img5.goodfon.com/wallpaper/nbig/c/31/maple-osen-background-wood-derevo-listia-autumn-leaves-fon-7.jpg) no-repeat center / cover;
+        border: 1px solid black;
+        padding: 10px;
+        width: 110px;
+        text-align: center;
+        font-family: 'Abril Fatface', cursive;
+        font-style: italic;
+        color: rgb(255, 255, 255);
+        box-shadow:rgb(8, 8, 8) 5px 0 5px ;
+      }
+      
