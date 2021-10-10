@@ -1,4 +1,4 @@
-// -------------- Functions -------------- \\
+ // -------------- Functions -------------- \\
 /**
  * Creates a new DOM element.
  *
