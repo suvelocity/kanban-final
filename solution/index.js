@@ -5,7 +5,6 @@ let passedUlId = null;//in use to define the ul that we took and element from
 let altpressed = false;//in use to know if the altkey is pressed(cause we need to press alt and then another key).
 let draggedItem   //in use to define the task we want to drag to another place
 let localSave = localStorage.getItem("tasks")
-
 // ////////////////////// storage
 if (localSave!=undefined){//if localSave is not undefine , tasks equals local storage object
     tasks = JSON.parse(localSave);
@@ -121,7 +120,20 @@ document.addEventListener("keydown",event => altkeyPreesed(event));
 document.addEventListener("keyup",event => moveTaskUl(event));
 document.addEventListener("keydown", event => taskChangeUl(event));
 
+// events for dran and drop
+const ul1 = document.getElementById("todo");
+const ul2 = document.getElementById("in-progress");
+const ul3 = document.getElementById("done");
+    ul1.addEventListener("dragover",allowDrop);//adding dragover and drop listeners to all three ul's
+    ul2.addEventListener("dragover",allowDrop);
+    ul3.addEventListener("dragover",allowDrop);
+    ul1.addEventListener("drop",drop);
+    ul2.addEventListener("drop",drop);
+    ul3.addEventListener("drop",drop);
+
+
 // ///////////directives
+
 //  function that filters the li according to the value of the search input
 function filterFunc(filter,li){
     for (var i = 0; i < li.length; i++) {
@@ -175,16 +187,6 @@ function editTaskOptions(newTask,localSavedTasks){
     }
     localStorage.setItem("tasks",JSON.stringify(tasks));
 }
-
-// ////////////// network
-
-
-
-
-
-  
-
-
 function altkeyPreesed(event){//if the key that is pressed is alt the global var altpreesed changes to true
     if(event.keyCode===18){
         altpressed=true;
@@ -220,25 +222,23 @@ function changeUL(newUlId){//function that delets the task from the old ul and g
 }
 function changeULLocalStorage(newUlId){//function that delets the task from the old localStorage array and generate a duplicate in the new localStorage array.
     const liContent =hoverdElement.textContent
-    const newUl = document.getElementById(newUlId);
-    const oldUl = document.getElementById(passedUlId)
-    const oldUlId = oldUl.id;
-    
-    if(oldUlId === "todo"){
+    const oldUl = document.getElementById(passedUlId);
+
+    if(oldUl.id === "todo"){
         let toAdd = liContent
         let index=tasks.todo.indexOf(liContent);
         tasks.todo.splice(index,1);
         tasks[newUlId].unshift(toAdd);
         localStorageData();
     }
-    if(oldUlId ==="in-progress"){
+    if(oldUl.id ==="in-progress"){
         let toAdd = liContent
         let index=tasks["in-progress"].indexOf(liContent);
         tasks["in-progress"].splice(index,1);
         tasks[newUlId].unshift(toAdd);
         localStorageData();
     }
-    if(oldUlId === "done"){
+    if(oldUl.id === "done"){
         let toAdd = liContent
         let index=tasks.done.indexOf(liContent);
         tasks.done.splice(index,1);
@@ -253,7 +253,39 @@ function mouseout(event){//returns hoverdElement value to null when the mouse le
     if(event.target.className="task"){
         hoverdElement=null;
     }
+} 
+
+// Dnd
+
+function dragStart(event){//function that handles the dragstart event
+    draggedItem = event.target;
+    event.target.style.opacity = "1";
+    const oldUl = event.target.closest("ul");
+    passedUlId=oldUl.id;
 }
+
+    
+function allowDrop(event){//prevents default behavior
+    event.preventDefault();
+}
+function drop(event) {//function that deletes the task from the oldul and generate a clone in the newul, same principal in the localStorge data.
+    draggedItemContent =draggedItem.textContent
+    const newUL= event.target.closest("ul")
+    const li =generateListItems(draggedItemContent,{"dragstart": dragStart,"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout})
+    li.setAttribute("draggable", "true");
+    newUL.prepend(li);
+    draggedItem.remove();
+    dropLocalStorageChange(draggedItemContent,newUL);
+  }
+  function dropLocalStorageChange(draggedItemContent,newUL){
+    let index=tasks[passedUlId].indexOf(draggedItemContent);
+    tasks[passedUlId].splice(index,1);
+    tasks[newUL.id].unshift(draggedItemContent);
+    localStorageData();
+  }
+
+// ////////////// network
+
 // load button
 const loadButton =document.getElementById("load-btn")//load button functions update the data in dom and localStorage according to the api
  loadButton.onclick =async function loadApi(){
@@ -324,38 +356,10 @@ saveButton.onclick = async function(){
     }
     loader1.remove();
  }
-function dragStart(event){//function that handles the dragstart event
-    draggedItem = event.target;
-    event.target.style.opacity = "1";
-    const oldUl = event.target.closest("ul");
-    passedUlId=oldUl.id;
-}
-const ul1 = document.getElementById("todo");
-    const ul2 = document.getElementById("in-progress");
-    const ul3 = document.getElementById("done");
-    ul1.addEventListener("dragover",allowDrop);//adding dragover and drop listeners to all three ul's
-    ul2.addEventListener("dragover",allowDrop);
-    ul3.addEventListener("dragover",allowDrop);
-    ul1.addEventListener("drop",drop);
-    ul2.addEventListener("drop",drop);
-    ul3.addEventListener("drop",drop);
-    
-function allowDrop(event){//prevents default behavior
-    event.preventDefault();
-}
-function drop(event) {//function that deletes the task from the oldul and generate a clone in the newul, same principal in the localStorge data.
-    draggedItemContent =draggedItem.textContent
-    const newUL= event.target.closest("ul")
-    const newULid= newUL.id;
-    const li =generateListItems(draggedItemContent,{"dragstart": dragStart,"dblclick":editTask ,"blur":addChangedTask, "mouseover":mouseoverFunc , "mouseout": mouseout})
-    li.setAttribute("draggable", "true");
-    newUL.prepend(li);
-    draggedItem.remove();
-    let index=tasks[passedUlId].indexOf(draggedItemContent);
-        tasks[passedUlId].splice(index,1);
-        tasks[newULid].unshift(draggedItemContent);
-        localStorageData();
-  }
+
+
+//  ////////////////unique section for trash
+
 // adding eventlistener to the trash image in order to intialize the trash function
 // this is an extra functionality of drag n drop tasks to the trashImg , when we drop the task to the image the task is deleted
 const trashImg = document.getElementById("trashImg");
