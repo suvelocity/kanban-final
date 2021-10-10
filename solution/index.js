@@ -3,9 +3,10 @@ let taskObj, queryObj;
 const spaceAtEndRegex = /[\s]*$/g;
 let mockList = document.createElement("li");
 let rememberElement;
+// declartios of global varible we use at serval functions
+
 
 const addEventListenerToButtons = () => {
-
     const deleteButtons = document.querySelectorAll('.deleteButton');
     deleteButtons.forEach(element => {
         element.addEventListener("click", function () {
@@ -37,17 +38,28 @@ const addEventListenerToTasks = () => {
         element.addEventListener("dragstart", function () { //mockList is for task drag be showen for user
             rememberElement = element.innerHTML;
             mockList.classList.add("mocklist");
-            mockList.innerHTML = `${element.innerText}`
+            mockList.innerHTML = `${element.innerText}`;
+            element.style.opacity = "0.3";
+            mockList.style.display = "block";
         });
 
         element.addEventListener("dragenter", function (e) {
-            e.target.parentElement.insertBefore(mockList, e.target);
+            if (!e.target.nextElementSibling) {
+                e.target.parentElement.appendChild(mockList);
+            }
+            else {
+                e.target.parentElement.insertBefore(mockList, e.target);
+            }
         });
 
         element.addEventListener("dragend", function () {
+            element.style.opacity = "1";
             mockList.innerHTML = rememberElement;
             mockList.className = "task";
-            const elementB4orAfter = mockList.previousElementSibling || mockList.nextElementSibling;
+            let elementB4orAfter = mockList.previousElementSibling || mockList.nextElementSibling;
+            if (elementB4orAfter.innerText == "") {
+                elementB4orAfter = elementB4orAfter.parentElement
+            }
             deleteTask(element.innerText);
             dropTask(elementB4orAfter.innerText);
         });
@@ -176,8 +188,14 @@ const dropTask = (innerTaskText) => {
     for (let taskarray in taskObj) {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
             if (taskObj[taskarray][i] == innerTaskText) {
-                taskObj[taskarray].splice(i + 1, 0, mockList.innerText);
-                break;
+                if (i == 0) {
+                    taskObj[taskarray].splice(0, 0, mockList.innerText);
+                    break;
+                }
+                else {
+                    taskObj[taskarray].splice(i + 1, 0, mockList.innerText);
+                    break;
+                }
             }
         }
     }
@@ -189,7 +207,7 @@ const deleteTask = (innerTextOfTitle) => {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
             if (taskObj[taskarray][i] == innerTextOfTitle) {
                 taskObj[taskarray].splice(i, 1);
-                break;
+                return;
             }
         }
     }
