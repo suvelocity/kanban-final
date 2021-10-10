@@ -1,10 +1,12 @@
-// global variables 
+// ////////////////// global variables 
 let tasks//in line 9 or 12 we define this variable
 let hoverdElement=null;//in use to define the element we want to move using alt+1-3.
 let passedUlId = null;//in use to define the ul that we took and element from
 let altpressed = false;//in use to know if the altkey is pressed(cause we need to press alt and then another key).
 let draggedItem   //in use to define the task we want to drag to another place
 let localSave = localStorage.getItem("tasks")
+
+// ////////////////////// storage
 if (localSave!=undefined){//if localSave is not undefine , tasks equals local storage object
     tasks = JSON.parse(localSave);
     publishExistingLi();
@@ -20,47 +22,7 @@ function localStorageData (){ // updates the local storage
     localStorage.setItem("tasks",localSave);
 }
 
-// to do section           // adding click events to the add buttons
-const buttonToDo = document.getElementById("submit-add-to-do");
-buttonToDo.addEventListener("click",addLiGeneric);
-//  in-progress
-const buttonInProgress = document.getElementById("submit-add-in-progress");
-buttonInProgress.addEventListener("click",addLiGeneric);
-//  done
-const buttonDone = document.getElementById("submit-add-done");
-buttonDone.addEventListener("click",addLiGeneric);
 
-function addLiGeneric(event){   //A generic function to generate and add new tasks (li's).
-    const target=event.target;
-    const section = event.target.closest("section");
-    const ulToAdd =section.querySelector(".anyUL");
-    const inputToDo = section.querySelector(".add-input").value;
-    if(inputToDo.length<1){
-        alert("Cant assign an empty task ☹");
-    }else{
-        const li= document.createElement("li");//defining the new task and adding events and attr to it
-        li.addEventListener("dblclick" , editTask);
-        li.addEventListener("blur" , addChangedTask)
-        li.textContent=inputToDo;
-        li.classList.add("task")
-        li.setAttribute("draggable", "true")
-        ulToAdd.prepend(li);//enters the li we entered to the top of the ul coloumn.
-        newTaskData(target,inputToDo);
-        localStorageData();
-    }
-    section.querySelector(".add-input").value="";
-}
-function newTaskData(target ,task){ //helping function to addLiGeneric that decide which ul adds the task
-    if(target.id==="submit-add-to-do"){
-        tasks.todo.unshift(task)
-    }
-    if(target.id==="submit-add-in-progress"){
-        tasks["in-progress"].unshift(task)
-    }
-    if(target.id==="submit-add-done"){
-        tasks.done.unshift(task)
-    }
-}
 function publishExistingLi(){ //function that updates the dom with all the tasks the localStorage has
     for(let i = 0 ; i<tasks.todo.length ; i++){ 
         const existTask = generateListItems(tasks.todo[i],{"dblclick":editTask ,"blur":addChangedTask,"mouseover":mouseoverFunc , "mouseout": mouseout});
@@ -87,23 +49,81 @@ function publishExistingLi(){ //function that updates the dom with all the tasks
         doneSectionUl.append(existTask);
     }
 }
+
+
+// ////////////////// dom
+function addLiGeneric(event){   //A generic function to generate and add new tasks to the localStorage and then updates the dom (li's).
+    const section = event.target.closest("section");
+    const inputToDo = section.querySelector(".add-input").value;
+    if(inputToDo.length<1){
+        alert("Cant assign an empty task ☹");
+    }else{
+        const li= document.createElement("li");//defining the new task and adding events and attr to it
+        li.addEventListener("dblclick" , editTask);
+        li.addEventListener("blur" , addChangedTask)
+        li.textContent=inputToDo;
+        li.classList.add("task")
+        li.setAttribute("draggable", "true")
+        
+        newTaskData(event.target,inputToDo);
+        localStorageData();
+        publishExistingLi();
+    }
+    section.querySelector(".add-input").value="";
+}
+function newTaskData(target ,task){ //helping function to addLiGeneric that decide which ul adds the task
+    if(target.id==="submit-add-to-do"){
+        tasks.todo.unshift(task)
+    }
+    if(target.id==="submit-add-in-progress"){
+        tasks["in-progress"].unshift(task)
+    }
+    if(target.id==="submit-add-done"){
+        tasks.done.unshift(task)
+    }
+}
+
 function generateListItems(text , eventListeners ={}){ //helping function i use alot to generate new list items
     const listItem = document.createElement("li");
-    listItem.setAttribute("class","task");
-    listItem.setAttribute("draggable", "true")
     listItem.append(text);
-    listItem.ondragstart=dragStart;
+    Object.assign(listItem, {
+        class: "task",
+        draggable: "true",
+        ondragstart : dragStart
+      })
     const events =Object.keys(eventListeners);
     for(let i = 0 ; i<events.length ; i++){
         listItem.addEventListener(events[i],eventListeners[events[i]])
     }
     return listItem;
 }
-//  function that filters the li according to the value of the search input
+        
+
+
+// //////// eventListeners
+
+// to do section           // adding click events to the add buttons
+const buttonToDo = document.getElementById("submit-add-to-do");
+buttonToDo.addEventListener("click",addLiGeneric);
+//  in-progress
+const buttonInProgress = document.getElementById("submit-add-in-progress");
+buttonInProgress.addEventListener("click",addLiGeneric);
+//  done
+const buttonDone = document.getElementById("submit-add-done");
+buttonDone.addEventListener("click",addLiGeneric);
+
+// listener for the search filter
 const input = document.getElementById('search');
-input.onkeyup = function searchFilter () {
-    let filter = input.value.toUpperCase();
-    let li = document.getElementsByTagName('li');
+input.onkeyup = searchFilter;
+
+// events that call functions to mangae the moving task between ul functionality.(until 214);
+document.addEventListener("keydown",event => altkeyPreesed(event));
+document.addEventListener("keyup",event => moveTaskUl(event));
+document.addEventListener("keydown", event => taskChangeUl(event));
+
+// ///////////directives
+//  function that filters the li according to the value of the search input
+function filterFunc(filter,li){
     for (var i = 0; i < li.length; i++) {
         var name = li[i].innerHTML;
         if (name.toUpperCase().includes(filter)) {
@@ -112,11 +132,22 @@ input.onkeyup = function searchFilter () {
             li[i].style.display = 'none';
         }
     }
-}                          //two functions below deal with dblclick event
+}
+
+function searchFilter () {
+    let filter = input.value.toUpperCase();
+    let li = document.getElementsByTagName('li');
+    filterFunc(filter,li);
+}       
+
+//two functions below deal with dblclick event
 function editTask(event){ //function that change the value of the specific index in localStorage , and make the task Editable.
     const oldTask = event.target;
     oldTaskText = oldTask.textContent;
     const localSavedTasks = tasks[oldTask.closest("ul").id]
+    editStyleAndSet(oldTask,localSavedTasks);
+}
+function editStyleAndSet(oldTask,localSavedTasks){
     oldTask.contentEditable="true"
     oldTask.style.color = "red"
     localSavedTasks[localSavedTasks.indexOf(oldTaskText)]="edit";
@@ -125,9 +156,16 @@ function editTask(event){ //function that change the value of the specific index
 
 function addChangedTask(event){//function that adds the new changed task to the localStorage
     const newTask = event.target;
-    newTask.contentEditable="false";
     const localSavedTasks = tasks[newTask.closest("ul").id]
+    changeEditedTask(newTask,localSavedTasks);
+    
+}
+function changeEditedTask(newTask,localSavedTasks){
+    newTask.contentEditable="false";
     newTask.style.color="black";
+    editTaskOptions(newTask,localSavedTasks)
+}
+function editTaskOptions(newTask,localSavedTasks){
     if(newTask.textContent.length>1){ //if its not en empty str we replace the old task in local storage with edited one
         localSavedTasks[localSavedTasks.indexOf("edit")]=newTask.textContent;
     }else{//if the edited string is empty we define it to be the way it was before the change
@@ -137,10 +175,15 @@ function addChangedTask(event){//function that adds the new changed task to the 
     }
     localStorage.setItem("tasks",JSON.stringify(tasks));
 }
-// events that call functions to mangae the moving task between ul functionality.(until 214);
-document.addEventListener("keydown",event => altkeyPreesed(event));
-document.addEventListener("keyup",event => moveTaskUl(event));
-document.addEventListener("keydown", event => taskChangeUl(event));
+
+// ////////////// network
+
+
+
+
+
+  
+
 
 function altkeyPreesed(event){//if the key that is pressed is alt the global var altpreesed changes to true
     if(event.keyCode===18){
