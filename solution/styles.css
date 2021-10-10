@@ -221,7 +221,7 @@ input{
 }
 
 .sort-az{
-    display: block;
+    display: inline;
     width: 100px;
     height: 20px;
     line-height: 20px;
@@ -262,4 +262,17 @@ input{
         display:block;
         margin:0.4em auto;
         }
+    }
+
+    #to-do-section{
+        color: rgb(35, 5, 83);
+        background-color: rgba(50, 256, 50, 0.6);
+    }
+    #in-progress-section{
+        color: rgb(109, 2, 2);
+        background-color: rgba(50, 50, 256, 0.6);
+    }
+    #done-section{
+        color: rgb(70, 82, 3);
+        background-color: rgba(256, 50, 50, 0.6);
     }

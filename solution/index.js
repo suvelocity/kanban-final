@@ -9,10 +9,6 @@ if(!localStorage.tasks || localStorage.tasks.length == 0){
         );
 }  
 
-
-//localStorage.clear();//clears local storage
-
-
     let localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
 
 //adding event listeners to the body
@@ -45,6 +41,7 @@ let recycleBin = document.querySelector('.recycle-bin');
 let toDoContainer = document.getElementById('to-do-container');
 let inProgressContainer = document.getElementById('in-progress-container');
 let doneContainer = document.getElementById('done-container');
+const taskEnumeratorArray = Array.from(document.getElementsByClassName('task-enumerator'));
  
  //localstorage loading function
  if(localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null || localStorageObjectForUpdate.deleted[0] != null){
@@ -68,6 +65,7 @@ let doneContainer = document.getElementById('done-container');
     var inProgressTasksUl = inProgressContainer.firstChild;
     var doneTasksUl = doneContainer.firstChild;
     var deletedTasksUl = recycleBin.firstChild;
+    listCounter();
 
  }else{
     var toDoTasksUl = createElement('ul', children = [], classes = ['to-do-tasks'], attributes = {});
@@ -78,7 +76,18 @@ let doneContainer = document.getElementById('done-container');
     inProgressContainer.appendChild(inProgressTasksUl);
     doneContainer.appendChild(doneTasksUl);
     recycleBin.appendChild(deletedTasksUl);
+    listCounter();
  }
+
+//total list item counter function
+function listCounter(){
+    for(let taskEnumerator of taskEnumeratorArray){
+        const totalTasks = Array.from(taskEnumerator.parentElement.lastElementChild.firstElementChild.children).length
+        taskEnumerator.textContent = `total: ${totalTasks}`
+    }
+}
+
+
 
 
 //adding a list item functionality
@@ -103,7 +112,7 @@ function addTask(e){
               newTask.addEventListener('dragend', endDrag);
 
             target.previousElementSibling.value = '';
-             
+            listCounter(); 
        }
     }
 }
@@ -129,6 +138,7 @@ taskDiv.addEventListener('click', addTask);
      target.setAttribute('contenteditable', 'false');
      target.style.backgroundColor = 'rgba(0,0,0,0)';
     localStorageSave();
+    listCounter();
  }
  //
 
@@ -149,6 +159,7 @@ taskDiv.addEventListener('click', addTask);
             }
                  //local storage insertion
                  localStorageSave();
+                 listCounter();
                  // end of local storage insertion
        }
 
@@ -269,6 +280,7 @@ async function loadApi(){
     doneTasksUl = doneContainer.firstChild;
     //saving changes to local storage
     localStorageSave();
+    listCounter();
 
     //resetting the individual dargNdrop eventListeners
     for(let li of Array.from(document.querySelectorAll('.task'))){
@@ -292,6 +304,7 @@ function dragItem(e){
 function endDrag(e){
    e.target.classList.remove('dragging');
    localStorageSave();
+   listCounter();
 }
 
 
@@ -358,8 +371,8 @@ function removeLi(e){
     if(e.target.tagName === 'LI'){
         e.preventDefault();
         deletedTasksUl.appendChild(e.target);
-        //e.target.remove();
-        localStorageSave()
+        localStorageSave();
+        listCounter();
     }
 }
 //recycle bin button event listener
