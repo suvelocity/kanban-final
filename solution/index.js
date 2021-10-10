@@ -157,6 +157,8 @@ async function clearApi()
         throw("error")
     }
 }
+
+
 //function that creates element
 function createElement(tagName ,children = [], classes = [], attributes = {}) {
     const el = document.createElement(tagName);
@@ -174,6 +176,8 @@ function createElement(tagName ,children = [], classes = [], attributes = {}) {
     }
     return el;
   }
+
+
 // create a new task and put it in his list 
 function createTask(event)
 {
@@ -284,6 +288,8 @@ function moveTaskEnd(event)
 {
     document.removeEventListener("keydown", moveTaskKeyPress, false);
 }
+
+
 //check if alt+number was pressed
 function moveTaskKeyPress(event)
 {
@@ -294,27 +300,24 @@ function moveTaskKeyPress(event)
     }
     if(event.keyCode===49&&event.altKey)
     {
-        document.getElementById("todo").prepend(moveTaskLi);
-        list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-        list["todo"].unshift(moveTaskLi.innerText);
-        localStorage.setItem("tasks",JSON.stringify(list));
+        moveTask(moveTaskLi,"todo");
     }
     if(event.keyCode===50&&event.altKey)
     {
-        document.getElementById("in-progress").prepend(moveTaskLi)
-        list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-        list["in-progress"].unshift(moveTaskLi.innerText);
-        localStorage.setItem("tasks",JSON.stringify(list));
+        moveTask(moveTaskLi,"in-progress");
     }
     if(event.keyCode===51&&event.altKey)
     {        
-        document.getElementById("done").prepend(moveTaskLi)
-        list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-        list["done"].unshift(moveTaskLi.innerText);
-        localStorage.setItem("tasks",JSON.stringify(list));
+        moveTask(moveTaskLi,"done"); 
     }
 }
-
+function moveTask(moveTaskLi,list)
+{
+    document.getElementById(list).prepend(moveTaskLi);
+    list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
+    list[list].unshift(moveTaskLi.innerText);
+    localStorage.setItem("tasks",JSON.stringify(list));
+}
 //function search input 
 let searchText;
 function enterSearch(event)
@@ -373,7 +376,7 @@ function allowDrop(ev) {
   }
 //change background image
   let bg;
-  function nextBg()
+function nextBg()
 {
     bg++;
     if(bg>3)
