@@ -1,12 +1,13 @@
 'use strict'
+// declartios of global varible we use at serval functions
 let taskObj, queryObj;
 const spaceAtEndRegex = /[\s]*$/g;
 let mockList = document.createElement("li");
 let rememberElement;
-// declartios of global varible we use at serval functions
 
-
+// add Event Listener to Tasks
 const addEventListenerToButtons = () => {
+
     const deleteButtons = document.querySelectorAll('.deleteButton');
     deleteButtons.forEach(element => {
         element.addEventListener("click", function () {
@@ -27,6 +28,7 @@ const addEventListenerToButtons = () => {
             element.parentElement.setAttribute("draggable", "true");
         })
     });
+
 }
 
 
@@ -35,6 +37,7 @@ const addEventListenerToTasks = () => {
 
     const taskList = document.querySelectorAll('.task');
     taskList.forEach(element => {
+
         element.addEventListener("dragstart", function () { //mockList is for task drag be showen for user
             rememberElement = element.innerHTML;
             mockList.classList.add("mocklist");
@@ -57,14 +60,14 @@ const addEventListenerToTasks = () => {
             mockList.innerHTML = rememberElement;
             mockList.className = "task";
             let elementB4orAfter = mockList.previousElementSibling || mockList.nextElementSibling;
-            if (elementB4orAfter.innerText == "") {
+            if (elementB4orAfter.innerText == "") {// handle user drag on img or span
                 elementB4orAfter = elementB4orAfter.parentElement
             }
             deleteTask(element.innerText);
             dropTask(elementB4orAfter.innerText);
         });
 
-        element.addEventListener("click", function () {
+        element.addEventListener("click", function selectedTask() {
             try { document.querySelector("#selectedTask").id = ""; }
             catch { element.id = "selectedTask"; }
             element.id = "selectedTask";
@@ -86,6 +89,7 @@ const addEventListenerToTasks = () => {
                         // Removing Event so the task place wont change again when typing 1/2/3
                         window.removeEventListener("keydown", preesnumber);
                         window.removeEventListener("keydown", presskey);
+                        element.removeEventListener("click", selectedTask);
                     });
                 }
             })
@@ -106,21 +110,40 @@ const addEventListenerToTasks = () => {
 
 const addTask = (taskType, idOfInput) => {
     const taskValue = document.getElementById(idOfInput).value.replace(spaceAtEndRegex, '');
-    if (!document.getElementById(idOfInput).value.replace(/\s/g, '')) { return alert('enter Valid Task') } //return the function if user dont enter anything
+    //return the function if user dont enter anything or the task already there
+    if (!document.getElementById(idOfInput).value.replace(/\s/g, '')||!checkTaskName(taskValue)) { return alert('enter Valid Task') } 
     document.getElementById(idOfInput).value = ""; //reset the input
     taskObj[taskType].unshift(taskValue);
     postTasks();
 }
+
+const checkTaskName = (taskName) => {
+    for (let taskarray in taskObj) {
+        for (let i = 0; i < taskObj[taskarray].length; i++) {
+            if (taskObj[taskarray][i] == taskName) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
 // postTasks function takes the taskObj adn "print" it to the DOM
 const postTasks = () => {
+    let query = document.getElementById("search").value;
+    let selectedTaskObj = taskObj
+    if (searchByQuery(query)) { // if something isnt there this will be false
+        selectedTaskObj = searchByQuery(query);
+    }
     let generalString = ``, ongoingString = ``, finishedString = ``;
-    for (let key of taskObj.todo) {
+    for (let key of selectedTaskObj.todo) {
         generalString += `<li class="task"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="sortButton" src="./Images/sort.png"><img class="deleteButton" src="./Images/XRED.ico"></li>`
     }
-    for (let key of taskObj["in-progress"]) {
+    for (let key of selectedTaskObj["in-progress"]) {
         ongoingString += `<li class="task"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="sortButton" src="./Images/sort.png"><img class="deleteButton" src="./Images/XRED.ico"></button></li>`
     }
-    for (let key of taskObj.done) {
+    for (let key of selectedTaskObj.done) {
         finishedString += `<li class="task"><span class="TaskTitle">${key}</span><img class="sortButton" src="./Images/sort.png"><img class="deleteButton" src="./Images/XRED.ico"></button></li>`
     }
     document.getElementById("general-task-table").innerHTML = generalString;
@@ -130,32 +153,9 @@ const postTasks = () => {
     addEventListenerToTasks();
     localStorage.setItem("tasks", JSON.stringify(taskObj));
 }
-// like postTasks but to searched text, and it dont save to local file
-const postTasksforquery = () => {
-    let query = document.getElementById("search").value;
-    searchByQuery(query);
-    if (!searchByQuery(query)) { //if query is empty it just do postTasks function.
-        return postTasks();
-    }
-    let generalString = ``, ongoingString = ``, finishedString = ``;
-    for (let key of queryObj.todo) {
-        generalString += `<li class="task"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
-    }
-    for (let key of queryObj["in-progress"]) {
-        ongoingString += `<li class="task"><img class="checkButton" src="./Images/check.png"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
-    }
-    for (let key of queryObj.done) {
-        finishedString += `<li class="task"><span class="TaskTitle">${key}</span><img class="deleteButton" src="./Images/XRED.ico"></li>`
-    }
-    document.getElementById("general-task-table").innerHTML = generalString;
-    document.getElementById("ongoing-task-table").innerHTML = ongoingString;
-    document.getElementById("finished-task-table").innerHTML = finishedString;
-    addEventListenerToTasks();
-    addEventListenerToButtons();
-}
 
 const searchByQuery = (query) => {
-    if (!query) { return undefined }
+    if (!query) { return false }
     const queryRegex = new RegExp(`${query}`, 'i');
     queryObj = {
         todo: [],
@@ -189,8 +189,14 @@ const dropTask = (innerTaskText) => {
         for (let i = 0; i < taskObj[taskarray].length; i++) {
             if (taskObj[taskarray][i] == innerTaskText) {
                 if (i == 0) {
-                    taskObj[taskarray].splice(0, 0, mockList.innerText);
-                    break;
+                    if (mockList.previousElementSibling) {
+                        taskObj[taskarray].splice(1, 0, mockList.innerText);
+                        break;
+                    }
+                    else {
+                        taskObj[taskarray].splice(0, 0, mockList.innerText);
+                        break;
+                    }
                 }
                 else {
                     taskObj[taskarray].splice(i + 1, 0, mockList.innerText);
@@ -308,7 +314,7 @@ const keyEnterSendTaskdone = () => {
 }
 
 // Event listeners so all the pernament Elements
-document.getElementById("search").addEventListener("keyup", postTasksforquery);
+document.getElementById("search").addEventListener("keyup", postTasks);
 document.getElementById("load-btn").addEventListener("click", getDataFromAPI);
 document.getElementById("save-btn").addEventListener("click", postDataToAPI);
 document.getElementById("APIDoanloadIMG").addEventListener("click", getDataFromAPI);
@@ -331,6 +337,8 @@ document.getElementById("ThemeChanger").addEventListener("click", function () {
         localStorage.setItem("data-theme", "light");
     }
 });
+
+// Local Storange Handler
 
 //if user has localStorage File it postTasks to it, if he hasn't i create for him 
 if (localStorage.getItem("tasks")) {
