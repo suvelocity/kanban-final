@@ -54,6 +54,7 @@ function publishExistingLi(){ //function that updates the dom with all the tasks
 function addLiGeneric(event){   //A generic function to generate and add new tasks to the localStorage and then updates the dom (li's).
     const section = event.target.closest("section");
     const inputToDo = section.querySelector(".add-input").value;
+    const ulToAdd =section.querySelector(".anyUL");
     if(inputToDo.length<1){
         alert("Cant assign an empty task ☹");
     }else{
@@ -66,7 +67,7 @@ function addLiGeneric(event){   //A generic function to generate and add new tas
         
         newTaskData(event.target,inputToDo);
         localStorageData();
-        publishExistingLi();
+        ulToAdd.prepend(li);//enters the li we entered to the top of the ul coloumn.
     }
     section.querySelector(".add-input").value="";
 }
@@ -81,21 +82,32 @@ function newTaskData(target ,task){ //helping function to addLiGeneric that deci
         tasks.done.unshift(task)
     }
 }
-
 function generateListItems(text , eventListeners ={}){ //helping function i use alot to generate new list items
     const listItem = document.createElement("li");
+    listItem.setAttribute("class","task");
+    listItem.setAttribute("draggable", "true")
     listItem.append(text);
-    Object.assign(listItem, {
-        class: "task",
-        draggable: "true",
-        ondragstart : dragStart
-      })
+    listItem.ondragstart=dragStart;
     const events =Object.keys(eventListeners);
     for(let i = 0 ; i<events.length ; i++){
         listItem.addEventListener(events[i],eventListeners[events[i]])
     }
     return listItem;
 }
+// function generateListItems(text , eventListeners ={}){ //helping function i use alot to generate new list items
+//     const listItem = document.createElement("li");
+//     listItem.append(text);
+//     Object.assign(listItem, {
+//         class: "task",
+//         draggable: "true",
+//         ondragstart : dragStart
+//       })
+//     const events =Object.keys(eventListeners);
+//     for(let i = 0 ; i<events.length ; i++){
+//         listItem.addEventListener(events[i],eventListeners[events[i]])
+//     }
+//     return listItem;
+// }
         
 
 
