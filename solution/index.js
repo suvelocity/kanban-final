@@ -40,6 +40,11 @@ function buildTask()
     };
     localStorage.setItem("tasks",JSON.stringify(tasks));
 }
+
+
+
+
+//API
 async function getApi(){
     showSpinner();
     let alltask=document.getElementsByTagName("li");
@@ -161,7 +166,11 @@ async function clearApi()
         throw("error")
     }
 }
+//API
 
+
+
+//ADD TASK
 
 //function that creates element
 function createElement(tagName ,children = [], classes = [], attributes = {}) {
@@ -180,8 +189,6 @@ function createElement(tagName ,children = [], classes = [], attributes = {}) {
     }
     return el;
   }
-
-
 // create a new task and put it in his list 
 function createTask(event)
 {
@@ -191,7 +198,7 @@ function createTask(event)
     {
         case "1":
             task.innerText=document.getElementById("add-to-do-task").value;
-            insertToSection("done",task);
+            insertToSection("todo",task);
             break;
         case "2":
             task.innerText=document.getElementById("add-in-progress-task").value;
@@ -237,6 +244,22 @@ function checkEmpty(text)
     }
     return false;
 }
+
+//unshift task to storage;
+function unshiftTask(text,listId)
+{
+    list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
+    list[listId].unshift(text);
+    localStorage.setItem("tasks",JSON.stringify(list));
+}
+
+
+
+//ADD TASK
+
+//MISSIONS : CHANGE TASK
+
+
 //function that changing task
 function changeTask(event)
 {
@@ -247,13 +270,14 @@ function changeTask(event)
         unshiftTask(this.innerText,this.parentElement.id)
     })
 }
-//unshift task to storage;
-function unshiftTask(text,listId)
-{
-    list=JSON.parse(localStorage.getItem("tasks"));//push the task to local storage
-    list[listId].unshift(text);
-    localStorage.setItem("tasks",JSON.stringify(list));
-}
+
+
+//MISSIONS : CHANGE TASK
+
+
+//MISSSIONS:MOVE TASK
+
+
 //function that delete task given by text
 function deleteTaskByText(text,listName)
 {
@@ -269,9 +293,6 @@ function deleteTaskByText(text,listName)
     }
     localStorage.setItem("tasks",JSON.stringify(tasksJson));
 }
-
-
-
 //add and remove key press event
 let moveTaskLi;
 function moveTask(event)
@@ -283,8 +304,6 @@ function moveTaskEnd(event)
 {
     document.removeEventListener("keydown", moveTaskKeyPress, false);
 }
-
-
 //check if alt+number was pressed
 function moveTaskKeyPress(event)
 {
@@ -315,7 +334,20 @@ function moveTaskFinal(moveTaskLi,listTemp)
     localStorage.setItem("tasks",JSON.stringify(list));
 }
 
+//MISSSIONS:MOVE TASK
 
+
+
+//MISSIONS:SEARCH
+
+
+function checkEmptySearch(text)
+{
+    if (!text.replace(/\s/g, '').length) {
+        return true;
+    }
+    return false;
+}
 
 //function search input 
 let searchText;
@@ -342,11 +374,16 @@ function searchTask(event)
         {
             allLi[i].style.display="flex";
         } 
-        if(checkEmpty(searchText)){
+        if(checkEmptySearch(searchText)){
             allLi[i].style.display="flex";
         }
     }
 }
+
+//MISSIONS: SEARCH
+
+//DRAG AND DROP
+
 
 //drag and drop function
 let whichlist;
@@ -373,6 +410,13 @@ function allowDrop(ev) {
         localStorage.setItem("tasks",JSON.stringify(list)); 
     }
   }
+
+
+//DRAG AND DROP
+//BG
+
+
+
 //change background image
   let bg;
 function nextBg()
@@ -408,6 +452,12 @@ function currentBg()
             break;
     }
 }
+
+
+//BG
+//SPINNER
+
+
 //show and hide spinner
 function showSpinner() {
     let loader =createElement('div');
@@ -423,3 +473,4 @@ function showSpinner() {
     document.getElementById('main').style.display="flex";
   }
   
+//SPINNER
