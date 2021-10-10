@@ -21,6 +21,7 @@ document.body.addEventListener('dblclick',gainFocus);
 document.body.addEventListener('focusout', saveValueBlur);
 document.body.addEventListener('contextmenu', removeLi);
 document.addEventListener('click', sortAz);
+document.body.addEventListener('click', deleteAll);
 
 //local storage save function
 function localStorageSave(){
@@ -367,11 +368,24 @@ showRecycleBin.addEventListener('click', (e)=>{
 })
 
 //sort LI alphabetically
+let azCounter = 1;
 function sortAz(e){
     let target = e.target;
  if(target.className != 'sort-az'){
      return;
  }
+ if(azCounter % 2 === 0){
+    Array.from(target.parentElement.lastElementChild.firstElementChild.children).sort((a,b) => {
+        if (a.textContent > b.textContent) {
+            target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
+            return -1;
+          }
+          if (b.textContent < a.textContent) {
+              target.parentElement.insertBefor(b, a);
+            return 1;
+          }
+          })
+ }else{
   Array.from(target.parentElement.lastElementChild.firstElementChild.children).sort((a,b) => {
     if (a.textContent < b.textContent) {
         target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
@@ -382,7 +396,21 @@ function sortAz(e){
         return 1;
       }
       })
+ }
+ azCounter ++;
 
 }
 
-
+function deleteAll(e){
+    const target = e.target;
+    if(target.className === 'delete-button'){
+        localStorage.setItem('tasks', JSON.stringify({
+            "todo": [],
+            "in-progress": [],
+            "done": [],
+            'deleted':[]
+            })
+        );
+        location.reload();
+    }
+}
