@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./styles.css" />
     <title>Tasks manager</title>
     <link rel="shortcut icon" type="image/jpg" href="favicon.png" />
+    <body>
     <h1 id="page-title">Task Manager</h1>
 
     <div id="search-container">
@@ -47,16 +48,19 @@
         </div>
     </div>
     <div id=btn-container>
-        <div id="save-api">
+        <div id="save-api" onclick = "SaveApi()">
             <span id="save-btn">Save</span>
         </div>
-        <div id="load-api">
-            <span id="load-btn">Load</span>
+        <div action="about:blank" id="load-api" onclick = "LoadApi()">
+            <span id="load-btn" >Load</span>
+        </div>
+        <div id="clear-api" onclick = "clearApi()">
+            <span id="clear-btn" >clear</span>
         </div>
     </div>
+</body>
 </head>
 
-<body>
-</body>
+
 
 </html>

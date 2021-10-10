@@ -126,7 +126,7 @@ const add = (idToAdd) => {
 
     // creating li and input elments
     const Li = document.createElement("li");
-    const remover = document.createElement('span');
+    // const remover = document.createElement('span');
 
     idToAdd === 'to-do' ?
         Tasks['todo'].unshift(currValue) :
@@ -141,9 +141,9 @@ const add = (idToAdd) => {
     Li.setAttribute('draggable', 'true');
     Li.setAttribute('ondragstart', 'drag(event)');
 
-    remover.setAttribute('class', 'removeLi');
-    remover.setAttribute('onclick', 'removeLi()');
-    remover.setAttribute('style', 'position:absolue !important;right:450px !important;');
+    // remover.setAttribute('class', 'removeLi');
+    // remover.setAttribute('onclick', 'removeLi()');
+    // remover.setAttribute('style', 'position:absolue !important;right:450px !important;');
 
     // Li.setAttribute('ondragover', 'allowDrop(event)');
 
@@ -153,7 +153,7 @@ const add = (idToAdd) => {
     Li.textContent = currValue;
 
     ul.insertBefore(Li, ul.firstChild);
-    ul.insertBefore(remover, ul.firstChild);
+    // ul.insertBefore(remover, ul.firstChild);
 
 
     Li.addEventListener('dblclick', () => dblClickFunction(currTaskId));
@@ -216,7 +216,66 @@ const drop = (ev) => {
 
 }
 // Api
+ const LoadApi = async () => {
+     try {
+        let response =  await fetch('https://json-bins.herokuapp.com/bin/614add1d4021ac0e6c080c20', {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            },
+        })
+       const mydata =  await response.json();
+        localStorage.tasks = JSON.stringify(mydata.tasks.Tasks);
+        window.location.reload(true);
+     }catch (error) {
+       alert(error);
+     } 
+    }
 
+    const SaveApi =  async () => {
+        try {
+       let response = await fetch('https://json-bins.herokuapp.com/bin/614add1d4021ac0e6c080c20', {
+            method: 'PUT',
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json" 
+            },
+            body:JSON.stringify({'tasks':{Tasks}})
+        }).then(data => {
+            data.tasks = JSON.stringify({Tasks});
+            console.log(data.tasks);
+        })
+        }catch (error) {
+        alert(error)
+}
+    }
 
+    const clearApi =  async () => {
+        try {
+            Tasks = {
+                'todo': [],
+                'in-progress': [],
+                'done': []
+            }
+    await fetch('https://json-bins.herokuapp.com/bin/614add1d4021ac0e6c080c20', {
+            method: 'PUT',
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json" 
+            },
+            body:JSON.stringify({'tasks':{Tasks}})
+        }).then(data => {
+            data.tasks = JSON.stringify({Tasks});
+            localStorage.clear();
+            
+        })
+        }catch (error) {
+        alert(error)
+}
+window.location.reload(true);
+
+// window.location.reload(true);
+
+    }
 // Localstorage function 
 load();
