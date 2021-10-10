@@ -84,10 +84,16 @@ function newTaskData(target ,task){ //helping function to addLiGeneric that deci
 }
 function generateListItems(text , eventListeners ={}){ //helping function i use alot to generate new list items
     const listItem = document.createElement("li");
-    listItem.setAttribute("class","task");
-    listItem.setAttribute("draggable", "true")
+    // listItem.setAttribute("class","task");
+    // listItem.setAttribute("draggable", "true")
+    // listItem.ondragstart=dragStart;
+    Object.assign(listItem, {
+         class: "task",
+        draggable: "true",
+        ondragstart : dragStart
+    })
     listItem.append(text);
-    listItem.ondragstart=dragStart;
+    
     const events =Object.keys(eventListeners);
     for(let i = 0 ; i<events.length ; i++){
         listItem.addEventListener(events[i],eventListeners[events[i]])
