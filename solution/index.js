@@ -8,8 +8,7 @@ if(!localStorage.tasks || localStorage.tasks.length == 0){
           })
         );
 }  
-
-    let localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
+let localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
 
 //adding event listeners to the body
 document.body.addEventListener('mouseover' ,addHoverReplace);
@@ -20,11 +19,14 @@ document.addEventListener('click', sortAz);
 document.body.addEventListener('click', deleteAll);
 
 //local storage save function
+function innerLocalStorageSave(listName,ul){
+    localStorageObjectForUpdate[listName][0] = ul.outerHTML;
+}
 function localStorageSave(){
-    localStorageObjectForUpdate.todo[0] = toDoTasksUl.outerHTML;
-    localStorageObjectForUpdate['in-progress'][0] = inProgressTasksUl.outerHTML;
-    localStorageObjectForUpdate.done[0] = doneTasksUl.outerHTML;
-    localStorageObjectForUpdate.deleted[0] = deletedTasksUl.outerHTML;
+    innerLocalStorageSave('todo', toDoTasksUl);
+    innerLocalStorageSave('in-progress', inProgressTasksUl);
+    innerLocalStorageSave('done', doneTasksUl);
+    innerLocalStorageSave('deleted', deletedTasksUl);
     localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
 }
 
@@ -43,11 +45,8 @@ let inProgressContainer = document.getElementById('in-progress-container');
 let doneContainer = document.getElementById('done-container');
 const taskEnumeratorArray = Array.from(document.getElementsByClassName('task-enumerator'));
  
- //localstorage loading function
- if(localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null || localStorageObjectForUpdate.deleted[0] != null){
-   
-
-    
+ //localstorage loading after refresh
+ if(localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null || localStorageObjectForUpdate.deleted[0] != null){  
     function appendToContainer(container, ul){
         if(localStorageObjectForUpdate[ul][0] == null){
             container.innerHTML = '';
@@ -59,25 +58,23 @@ const taskEnumeratorArray = Array.from(document.getElementsByClassName('task-enu
     appendToContainer(inProgressContainer,'in-progress');
     appendToContainer(doneContainer, 'done');
     appendToContainer(recycleBin, 'deleted');
-
-    
-    var toDoTasksUl = toDoContainer.firstChild;
-    var inProgressTasksUl = inProgressContainer.firstChild;
-    var doneTasksUl = doneContainer.firstChild;
-    var deletedTasksUl = recycleBin.firstChild;
     listCounter();
-
  }else{
-    var toDoTasksUl = createElement('ul', children = [], classes = ['to-do-tasks'], attributes = {});
-    var inProgressTasksUl = createElement('ul', children = [], classes = ['in-progress-tasks'], attributes = {});
-    var doneTasksUl = createElement('ul', children = [], classes = ['done-tasks'], attributes = {});
-    var deletedTasksUl = createElement('ul', children = [], classes = ['recycle-Ul'], attributes = {});
+    let toDoTasksUl = createElement('ul', children = [], classes = ['to-do-tasks'], attributes = {});
+    let inProgressTasksUl = createElement('ul', children = [], classes = ['in-progress-tasks'], attributes = {});
+    let doneTasksUl = createElement('ul', children = [], classes = ['done-tasks'], attributes = {});
+    let deletedTasksUl = createElement('ul', children = [], classes = ['recycle-Ul'], attributes = {});
     toDoContainer.appendChild(toDoTasksUl);
     inProgressContainer.appendChild(inProgressTasksUl);
     doneContainer.appendChild(doneTasksUl);
     recycleBin.appendChild(deletedTasksUl);
     listCounter();
  }
+
+ let toDoTasksUl = toDoContainer.firstChild;
+ let inProgressTasksUl = inProgressContainer.firstChild;
+ let doneTasksUl = doneContainer.firstChild;
+ let deletedTasksUl = recycleBin.firstChild;
 
 //total list item counter function
 function listCounter(){
@@ -87,37 +84,33 @@ function listCounter(){
     }
 }
 
-
-
-
 //adding a list item functionality
+
+//inner add task function
+function innerAddTaskToul(target){
+    let newTask = createElement('li',children = [`${target.previousElementSibling.value}`], classes = ['task'], attributes = {'draggable': 'true'});
+    target.nextElementSibling.firstChild.insertBefore(newTask, target.nextElementSibling.firstChild.firstChild);
+      //local storage insertion
+      localStorageSave();
+     //individual eventListeners for drag and Drop
+      newTask.addEventListener('dragstart', dragItem);
+      newTask.addEventListener('dragend', endDrag);
+    target.previousElementSibling.value = '';
+    listCounter(); 
+}
+//add task function
 function addTask(e){
     let target = e.target;
-    let currentSection = target.parentElement;
     if(target.className === 'add-task'){
         let inputText = target.previousElementSibling.value;
        if(inputText === ''){
             alert("You haven't entered any text");
        }else{
-            let newTask = createElement('li',children = [`${target.previousElementSibling.value}`], classes = ['task'], attributes = {'draggable': 'true'});
-            console.log(target.nextElementSibling.firstChild);
-            target.nextElementSibling.firstChild.insertBefore(newTask, target.nextElementSibling.firstChild.firstChild);
-
-              //local storage insertion
-              localStorageSave();
-              // end of local storage insertion
-
-            //individual eventListeners for drag and Drop
-              newTask.addEventListener('dragstart', dragItem);
-              newTask.addEventListener('dragend', endDrag);
-
-            target.previousElementSibling.value = '';
-            listCounter(); 
+        innerAddTaskToul(target);
        }
     }
 }
 taskDiv.addEventListener('click', addTask);
-
 // double click functionality
 
 //gaining focus function
@@ -143,26 +136,23 @@ taskDiv.addEventListener('click', addTask);
  //
 
  // hover + alt + 1/2/3 functionality
+ function checkListAtAlt(eventKey,target,keyNum, ulToInsert){
+    if(eventKey == keyNum){
+        ulToInsert.insertBefore(target, ulToInsert.firstChild);
+    }
+ }
  function hoverReplace(e){
-     let target = e.target;
-  
-     
+     let target = e.target; 
       function innerKeyReplace(e){
             if(e.altKey){
-                if(e.key == 1){
-                    toDoTasksUl.insertBefore(target, toDoTasksUl.firstChild);
-                }else if(e.key == 2){
-                    inProgressTasksUl.insertBefore(target, inProgressTasksUl.firstChild);
-                }else if(e.key == 3){
-                    doneTasksUl.insertBefore(target,doneTasksUl.firstChild);
-                }
+                checkListAtAlt(e.key,target,1, toDoTasksUl);
+                checkListAtAlt(e.key,target,2, inProgressTasksUl);
+                checkListAtAlt(e.key,target,3,doneTasksUl);
             }
                  //local storage insertion
                  localStorageSave();
-                 listCounter();
-                 // end of local storage insertion
+                 listCounter();       
        }
-
        target.addEventListener('mouseleave', () => {
             window.removeEventListener('keydown',innerKeyReplace);
         }); 
@@ -196,24 +186,19 @@ function createElement(tagName, children = [], classes = [], attributes = {}) {
     return newEl
   }
 
-
 //search bar functions
+function hideTask(tasksList){
+    for(let li of tasksList){
+        li.hidden = false;
+        if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
+          li.hidden = true;
+        }
+    }
+}
 function searchTask(e){
   let value = e.target.value;
-  let toDoTaskArray = Array.from(document.querySelectorAll('.to-do-tasks > .task'));
-  let inProgressTaskArray = Array.from(document.querySelectorAll('.in-progress-tasks > .task'));
-  let doneTaskArray = Array.from(document.querySelectorAll('.done-tasks > .task'));
-  function hideTask(tasksList){
-      for(let li of tasksList){
-          li.hidden = false;
-          if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
-            li.hidden = true;
-          }
-      }
-  }
-  hideTask(toDoTaskArray);
-  hideTask(inProgressTaskArray);
-  hideTask(doneTaskArray);
+  let taskArray = Array.from(document.getElementsByTagName('li'));
+  hideTask(taskArray);
 }
 //search bar animations
 searchBar.addEventListener('focus', () => {
@@ -274,7 +259,6 @@ async function loadApi(){
     loadTasksFromApi(inProgressTasksUlAPI,  inProgressContainer);
     loadTasksFromApi(doneTasksUlAPI, doneContainer);
 
-
     toDoTasksUl = toDoContainer.firstChild;
     inProgressTasksUl = inProgressContainer.firstChild;
     doneTasksUl = doneContainer.firstChild;
@@ -294,8 +278,6 @@ saveButton.addEventListener('click', saveApi);
 loadButton.addEventListener('click', loadApi);
 //
 
-
-
 //dragItem function
 function dragItem(e){
     e.target.classList.add('dragging');
@@ -306,20 +288,16 @@ function endDrag(e){
    localStorageSave();
    listCounter();
 }
-
-
 //adding event listeners for dragNdrop
 for(let li of Array.from(document.querySelectorAll('.task'))){
   li.addEventListener('dragstart', dragItem);
   li.addEventListener('dragend', endDrag);
 };
+//adding the drop event to the sections
 let sections = Array.from(document.querySelectorAll('section'));
-
 sections.forEach((section) => {
-  
     section.addEventListener('dragover', (e) => {
         let afterElement = elementAfterDragging(section, e.clientY);
-        
         if(afterElement == null){
             section.lastElementChild.firstElementChild.appendChild(document.querySelector('.dragging'));
         }else{
@@ -327,8 +305,7 @@ sections.forEach((section) => {
         }
  })
 })
-
-
+//controls what li to switch
 function elementAfterDragging(container, y){  
     let draggableElements = [...container.querySelectorAll('[draggable = true]:not(.dragging)')];
     return draggableElements.reduce((closest, child)=>{
@@ -341,7 +318,6 @@ function elementAfterDragging(container, y){
         }
     }, {offset: Number.NEGATIVE_INFINITY}).element
 }
-
 //game trigger event
 let asCounter = 0;
 document.addEventListener('keydown', (e) => {
@@ -382,38 +358,49 @@ showRecycleBin.addEventListener('click', (e)=>{
 
 //sort LI alphabetically
 let azCounter = 1;
+
+function sortAzUp(target){
+    Array.from(target.parentElement.lastElementChild.firstElementChild.children).sort((a,b) => {
+        if (a.textContent > b.textContent) {
+            target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
+            return;
+          }
+          if (b.textContent < a.textContent) {
+              target.parentElement.insertBefor(b, a);
+            return;
+          }
+          })
+}
+function sortAzDown(target){
+    Array.from(target.parentElement.lastElementChild.firstElementChild.children).sort((a,b) => {
+        if (a.textContent < b.textContent) {
+            target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
+            return;
+          }
+          if (b.textContent > a.textContent) {
+              target.parentElement.insertBefor(b, a);
+            return;
+          }
+          })
+}
+
+function innerSortAz(counter, target){
+    if(counter % 2 === 0){
+        sortAzUp(target);
+     }else{
+        sortAzDown(target);
+     }
+}
+
 function sortAz(e){
     let target = e.target;
  if(target.className != 'sort-az'){
      return;
  }
- if(azCounter % 2 === 0){
-    Array.from(target.parentElement.lastElementChild.firstElementChild.children).sort((a,b) => {
-        if (a.textContent > b.textContent) {
-            target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
-            return -1;
-          }
-          if (b.textContent < a.textContent) {
-              target.parentElement.insertBefor(b, a);
-            return 1;
-          }
-          })
- }else{
-  Array.from(target.parentElement.lastElementChild.firstElementChild.children).sort((a,b) => {
-    if (a.textContent < b.textContent) {
-        target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
-        return -1;
-      }
-      if (b.textContent > a.textContent) {
-          target.parentElement.insertBefor(b, a);
-        return 1;
-      }
-      })
- }
+ innerSortAz(azCounter, target);
  azCounter ++;
-
 }
-
+//local storage clear button lisener
 function deleteAll(e){
     const target = e.target;
     if(target.className === 'delete-button'){
