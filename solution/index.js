@@ -337,15 +337,37 @@ saveButton.onclick = async function(){
     const loader1 = document.createElement("div");
     loader1.classList.add("loader"); 
     rightDiv.append(loader1);
+    request("PUT",JSON.stringify({tasks}),loader1);
+    //  const response = await fetch("https://json-bins.herokuapp.com/bin/614aeca14021ac0e6c080c6d" ,{
+    //     method:"PUT",
+    //     mode:"cors",
+    //         headers:{
+    //             "Content-Type": "application/json"
+    //         },  
+    //         body:JSON.stringify({tasks}),  
+    //  },)
+    async function endOfRequest(response,loader1){
+    //     if(response.ok){
+    //         const data =  await response.json()
+    //         const lastTasks = JSON.stringify(data.tasks)
+    //         localStorage.setItem("tasks" , lastTasks)
+    //     }else{
+    //         alert("Error : something went wrong ☹");
+    //     }
+    //     loader1.remove();
+    // }
     
-     const response = await fetch("https://json-bins.herokuapp.com/bin/614aeca14021ac0e6c080c6d" ,{
-        method:"PUT",
+ }
+ async function request (method,body,loader1){
+    const response = await fetch("https://json-bins.herokuapp.com/bin/614aeca14021ac0e6c080c6d" ,{
+        method:method,
         mode:"cors",
             headers:{
                 "Content-Type": "application/json"
             },  
-            body:JSON.stringify({tasks}),  
+            body:body,  
      },)
+    //  endOfRequest(response,loader1);
     if(response.ok){
         const data =  await response.json()
         const lastTasks = JSON.stringify(data.tasks)
@@ -354,6 +376,7 @@ saveButton.onclick = async function(){
         alert("Error : something went wrong ☹");
     }
     loader1.remove();
+}
  }
 
 
