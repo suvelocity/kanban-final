@@ -1,10 +1,7 @@
-
-
-//function that check the user's name
-async function checkName()
-{
-    let name=localStorage.getItem("tasks");
-    bg=1;
+// function that check the user's 'name'
+async function checkName(){
+  let name=localStorage.getItem("tasks");
+  bg=1;
     if(name===null)
     {
         buildTask();
@@ -40,7 +37,6 @@ function buildTask()
     };
     localStorage.setItem("tasks",JSON.stringify(tasks));
 }
-
 
 
 
