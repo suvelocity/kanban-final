@@ -7,7 +7,7 @@
     "dev": "webpack --mode development",
     "build": "webpack build",
     "test": "jest",
-    "start": "webpack serve --open 'Firefox'",
+    "start": "webpack serve --mode development --open 'Firefox'",
     "final": "npm i && node ./scripts/getBin.js"
   },
   "keywords": [],

@@ -1,5 +1,5 @@
 import "./styles.css";
-
+checkName();
 async function checkName() {
   let name = localStorage.getItem('tasks')
   bg = 1
@@ -181,8 +181,13 @@ function createElement(tagName, children = [], classes = [], attributes = {}) {
   }
   return el
 }
-// create a new task and put it in his list
+// create a new task and put it in his 
+createTask()
 function createTask(event) {
+  if(event==null)
+  {
+    throw("check")
+  }
   let task = createLiElement()
   let section = event.target.parentElement.id,
     ul,
