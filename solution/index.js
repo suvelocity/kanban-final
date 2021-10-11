@@ -1,6 +1,4 @@
-/* eslint-disable no-alert */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-undef */
+import style from './styles.css';
 /* local storage  */
 // initilizes the local storage object
 if (!localStorage.tasks || localStorage.tasks.length === 0) {
@@ -12,7 +10,6 @@ if (!localStorage.tasks || localStorage.tasks.length === 0) {
   }));
 }
 const localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
-
 // local storage clear button lisener
 function deleteAll (e) {
   const { target } = e;
@@ -23,7 +20,7 @@ function deleteAll (e) {
       done: [],
       deleted: []
     }));
-    location.reload();
+    window.location.reload();
   }
 }
 
@@ -71,10 +68,10 @@ if (localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['
   appendToContainer(recycleBin, 'deleted');
   listCounter();
 } else {
-  const toDoTasksUl = createElement('ul', children = [], classes = ['to-do-tasks'], attributes = {});
-  const inProgressTasksUl = createElement('ul', children = [], classes = ['in-progress-tasks'], attributes = {});
-  const doneTasksUl = createElement('ul', children = [], classes = ['done-tasks'], attributes = {});
-  const deletedTasksUl = createElement('ul', children = [], classes = ['recycle-Ul'], attributes = {});
+  const toDoTasksUl = createElement('ul', [], ['to-do-tasks'], {});
+  const inProgressTasksUl = createElement('ul', [], ['in-progress-tasks'], {});
+  const doneTasksUl = createElement('ul', [], ['done-tasks'], {});
+  const deletedTasksUl = createElement('ul', [], ['recycle-Ul'], {});
   toDoContainer.appendChild(toDoTasksUl);
   inProgressContainer.appendChild(inProgressTasksUl);
   doneContainer.appendChild(doneTasksUl);
@@ -207,22 +204,12 @@ function listCounter () {
   });
 }
 
-/*
-function listCounter () {
-  for (const taskEnum of taskEnumeratorArray) {
-    const listofEnumerator = taskEnum.parentElement.lastElementChild.firstElementChild.children;
-    const totalTasks = Array.from(listofEnumerator).length;
-    taskEnum.textContent = `total: ${totalTasks}`;
-  }
-}
-*/
-
 // adding a list item functionality
 
 // inner add task function
 function innerAddTaskToul (targetPr) {
   const target = targetPr;
-  const newTask = createElement('li', children = [`${target.previousElementSibling.value}`], classes = ['task'], attributes = { draggable: 'true' });
+  const newTask = createElement('li', [`${target.previousElementSibling.value}`], ['task'], { draggable: 'true' });
   const inseter = target.nextElementSibling.firstChild.firstChild;
   target.nextElementSibling.firstChild.insertBefore(newTask, inseter);
   // local storage insertion
