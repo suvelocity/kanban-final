@@ -7,25 +7,25 @@ const KEY_3 = 51;
 const BACKSPCE_KEYCODE = 8;
 const API_HTTP = 'http://json-bins.herokuapp.com/bin/614af3924021ac0e6c080cb3';
 
-//= =========================
+//==========================
 // ===== Global Vars =======
-//= =========================
+//==========================
 
 let editTextValue = '';
-const searchInput = document.querySelector('#search');
-const pressed = new Set();
-const errorLabel = document.querySelector('#error-label');
-const contextMenu = document.querySelector('#context-menu');
+let searchInput = document.querySelector('#search');
+let pressed = new Set();
+let errorLabel = document.querySelector('#error-label');
+let contextMenu = document.querySelector('#context-menu');
 let SelectedTask;
 let SelectedTaskName;
 let draggedTask;
 let editFlag = false;
 
-const addToDoButton = document.querySelector('#submit-add-to-do');
-const addInProgressButton = document.querySelector('#submit-add-in-progress');
-const addDoneButton = document.querySelector('#submit-add-done');
-const saveButton = document.querySelector('#save-btn');
-const loadButton = document.querySelector('#load-btn');
+let addToDoButton = document.querySelector('#submit-add-to-do');
+let addInProgressButton = document.querySelector('#submit-add-in-progress');
+let addDoneButton = document.querySelector('#submit-add-done');
+let saveButton = document.querySelector('#save-btn');
+let loadButton = document.querySelector('#load-btn');
 
 // ============================
 // ====== Main run ============
@@ -39,7 +39,7 @@ searchInput.addEventListener('keyup', onKeyUpHandler);
 document.addEventListener('click', onScreenClick);
 document.addEventListener('dragover', onTaskDragOver);
 
-const myTasks = localStorage.getItem('tasks');
+let myTasks = localStorage.getItem('tasks');
 if (myTasks === null || myTasks === undefined) {
   ResetLocalStorage();
 }
@@ -59,7 +59,7 @@ function onScreenClick(event) {
 }
 
 function onAddClickHandler(event) {
-  const { target } = event;
+  const target = event.target;
   switch (target.id) {
     case 'submit-add-to-do':
       inputValue = getTextFromInputId('add-to-do-task');
@@ -90,7 +90,7 @@ async function onLoadClickHandler() {
 // ===> Search - search every key up <===
 function onKeyUpHandler(event) {
   if (event.target.id === 'search') {
-    const searchQuery = document.getElementById('search').value;
+    let searchQuery = document.getElementById('search').value;
     reloadTasksPage(searchQuery);
     displayError(false);
   }
@@ -98,19 +98,21 @@ function onKeyUpHandler(event) {
 
 function onTaskKeyDownHandler(event) {
   pressed.add(event.keyCode);
-  const arrayOfKeys = [KEY_1, KEY_2, KEY_3];
+  let arrayOfKeys = [KEY_1, KEY_2, KEY_3];
   // Check key down
   for (let key = 0; key < arrayOfKeys.length; key++) {
     if (event.altKey && pressed.has(arrayOfKeys[key])) {
       event.preventDefault();
-      const { target } = event;
+      let target = event.target;
       deleteTask(target.textContent);
       addTaskByKey(target, key, arrayOfKeys);
       reloadTasksPage(searchInput.textContent);
     }
   }
   if (pressed.has(BACKSPCE_KEYCODE) && editFlag === false) {
-    if (confirm(`Are you sure you want to delete ${SelectedTaskName} task?`)) {
+    if (
+      confirm('Are you sure you want to delete ' + SelectedTaskName + ' task?')
+    ) {
       deleteTask();
       reloadTasksPage(searchInput.value);
     }
@@ -119,8 +121,8 @@ function onTaskKeyDownHandler(event) {
 }
 
 function addTaskByKey(target, key, arrayOfKeys) {
-  const arrayOfSections = ['todo', 'in-progress', 'done'];
-  for (const numberKey of arrayOfKeys) {
+  let arrayOfSections = ['todo', 'in-progress', 'done'];
+  for (let numberKey of arrayOfKeys) {
     if (numberKey === arrayOfKeys[key]) {
       AddToSection(target.textContent, arrayOfSections[key]);
     }
@@ -132,7 +134,7 @@ function onTaskClickHandler(event) {
 }
 
 function onTaskDBClickHandler(event) {
-  const { target } = event;
+  let target = event.target;
 
   changeSelectedTask(event.target);
 
@@ -147,8 +149,8 @@ function onTaskDBClickHandler(event) {
 
 // ===> after edit - save changes <===
 function onTaskBlur(event) {
-  const { target } = event;
-  const textAfterEdit = target.textContent;
+  let target = event.target;
+  let textAfterEdit = target.textContent;
 
   displayError(false);
   editFlag = false;
@@ -163,7 +165,7 @@ function onTaskBlur(event) {
     const tasksObject = getLocalStorageTasks();
     const arrayOfSection = tasksObject[SelectedTask.dataset.section];
 
-    const taskBeforeEditIndex = arrayOfSection.indexOf(SelectedTaskName);
+    let taskBeforeEditIndex = arrayOfSection.indexOf(SelectedTaskName);
     arrayOfSection[taskBeforeEditIndex] = textAfterEdit;
     SelectedTaskName = textAfterEdit;
     localStorage.setItem('tasks', JSON.stringify(tasksObject));
@@ -181,8 +183,13 @@ function contextMenuTask(event) {
 }
 
 function OnContextMenuClick(event) {
-  if (event.target.offsetParent == contextMenu && event.target.dataset.type === 'Delete') {
-    if (confirm(`Are you sure you want to delete ${SelectedTaskName} task?`)) {
+  if (
+    event.target.offsetParent == contextMenu &&
+    event.target.dataset.type === 'Delete'
+  ) {
+    if (
+      confirm('Are you sure you want to delete ' + SelectedTaskName + ' task?')
+    ) {
       deleteTask();
       reloadTasksPage(searchInput.value);
     }
@@ -200,13 +207,13 @@ function dragLeave(event) {
 }
 
 function dragDrop(event) {
-  const { target } = event;
+  let target = event.target;
   target.classList.remove('droppable-hovered');
   const sectionArray = getLocalStorageTasks()[SelectedTask.dataset.section];
-  const index = sectionArray.indexOf(SelectedTaskName);
+  let index = sectionArray.indexOf(SelectedTaskName);
   deleteTask();
-  // Add to the new one in a specific index
-  const indexDrop = parseInt(target.dataset.drop_div);
+  //Add to the new one in a specific index
+  let indexDrop = parseInt(target.dataset.drop_div);
   placeTaskAfterDrag(indexDrop, target, index);
   reloadTasksPage(searchInput.textContent);
   displayError(false);
@@ -218,14 +225,22 @@ function placeTaskAfterDrag(indexDrop, target, index) {
     indexDrop !== 0 &&
     index < indexDrop
   ) {
-    AddToSection(SelectedTask.textContent, target.dataset.section, indexDrop - 1);
+    AddToSection(
+      SelectedTask.textContent,
+      target.dataset.section,
+      indexDrop - 1
+    );
   } else {
-    AddToSection(SelectedTask.textContent, target.dataset.section, target.dataset.drop_div);
+    AddToSection(
+      SelectedTask.textContent,
+      target.dataset.section,
+      target.dataset.drop_div
+    );
   }
 }
 
 function onTaskDragStart(event) {
-  // event.preventDefault();
+  //event.preventDefault();
   changeSelectedTask(event.target);
 
   event.target.style.opacity = 0.9;
@@ -240,7 +255,7 @@ function onTaskDragOver(event) {
 }
 
 function onMouseMove(event) {
-  const loader = document.querySelector('.loader');
+  let loader = document.querySelector('.loader');
   mouseElementPosition(loader, event);
 }
 
@@ -267,7 +282,11 @@ async function SaveTasksOnServer() {
   loaderDisplay(false);
 
   if (responseValidation(response, 'Server')) {
-    displayError(true, 'Tasks information was saved successfully!', 'notification');
+    displayError(
+      true,
+      'Tasks information was saved successfully!',
+      'notification'
+    );
   }
 }
 
@@ -286,8 +305,8 @@ async function getServerTasks() {
   loaderDisplay(false);
 
   if (responseValidation(response, 'Loud')) {
-    // recieve tasks from server, update local storage
-    const tasksData = await response.json();
+    //recieve tasks from server, update local storage
+    let tasksData = await response.json();
     localStorage.clear();
     localStorage.setItem('tasks', tasksData.tasks);
     displayError(true, 'Tasks Loaded Succesfully', 'notification');
@@ -296,7 +315,8 @@ async function getServerTasks() {
 
 function responseValidation(response, errorText = '') {
   if (response != undefined && !response.ok) {
-    const errorString = `${errorText}Error! => ${response.status} ${response.statusText}`;
+    let errorString =
+      errorText + 'Error! => ' + response.status + ' ' + response.statusText;
     displayError(true, errorString);
     return false;
   }
@@ -307,7 +327,13 @@ function responseValidation(response, errorText = '') {
 // ===========  DOM  ================
 // ==================================
 
-function createElement(tagName, children = [], classes = [], attributes = {}, eventListeners = {}) {
+function createElement(
+  tagName,
+  children = [],
+  classes = [],
+  attributes = {},
+  eventListeners = {}
+) {
   const myElement = document.createElement(tagName);
 
   for (const child of children) {
@@ -331,29 +357,37 @@ function createElement(tagName, children = [], classes = [], attributes = {}, ev
 
 // refresh page according to local storage filtered by the query (search) text
 function reloadTasksPage(query) {
-  const divArr = ['#div-to-do-tasks', '#div-in-progress-tasks', '#div-done-tasks'];
-  for (const divId of divArr) {
-    const div = document.querySelector(divId);
+  let divArr = [
+    '#div-to-do-tasks',
+    '#div-in-progress-tasks',
+    '#div-done-tasks',
+  ];
+  for (let divId of divArr) {
+    let div = document.querySelector(divId);
     div.innerHTML = '';
-    div.append(createTaskList(query, div.dataset.section, [`${div.dataset.section}-tasks`]));
+    div.append(
+      createTaskList(query, div.dataset.section, [
+        div.dataset.section + '-tasks',
+      ])
+    );
   }
   resetAddInputs();
 }
 
 function loaderDisplay(display) {
   // Creating:
-  // <div class="loader"><div></div><div></div><div></div><div></div></div>
+  //<div class="loader"><div></div><div></div><div></div><div></div></div>
   if (display) {
-    const body = document.querySelector('body');
-    const divArray = [];
+    let body = document.querySelector('body');
+    let divArray = [];
     for (let i = 0; i < 4; i++) {
       divArray.push(createElement('div'));
     }
-    const loaderDiv = createElement('div', divArray, ['loader']);
+    let loaderDiv = createElement('div', divArray, ['loader']);
     mouseElementPosition(loaderDiv, window.event);
     body.append(loaderDiv);
   } else {
-    const loader = document.querySelector('.loader');
+    let loader = document.querySelector('.loader');
     loader.remove();
   }
 }
@@ -370,15 +404,15 @@ function AddToSection(taskName, key, index = 0, showError = false) {
   } else {
     pSectionTasksArray.splice(index, 0, taskName);
   }
-  // pass input validation tests
-  // update tasks and store in local storage
+  //pass input validation tests
+  //update tasks and store in local storage
   localStorage.setItem('tasks', JSON.stringify(tasksObject));
   displayError(showError, 'Task was added succesfully', 'notification');
 }
 
 function getTextFromInputId(id) {
-  const input = document.querySelector(`#${id}`);
-  const inputValue = input.value;
+  let input = document.querySelector('#' + id);
+  let inputValue = input.value;
   // Erase input value
   input.value = '';
   return inputValue;
@@ -462,14 +496,14 @@ function applySelectedClass(SelectedTask, containsBoolian) {
 }
 
 // ===> Creating UL element from key in "task" <===
-// filter case insensative
+//filter case insensative
 function createTaskList(filter, key, css_classes) {
   const tasksObject = getLocalStorageTasks();
-  const ul_Elements_Array = [];
+  let ul_Elements_Array = [];
   let counter = 0;
-  const filterLowerCase = filter.toLowerCase();
-  for (const task of tasksObject[key]) {
-    const taskLowerCase = task.toLowerCase();
+  let filterLowerCase = filter.toLowerCase();
+  for (let task of tasksObject[key]) {
+    let taskLowerCase = task.toLowerCase();
     if (taskLowerCase.includes(filterLowerCase)) {
       ul_Elements_Array.push(
         createElement(
@@ -489,7 +523,7 @@ function createTaskList(filter, key, css_classes) {
           getTaskEventListeners()
         )
       );
-      // reset before next Items
+      //reset before next Items
       counter++;
     }
   }
@@ -512,7 +546,8 @@ function createTaskList(filter, key, css_classes) {
 function deleteTask(TasktoDelete = SelectedTaskName) {
   const tasksObject = getLocalStorageTasks();
 
-  const taskIndex = tasksObject[SelectedTask.dataset.section].indexOf(TasktoDelete);
+  let taskIndex =
+    tasksObject[SelectedTask.dataset.section].indexOf(TasktoDelete);
   if (taskIndex !== -1) {
     tasksObject[SelectedTask.dataset.section].splice(taskIndex, 1);
   }
@@ -543,22 +578,26 @@ function ResetLocalStorage() {
 
 // Display an error on screen
 function displayError(visible, text = '', type = 'error') {
-  // check current state
+  //check current state
   errorLabel.textContent = text;
 
   if (errorLabel.classList.contains('error')) {
     if (type != 'error') {
       applyErrorLabelClass('notification', 'error');
     }
-  } else if (type == 'error') {
-    applyErrorLabelClass('error', 'notification');
+  } else {
+    if (type == 'error') {
+      applyErrorLabelClass('error', 'notification');
+    }
   }
   if (errorLabel.classList.contains('hidden')) {
     if (visible) {
       applyErrorLabelClass('visible', 'hidden');
     }
-  } else if (!visible) {
-    applyErrorLabelClass('hidden', 'visible');
+  } else {
+    if (!visible) {
+      applyErrorLabelClass('hidden', 'visible');
+    }
   }
 }
 
