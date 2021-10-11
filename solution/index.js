@@ -30,6 +30,19 @@ function deleteAll(e){
 }
 
 
+//local storage save function
+function innerLocalStorageSave(listName,ul){
+    localStorageObjectForUpdate[listName][0] = ul.outerHTML;
+}
+function localStorageSave(){
+    innerLocalStorageSave('todo', toDoTasksUl);
+    innerLocalStorageSave('in-progress', inProgressTasksUl);
+    innerLocalStorageSave('done', doneTasksUl);
+    innerLocalStorageSave('deleted', deletedTasksUl);
+    localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
+}
+
+
 /*dom manipulation */
 
 //setting global variables for the document elements
@@ -79,169 +92,66 @@ const taskEnumeratorArray = Array.from(document.getElementsByClassName('task-enu
  let deletedTasksUl = recycleBin.firstChild;
 
 
- /*event listeners*/
+ /**event listeners**/
 
-//adding event listeners to the body
-document.body.addEventListener('mouseover' ,addHoverReplace);
-document.body.addEventListener('dblclick',gainFocus);
-document.body.addEventListener('focusout', saveValueBlur);
-document.body.addEventListener('contextmenu', removeLi);
-document.addEventListener('click', sortAz);
-document.body.addEventListener('click', deleteAll);
+ /* tasks */
 
-//local storage save function
-function innerLocalStorageSave(listName,ul){
-    localStorageObjectForUpdate[listName][0] = ul.outerHTML;
-}
-function localStorageSave(){
-    innerLocalStorageSave('todo', toDoTasksUl);
-    innerLocalStorageSave('in-progress', inProgressTasksUl);
-    innerLocalStorageSave('done', doneTasksUl);
-    innerLocalStorageSave('deleted', deletedTasksUl);
-    localStorage.setItem('tasks',JSON.stringify(localStorageObjectForUpdate));
-}
 
-//total list item counter function
-function listCounter(){
-    for(let taskEnumerator of taskEnumeratorArray){
-        const totalTasks = Array.from(taskEnumerator.parentElement.lastElementChild.firstElementChild.children).length
-        taskEnumerator.textContent = `total: ${totalTasks}`
-    }
-}
-
-//adding a list item functionality
-
-//inner add task function
-function innerAddTaskToul(target){
-    let newTask = createElement('li',children = [`${target.previousElementSibling.value}`], classes = ['task'], attributes = {'draggable': 'true'});
-    target.nextElementSibling.firstChild.insertBefore(newTask, target.nextElementSibling.firstChild.firstChild);
-      //local storage insertion
-      localStorageSave();
-     //individual eventListeners for drag and Drop
-      newTask.addEventListener('dragstart', dragItem);
-      newTask.addEventListener('dragend', endDrag);
-    target.previousElementSibling.value = '';
-    listCounter(); 
-}
-//add task function
-function addTask(e){
-    let target = e.target;
-    if(target.className === 'add-task'){
-        let inputText = target.previousElementSibling.value;
-       if(inputText === ''){
-            alert("You haven't entered any text");
-       }else{
-        innerAddTaskToul(target);
-       }
-    }
-}
-taskDiv.addEventListener('click', addTask);
-// double click functionality
+ // double click functionality
 
 //gaining focus function
- function gainFocus(e){
-     let target = e.target;
-     if(target.tagName === 'LI'){
-         target.setAttribute('contenteditable' , 'true');
-         target.style.backgroundColor = 'rgba(50,50,200,0.5)';
-     }
- };
-
- // getting out of focus after blur
- function saveValueBlur(e){
+function gainFocus(e){
     let target = e.target;
-     if(target.tagName != 'LI'){
-        return;
-     }
-     target.setAttribute('contenteditable', 'false');
-     target.style.backgroundColor = 'rgba(0,0,0,0)';
-    localStorageSave();
-    listCounter();
- }
- //
-
- // hover + alt + 1/2/3 functionality
- function checkListAtAlt(eventKey,target,keyNum, ulToInsert){
-    if(eventKey == keyNum){
-        ulToInsert.insertBefore(target, ulToInsert.firstChild);
+    if(target.tagName === 'LI'){
+        target.setAttribute('contenteditable' , 'true');
+        target.style.backgroundColor = 'rgba(50,50,200,0.5)';
     }
- }
- function hoverReplace(e){
-     let target = e.target; 
-      function innerKeyReplace(e){
-            if(e.altKey){
-                checkListAtAlt(e.key,target,1, toDoTasksUl);
-                checkListAtAlt(e.key,target,2, inProgressTasksUl);
-                checkListAtAlt(e.key,target,3,doneTasksUl);
-            }
-                 //local storage insertion
-                 localStorageSave();
-                 listCounter();       
-       }
-       target.addEventListener('mouseleave', () => {
-            window.removeEventListener('keydown',innerKeyReplace);
-        }); 
+};
 
-        window.addEventListener('keydown',innerKeyReplace);
- }
+// getting out of focus after blur
+function saveValueBlur(e){
+   let target = e.target;
+    if(target.tagName != 'LI'){
+       return;
+    }
+    target.setAttribute('contenteditable', 'false');
+    target.style.backgroundColor = 'rgba(0,0,0,0)';
+   localStorageSave();
+   listCounter();
+}
+//
+
+// hover + alt + 1/2/3 functionality
+function checkListAtAlt(eventKey,target,keyNum, ulToInsert){
+   if(eventKey == keyNum){
+       ulToInsert.insertBefore(target, ulToInsert.firstChild);
+   }
+}
+function hoverReplace(e){
+    let target = e.target; 
+     function innerKeyReplace(e){
+           if(e.altKey){
+               checkListAtAlt(e.key,target,1, toDoTasksUl);
+               checkListAtAlt(e.key,target,2, inProgressTasksUl);
+               checkListAtAlt(e.key,target,3,doneTasksUl);
+           }
+                //local storage insertion
+                localStorageSave();
+                listCounter();       
+      }
+      target.addEventListener('mouseleave', () => {
+           window.removeEventListener('keydown',innerKeyReplace);
+       }); 
+
+       window.addEventListener('keydown',innerKeyReplace);
+}
 //add addHoverReplace
 function addHoverReplace(e){
-    if (e.target.tagName != 'LI'){
-        return
-    };
-    e.target.addEventListener('mouseenter', hoverReplace);
+   if (e.target.tagName != 'LI'){
+       return
+   };
+   e.target.addEventListener('mouseenter', hoverReplace);
 }
-
-//create Element function
-function createElement(tagName, children = [], classes = [], attributes = {}) {
-    let newEl = document.createElement(tagName);
-    for(let child of children){
-        if(typeof(child) === "string"){
-            child = document.createTextNode(child);
-        }
-         newEl.append(child);
-    }
-    for(let cls of classes){
-        newEl.classList.add(cls);
-    }
-    for(let attr in attributes){
-        newEl.setAttribute(attr, attributes[attr]);
-    }
-  
-    return newEl
-  }
-
-//search bar functions
-function hideTask(tasksList,value){
-    for(let li of tasksList){
-        li.hidden = false;
-        if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
-          li.hidden = true;
-        }
-    }
-}
-function searchTask(e){
-  let value = e.target.value;
-  let taskArray = Array.from(document.getElementsByTagName('li'));
-  hideTask(taskArray, value);
-}
-//search bar animations
-searchBar.addEventListener('focus', () => {
-   let placeholder = document.querySelector('.placeholder');
-   let label = document.querySelector('.placeholder-label');
-   placeholder.style = 'transform: translateY(-150%); color:blue; font-size:12px';
-   label.style = 'border-bottom: solid 3px blue;'
-})
-searchBar.addEventListener('blur', () => {
-    if(searchBar.value === ''){
-        let placeholder = document.querySelector('.placeholder');
-        let label = document.querySelector('.placeholder-label');
-        placeholder.style = 'transform: translateY(0%); color:black; font-size:16px';
-        label.style = 'border-bottom: solid 1px black;'
-    }
-})
-//
-searchBar.addEventListener('keyup', searchTask);
 
 //dragItem function
 function dragItem(e){
@@ -283,6 +193,107 @@ function elementAfterDragging(container, y){
         }
     }, {offset: Number.NEGATIVE_INFINITY}).element
 }
+
+ /* lists */
+
+//adding event listeners to the body
+document.body.addEventListener('mouseover' ,addHoverReplace);
+document.body.addEventListener('dblclick',gainFocus);
+document.body.addEventListener('focusout', saveValueBlur);
+document.body.addEventListener('contextmenu', removeLi);
+document.addEventListener('click', sortAz);
+document.body.addEventListener('click', deleteAll);
+
+
+//total list item counter function
+function listCounter(){
+    for(let taskEnumerator of taskEnumeratorArray){
+        const totalTasks = Array.from(taskEnumerator.parentElement.lastElementChild.firstElementChild.children).length
+        taskEnumerator.textContent = `total: ${totalTasks}`
+    }
+}
+
+//adding a list item functionality
+
+//inner add task function
+function innerAddTaskToul(target){
+    let newTask = createElement('li',children = [`${target.previousElementSibling.value}`], classes = ['task'], attributes = {'draggable': 'true'});
+    target.nextElementSibling.firstChild.insertBefore(newTask, target.nextElementSibling.firstChild.firstChild);
+      //local storage insertion
+      localStorageSave();
+     //individual eventListeners for drag and Drop
+      newTask.addEventListener('dragstart', dragItem);
+      newTask.addEventListener('dragend', endDrag);
+    target.previousElementSibling.value = '';
+    listCounter(); 
+}
+//add task function
+function addTask(e){
+    let target = e.target;
+    if(target.className === 'add-task'){
+        let inputText = target.previousElementSibling.value;
+       if(inputText === ''){
+            alert("You haven't entered any text");
+       }else{
+        innerAddTaskToul(target);
+       }
+    }
+}
+taskDiv.addEventListener('click', addTask);
+
+
+//create Element function
+function createElement(tagName, children = [], classes = [], attributes = {}) {
+    let newEl = document.createElement(tagName);
+    for(let child of children){
+        if(typeof(child) === "string"){
+            child = document.createTextNode(child);
+        }
+         newEl.append(child);
+    }
+    for(let cls of classes){
+        newEl.classList.add(cls);
+    }
+    for(let attr in attributes){
+        newEl.setAttribute(attr, attributes[attr]);
+    }
+  
+    return newEl
+  }
+/* search bar */
+
+//search bar functions
+function hideTask(tasksList,value){
+    for(let li of tasksList){
+        li.hidden = false;
+        if(!li.textContent.toLowerCase().includes(value.toLowerCase())){
+          li.hidden = true;
+        }
+    }
+}
+function searchTask(e){
+  let value = e.target.value;
+  let taskArray = Array.from(document.getElementsByTagName('li'));
+  hideTask(taskArray, value);
+}
+//search bar animations
+searchBar.addEventListener('focus', () => {
+   let placeholder = document.querySelector('.placeholder');
+   let label = document.querySelector('.placeholder-label');
+   placeholder.style = 'transform: translateY(-150%); color:blue; font-size:12px';
+   label.style = 'border-bottom: solid 3px blue;'
+})
+searchBar.addEventListener('blur', () => {
+    if(searchBar.value === ''){
+        let placeholder = document.querySelector('.placeholder');
+        let label = document.querySelector('.placeholder-label');
+        placeholder.style = 'transform: translateY(0%); color:black; font-size:16px';
+        label.style = 'border-bottom: solid 1px black;'
+    }
+})
+//
+searchBar.addEventListener('keyup', searchTask);
+
 //game trigger event
 let asCounter = 0;
 document.addEventListener('keydown', (e) => {
