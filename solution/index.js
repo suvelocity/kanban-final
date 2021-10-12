@@ -1,31 +1,17 @@
 import style from './styles.css';
-import { deleteAll } from './localStorage';
+import { deleteAll, loadLocalStorageAtBeginning, localStorageObjectForUpdate } from './localStorage';
+import { gainFocus, dragItem } from './tasks event listeners';
+import hideTask from './searchbar functionality';
+import {
+  taskDiv, searchBar, saveButton, loadButton, showRecycleBin, loader,
+  recycleBin, toDoContainer, inProgressContainer, doneContainer, taskEnumeratorArray
+} from './global variables for index';
+
 /* local storage  */
 // initilizes the local storage object
-if (!localStorage.tasks || localStorage.tasks.length === 0) {
-  localStorage.setItem('tasks', JSON.stringify({
-    todo: [],
-    'in-progress': [],
-    done: [],
-    deleted: []
-  }));
-}
-const localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
-// local storage clear button lisener
-/*
-function deleteAll (e) {
-  const { target } = e;
-  if (target.className === 'delete-button') {
-    localStorage.setItem('tasks', JSON.stringify({
-      todo: [],
-      'in-progress': [],
-      done: [],
-      deleted: []
-    }));
-    window.location.reload();
-  }
-}
-*/
+loadLocalStorageAtBeginning();
+// object for saving to local storage
+
 // local storage save function
 
 function innerLocalStorageSave (listName, ul) {
@@ -43,17 +29,6 @@ function localStorageSave () {
 /* dom manipulation */
 
 // setting global variables for the document elements
-const taskDiv = document.getElementById('tasks-div');
-const searchBar = document.getElementById('search');
-const saveButton = document.getElementById('save-button');
-const loadButton = document.getElementById('load-button');
-const showRecycleBin = document.getElementById('show-recycle');
-const loader = document.querySelector('.api-buttons').lastElementChild;
-const recycleBin = document.querySelector('.recycle-bin');
-const toDoContainer = document.getElementById('to-do-container');
-const inProgressContainer = document.getElementById('in-progress-container');
-const doneContainer = document.getElementById('done-container');
-const taskEnumeratorArray = Array.from(document.getElementsByClassName('task-enumerator'));
 
 // localstorage loading after refresh
 function appendToContainer (containerPr, ul) {
@@ -95,13 +70,6 @@ let deletedTasksUl = recycleBin.firstChild;
 // double click functionality
 
 // gaining focus function
-function gainFocus (e) {
-  const { target } = e;
-  if (target.tagName === 'LI') {
-    target.setAttribute('contenteditable', 'true');
-    target.style.backgroundColor = 'rgba(50,50,200,0.5)';
-  }
-}
 
 // getting out of focus after blur
 function saveValueBlur (e) {
@@ -148,9 +116,6 @@ function addHoverReplace (e) {
 }
 
 // dragItem function
-function dragItem (e) {
-  e.target.classList.add('dragging');
-}
 
 function endDrag (e) {
   e.target.classList.remove('dragging');
@@ -254,34 +219,13 @@ function createElement (tagName, children = [], classes = [], attributes = {}) {
   Object.entries(attributes).forEach((attr) => {
     newEl.setAttribute(attr[0], attr[1]);
   });
-  /*
-  for (const attr in attributes) {
-    newEl.setAttribute(attr, attributes[attr]);
-  }
-  */
   return newEl;
 }
 
 /* search bar */
 
 // search bar functions
-function hideTask (tasksList, value) {
-  tasksList.forEach((liPr) => {
-    const li = liPr;
-    li.hidden = false;
-    if (!li.textContent.toLowerCase().includes(value.toLowerCase())) {
-      li.hidden = true;
-    }
-  });
-  /*
-  for (const li of tasksList) {
-    li.hidden = false;
-    if (!li.textContent.toLowerCase().includes(value.toLowerCase())) {
-      li.hidden = true;
-    }
-  }
-  */
-}
+
 function searchTask (e) {
   const { value } = e.target;
   const taskArray = Array.from(document.getElementsByTagName('li'));
