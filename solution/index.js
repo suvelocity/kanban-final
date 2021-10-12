@@ -1,23 +1,22 @@
 import style from './styles.css';
-import { deleteAll, loadLocalStorageAtBeginning, localStorageObjectForUpdate } from './localStorage';
+import {
+  deleteAll, loadLocalStorageAtBeginning, localStorageObjectForUpdate
+  , appendToContainer, innerLocalStorageSave
+} from './localStorage';
 import { gainFocus, dragItem } from './tasks event listeners';
 import hideTask from './searchbar functionality';
 import {
   taskDiv, searchBar, saveButton, loadButton, showRecycleBin, loader,
-  recycleBin, toDoContainer, inProgressContainer, doneContainer, taskEnumeratorArray
+  recycleBin, toDoContainer, inProgressContainer, doneContainer
 } from './global variables for index';
-
+import listCounter from './list counter for index';
+import createElement from './create element function';
 /* local storage  */
 // initilizes the local storage object
 loadLocalStorageAtBeginning();
 // object for saving to local storage
 
 // local storage save function
-
-function innerLocalStorageSave (listName, ul) {
-  localStorageObjectForUpdate[listName][0] = ul.outerHTML;
-}
-
 function localStorageSave () {
   innerLocalStorageSave('todo', toDoTasksUl);
   innerLocalStorageSave('in-progress', inProgressTasksUl);
@@ -31,15 +30,7 @@ function localStorageSave () {
 // setting global variables for the document elements
 
 // localstorage loading after refresh
-function appendToContainer (containerPr, ul) {
-  const container = containerPr;
-  if (localStorageObjectForUpdate[ul][0] == null) {
-    container.innerHTML = '';
-  } else {
-    const currentUl = localStorageObjectForUpdate[ul][0];
-    container.innerHTML = currentUl;
-  }
-}
+
 if (localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null || localStorageObjectForUpdate.deleted[0] != null) {
   appendToContainer(toDoContainer, 'todo');
   appendToContainer(inProgressContainer, 'in-progress');
@@ -57,7 +48,7 @@ if (localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['
   recycleBin.appendChild(deletedTasksUl);
   listCounter();
 }
-
+// sets the lists objects for updating
 let toDoTasksUl = toDoContainer.firstChild;
 let inProgressTasksUl = inProgressContainer.firstChild;
 let doneTasksUl = doneContainer.firstChild;
@@ -164,14 +155,6 @@ document.addEventListener('click', sortAz);
 document.body.addEventListener('click', deleteAll);
 
 // total list item counter function
-function listCounter () {
-  taskEnumeratorArray.forEach((taskEnumerator) => {
-    const taskEnum = taskEnumerator;
-    const listofEnumerator = taskEnum.parentElement.lastElementChild.firstElementChild.children;
-    const totalTasks = Array.from(listofEnumerator).length;
-    taskEnum.textContent = `total: ${totalTasks}`;
-  });
-}
 
 // adding a list item functionality
 
@@ -202,25 +185,8 @@ function addTask (e) {
   }
 }
 taskDiv.addEventListener('click', addTask);
-
+/*
 // create Element function
-function createElement (tagName, children = [], classes = [], attributes = {}) {
-  const newEl = document.createElement(tagName);
-  children.forEach((kid) => {
-    let child = kid;
-    if (typeof (child) === 'string') {
-      child = document.createTextNode(child);
-    }
-    newEl.append(child);
-  });
-  classes.forEach((cls) => {
-    newEl.classList.add(cls);
-  });
-  Object.entries(attributes).forEach((attr) => {
-    newEl.setAttribute(attr[0], attr[1]);
-  });
-  return newEl;
-}
 
 /* search bar */
 
