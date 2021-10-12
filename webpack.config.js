@@ -12,10 +12,19 @@ module.exports = {
     filename: '[name].[contenthash].js',
     clean: true,
   },
+  devtool: 'inline-source-map',
+  devServer: {
+    static: path.resolve(__dirname, 'dist'),
+    port: 5500,
+    open: true,
+    hot: true,
+    watchContentBase: true,
+  },
   //loaders
   module: {
     rules: [
-      {test : /\.css$/, use: ['style-loader', 'css-loader']}
+      //css 
+      {test: /\.css$/, use: ['style-loader', 'css-loader']},
     ]
   },
   //plugins

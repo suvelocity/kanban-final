@@ -1,4 +1,5 @@
 import style from './styles.css';
+import { deleteAll } from './localStorage';
 /* local storage  */
 // initilizes the local storage object
 if (!localStorage.tasks || localStorage.tasks.length === 0) {
@@ -11,6 +12,7 @@ if (!localStorage.tasks || localStorage.tasks.length === 0) {
 }
 const localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
 // local storage clear button lisener
+/*
 function deleteAll (e) {
   const { target } = e;
   if (target.className === 'delete-button') {
@@ -23,11 +25,13 @@ function deleteAll (e) {
     window.location.reload();
   }
 }
-
+*/
 // local storage save function
+
 function innerLocalStorageSave (listName, ul) {
   localStorageObjectForUpdate[listName][0] = ul.outerHTML;
 }
+
 function localStorageSave () {
   innerLocalStorageSave('todo', toDoTasksUl);
   innerLocalStorageSave('in-progress', inProgressTasksUl);
