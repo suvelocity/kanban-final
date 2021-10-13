@@ -1,10 +1,10 @@
 import style from './styles.css';
 import {
   deleteAll, loadLocalStorageAtBeginning, localStorageObjectForUpdate
-  , appendToContainer, innerLocalStorageSave
+  , innerLocalStorageSave, loadLocalStorageToDom
 } from './localStorage';
-import { gainFocus, dragItem } from './tasks event listeners';
-import hideTask from './searchbar functionality';
+import { gainFocus, dragItem, checkListAtAlt } from './tasks event listeners';
+import { searchTask } from './searchbar functionality';
 import {
   taskDiv, searchBar, saveButton, loadButton, showRecycleBin, loader,
   recycleBin, toDoContainer, inProgressContainer, doneContainer
@@ -12,16 +12,17 @@ import {
 import listCounter from './list counter for index';
 import createElement from './create element function';
 /* local storage  */
+
 // initilizes the local storage object
 loadLocalStorageAtBeginning();
 // object for saving to local storage
 
 // local storage save function
 function localStorageSave () {
-  innerLocalStorageSave('todo', toDoTasksUl);
-  innerLocalStorageSave('in-progress', inProgressTasksUl);
-  innerLocalStorageSave('done', doneTasksUl);
-  innerLocalStorageSave('deleted', deletedTasksUl);
+  innerLocalStorageSave('todo', ...toDoTasksUl);
+  innerLocalStorageSave('in-progress', ...inProgressTasksUl);
+  innerLocalStorageSave('done', ...doneTasksUl);
+  innerLocalStorageSave('deleted', ...deletedTasksUl);
   localStorage.setItem('tasks', JSON.stringify(localStorageObjectForUpdate));
 }
 
@@ -30,29 +31,12 @@ function localStorageSave () {
 // setting global variables for the document elements
 
 // localstorage loading after refresh
-
-if (localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null || localStorageObjectForUpdate.deleted[0] != null) {
-  appendToContainer(toDoContainer, 'todo');
-  appendToContainer(inProgressContainer, 'in-progress');
-  appendToContainer(doneContainer, 'done');
-  appendToContainer(recycleBin, 'deleted');
-  listCounter();
-} else {
-  const toDoTasksUl = createElement('ul', [], ['to-do-tasks'], {});
-  const inProgressTasksUl = createElement('ul', [], ['in-progress-tasks'], {});
-  const doneTasksUl = createElement('ul', [], ['done-tasks'], {});
-  const deletedTasksUl = createElement('ul', [], ['recycle-Ul'], {});
-  toDoContainer.appendChild(toDoTasksUl);
-  inProgressContainer.appendChild(inProgressTasksUl);
-  doneContainer.appendChild(doneTasksUl);
-  recycleBin.appendChild(deletedTasksUl);
-  listCounter();
-}
+loadLocalStorageToDom();
 // sets the lists objects for updating
-let toDoTasksUl = toDoContainer.firstChild;
-let inProgressTasksUl = inProgressContainer.firstChild;
-let doneTasksUl = doneContainer.firstChild;
-let deletedTasksUl = recycleBin.firstChild;
+const toDoTasksUl = [toDoContainer.firstChild];
+const inProgressTasksUl = [inProgressContainer.firstChild];
+const doneTasksUl = [doneContainer.firstChild];
+const deletedTasksUl = [recycleBin.firstChild];
 
 /** event listeners**/
 
@@ -76,18 +60,14 @@ function saveValueBlur (e) {
 //
 
 // hover + alt + 1/2/3 functionality
-function checkListAtAlt (eventKey, target, keyNum, ulToInsert) {
-  if (eventKey === keyNum) {
-    ulToInsert.insertBefore(target, ulToInsert.firstChild);
-  }
-}
+
 function hoverReplace (e) {
   const { target } = e;
   function innerKeyReplace (ev) {
     if (ev.altKey) {
-      checkListAtAlt(ev.key, target, 1, toDoTasksUl);
-      checkListAtAlt(ev.key, target, 2, inProgressTasksUl);
-      checkListAtAlt(ev.key, target, 3, doneTasksUl);
+      checkListAtAlt(ev.key, target, 1, toDoTasksUl[0]);
+      checkListAtAlt(ev.key, target, 2, inProgressTasksUl[0]);
+      checkListAtAlt(ev.key, target, 3, doneTasksUl[0]);
     }
     // local storage insertion
     localStorageSave();
@@ -192,26 +172,7 @@ taskDiv.addEventListener('click', addTask);
 
 // search bar functions
 
-function searchTask (e) {
-  const { value } = e.target;
-  const taskArray = Array.from(document.getElementsByTagName('li'));
-  hideTask(taskArray, value);
-}
 // search bar animations
-searchBar.addEventListener('focus', () => {
-  const placeholder = document.querySelector('.placeholder');
-  const label = document.querySelector('.placeholder-label');
-  placeholder.style = 'transform: translateY(-150%); color:blue; font-size:12px';
-  label.style = 'border-bottom: solid 3px blue;';
-});
-searchBar.addEventListener('blur', () => {
-  if (searchBar.value === '') {
-    const placeholder = document.querySelector('.placeholder');
-    const label = document.querySelector('.placeholder-label');
-    placeholder.style = 'transform: translateY(0%); color:black; font-size:16px';
-    label.style = 'border-bottom: solid 1px black;';
-  }
-});
 //
 searchBar.addEventListener('keyup', searchTask);
 
@@ -241,7 +202,7 @@ themeButton.addEventListener('click', (e) => {
 function removeLi (e) {
   if (e.target.tagName === 'LI') {
     e.preventDefault();
-    deletedTasksUl.appendChild(e.target);
+    deletedTasksUl[0].appendChild(e.target);
     localStorageSave();
     listCounter();
   }
@@ -264,6 +225,7 @@ function sortAzUp (target) {
       target.parentElement.insertBefor(b, a);
       return -1;
     }
+    target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
     return 0;
   });
 }
@@ -277,6 +239,7 @@ function sortAzDown (target) {
       target.parentElement.insertBefor(b, a);
       return -1;
     }
+    target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
     return 0;
   });
 }
@@ -309,7 +272,7 @@ async function saveApi () {
       Accept: 'application/json', 'Content-Type': 'application/json'
     },
     // body: JSON.stringify({'tasks':{'todo':[], 'in-progress': [], 'done' : []} // resets the API
-    body: JSON.stringify({ tasks: { todo: [toDoTasksUl.outerHTML], 'in-progress': [inProgressTasksUl.outerHTML], done: [doneTasksUl.outerHTML] } })
+    body: JSON.stringify({ tasks: { todo: [toDoTasksUl[0].outerHTML], 'in-progress': [inProgressTasksUl[0].outerHTML], done: [doneTasksUl[0].outerHTML] } })
   }).then((response) => { if (response.status > 400) { alert("i'm a teapot"); } });
   loader.classList.remove('loader');
 }
@@ -336,9 +299,9 @@ async function loadApi () {
       loadTasksFromApi(inProgressTasksUlAPI, inProgressContainer);
       loadTasksFromApi(doneTasksUlAPI, doneContainer);
 
-      toDoTasksUl = toDoContainer.firstChild;
-      inProgressTasksUl = inProgressContainer.firstChild;
-      doneTasksUl = doneContainer.firstChild;
+      toDoTasksUl[0] = toDoContainer.firstChild;
+      inProgressTasksUl[0] = inProgressContainer.firstChild;
+      doneTasksUl[0] = doneContainer.firstChild;
       // saving changes to local storage
       localStorageSave();
       listCounter();

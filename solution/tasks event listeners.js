@@ -11,3 +11,9 @@ export function gainFocus (e) {
 export function dragItem (e) {
   e.target.classList.add('dragging');
 }
+
+export function checkListAtAlt (eventKey, target, keyNum, ulToInsert) {
+  if (eventKey.toString() === keyNum.toString()) {
+    ulToInsert.insertBefore(target, ulToInsert.firstChild);
+  }
+}

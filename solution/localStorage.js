@@ -17,6 +17,8 @@ export function loadLocalStorageAtBeginning () {
 }
 // object for saving to local storage
 export const localStorageObjectForUpdate = JSON.parse(localStorage.tasks);
+// local storage save function
+
 // local storage clear button lisener
 export function deleteAll (e) {
   const { target } = e;
@@ -49,20 +51,22 @@ export function innerLocalStorageSave (listName, ul) {
 
 // localstorage loading after refresh
 
-if (localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null || localStorageObjectForUpdate.deleted[0] != null) {
-  appendToContainer(toDoContainer, 'todo');
-  appendToContainer(inProgressContainer, 'in-progress');
-  appendToContainer(doneContainer, 'done');
-  appendToContainer(recycleBin, 'deleted');
-  listCounter();
-} else {
-  const toDoTasksUl = createElement('ul', [], ['to-do-tasks'], {});
-  const inProgressTasksUl = createElement('ul', [], ['in-progress-tasks'], {});
-  const doneTasksUl = createElement('ul', [], ['done-tasks'], {});
-  const deletedTasksUl = createElement('ul', [], ['recycle-Ul'], {});
-  toDoContainer.appendChild(toDoTasksUl);
-  inProgressContainer.appendChild(inProgressTasksUl);
-  doneContainer.appendChild(doneTasksUl);
-  recycleBin.appendChild(deletedTasksUl);
-  listCounter();
+export function loadLocalStorageToDom () {
+  if (localStorageObjectForUpdate.todo[0] != null || localStorageObjectForUpdate['in-progress'][0] != null || localStorageObjectForUpdate.done[0] != null || localStorageObjectForUpdate.deleted[0] != null) {
+    appendToContainer(toDoContainer, 'todo');
+    appendToContainer(inProgressContainer, 'in-progress');
+    appendToContainer(doneContainer, 'done');
+    appendToContainer(recycleBin, 'deleted');
+    listCounter();
+  } else {
+    const toDoTasksUlinner = createElement('ul', [], ['to-do-tasks'], {});
+    const inProgressTasksUlinner = createElement('ul', [], ['in-progress-tasks'], {});
+    const doneTasksUlinner = createElement('ul', [], ['done-tasks'], {});
+    const deletedTasksUlinner = createElement('ul', [], ['recycle-Ul'], {});
+    toDoContainer.appendChild(toDoTasksUlinner);
+    inProgressContainer.appendChild(inProgressTasksUlinner);
+    doneContainer.appendChild(doneTasksUlinner);
+    recycleBin.appendChild(deletedTasksUlinner);
+    listCounter();
+  }
 }

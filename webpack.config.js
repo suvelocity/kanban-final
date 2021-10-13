@@ -18,7 +18,6 @@ module.exports = {
     port: 5500,
     open: true,
     hot: true,
-    watchContentBase: true,
   },
   //loaders
   module: {
