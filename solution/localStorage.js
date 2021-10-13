@@ -70,3 +70,15 @@ export function loadLocalStorageToDom () {
     listCounter();
   }
 }
+export const toDoTasksUl = [];
+export const inProgressTasksUl = [];
+export const doneTasksUl = [];
+export const deletedTasksUl = [];
+
+export function localStorageSave () {
+  innerLocalStorageSave('todo', ...toDoTasksUl);
+  innerLocalStorageSave('in-progress', ...inProgressTasksUl);
+  innerLocalStorageSave('done', ...doneTasksUl);
+  innerLocalStorageSave('deleted', ...deletedTasksUl);
+  localStorage.setItem('tasks', JSON.stringify(localStorageObjectForUpdate));
+}

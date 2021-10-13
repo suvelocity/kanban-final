@@ -1,7 +1,7 @@
 import style from './styles.css';
 import {
-  deleteAll, loadLocalStorageAtBeginning, localStorageObjectForUpdate
-  , innerLocalStorageSave, loadLocalStorageToDom
+  deleteAll, loadLocalStorageAtBeginning, loadLocalStorageToDom, toDoTasksUl, inProgressTasksUl,
+  doneTasksUl, deletedTasksUl, localStorageSave
 } from './localStorage';
 import { gainFocus, dragItem, checkListAtAlt } from './tasks event listeners';
 import { searchTask } from './searchbar functionality';
@@ -17,15 +17,6 @@ import createElement from './create element function';
 loadLocalStorageAtBeginning();
 // object for saving to local storage
 
-// local storage save function
-function localStorageSave () {
-  innerLocalStorageSave('todo', ...toDoTasksUl);
-  innerLocalStorageSave('in-progress', ...inProgressTasksUl);
-  innerLocalStorageSave('done', ...doneTasksUl);
-  innerLocalStorageSave('deleted', ...deletedTasksUl);
-  localStorage.setItem('tasks', JSON.stringify(localStorageObjectForUpdate));
-}
-
 /* dom manipulation */
 
 // setting global variables for the document elements
@@ -33,10 +24,10 @@ function localStorageSave () {
 // localstorage loading after refresh
 loadLocalStorageToDom();
 // sets the lists objects for updating
-const toDoTasksUl = [toDoContainer.firstChild];
-const inProgressTasksUl = [inProgressContainer.firstChild];
-const doneTasksUl = [doneContainer.firstChild];
-const deletedTasksUl = [recycleBin.firstChild];
+toDoTasksUl[0] = toDoContainer.firstChild;
+inProgressTasksUl[0] = inProgressContainer.firstChild;
+doneTasksUl[0] = doneContainer.firstChild;
+deletedTasksUl[0] = recycleBin.firstChild;
 
 /** event listeners**/
 
