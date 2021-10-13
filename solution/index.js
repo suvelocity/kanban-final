@@ -3,14 +3,17 @@ import {
   deleteAll, loadLocalStorageAtBeginning, loadLocalStorageToDom, toDoTasksUl, inProgressTasksUl,
   doneTasksUl, deletedTasksUl, localStorageSave
 } from './localStorage';
-import { gainFocus, dragItem, checkListAtAlt } from './tasks event listeners';
+import {
+  gainFocus, dragItem, checkListAtAlt, endDrag
+} from './tasks event listeners';
 import { searchTask } from './searchbar functionality';
 import {
-  taskDiv, searchBar, saveButton, loadButton, showRecycleBin, loader,
+  taskDiv, searchBar, saveButton, loadButton, showRecycleBin,
   recycleBin, toDoContainer, inProgressContainer, doneContainer
 } from './global variables for index';
 import listCounter from './list counter for index';
 import createElement from './create element function';
+import { saveApi, loadApi } from './Api functions';
 /* local storage  */
 
 // initilizes the local storage object
@@ -79,11 +82,6 @@ function addHoverReplace (e) {
 
 // dragItem function
 
-function endDrag (e) {
-  e.target.classList.remove('dragging');
-  localStorageSave();
-  listCounter();
-}
 // adding event listeners for dragNdrop
 Array.from(document.querySelectorAll('.task')).forEach((li) => {
   li.addEventListener('dragstart', dragItem);
@@ -252,58 +250,6 @@ function sortAz (e) {
   azCounter += 1;
 }
 
-/* Api Functions */
-
-// API functions
-async function saveApi () {
-  loader.classList.add('loader');
-  await fetch('https://json-bins.herokuapp.com/bin/614adb6c4021ac0e6c080c15', {
-    method: 'PUT',
-    headers: {
-      Accept: 'application/json', 'Content-Type': 'application/json'
-    },
-    // body: JSON.stringify({'tasks':{'todo':[], 'in-progress': [], 'done' : []} // resets the API
-    body: JSON.stringify({ tasks: { todo: [toDoTasksUl[0].outerHTML], 'in-progress': [inProgressTasksUl[0].outerHTML], done: [doneTasksUl[0].outerHTML] } })
-  }).then((response) => { if (response.status > 400) { alert("i'm a teapot"); } });
-  loader.classList.remove('loader');
-}
-
-// load API function
-async function loadApi () {
-  loader.classList.add('loader');
-  await fetch('https://json-bins.herokuapp.com/bin/614adb6c4021ac0e6c080c15').then(response => response.json())
-    .then((data) => {
-      loader.classList.remove('loader');
-      const toDoTasksUlAPI = data.tasks.todo[0];
-      const inProgressTasksUlAPI = data.tasks['in-progress'][0];
-      const doneTasksUlAPI = data.tasks.done[0];
-
-      function loadTasksFromApi (taskList, sectionPr) {
-        const section = sectionPr;
-        if (taskList === undefined) {
-          section.innerHTML = '';
-        } else {
-          section.innerHTML = taskList;
-        }
-      }
-      loadTasksFromApi(toDoTasksUlAPI, toDoContainer);
-      loadTasksFromApi(inProgressTasksUlAPI, inProgressContainer);
-      loadTasksFromApi(doneTasksUlAPI, doneContainer);
-
-      toDoTasksUl[0] = toDoContainer.firstChild;
-      inProgressTasksUl[0] = inProgressContainer.firstChild;
-      doneTasksUl[0] = doneContainer.firstChild;
-      // saving changes to local storage
-      localStorageSave();
-      listCounter();
-
-      // resetting the individual dargNdrop eventListeners
-      Array.from(document.querySelectorAll('.task')).forEach((li) => {
-        li.addEventListener('dragstart', dragItem);
-        li.addEventListener('dragend', endDrag);
-      });
-    });
-}
 // adding the event listeners to the load and save buttons
 saveButton.addEventListener('click', saveApi);
 loadButton.addEventListener('click', loadApi);

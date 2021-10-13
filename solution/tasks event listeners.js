@@ -1,3 +1,6 @@
+import { localStorageSave } from './localStorage';
+import listCounter from './list counter for index';
+
 // gaining focus function
 export function gainFocus (e) {
   const { target } = e;
@@ -16,4 +19,10 @@ export function checkListAtAlt (eventKey, target, keyNum, ulToInsert) {
   if (eventKey.toString() === keyNum.toString()) {
     ulToInsert.insertBefore(target, ulToInsert.firstChild);
   }
+}
+
+export function endDrag (e) {
+  e.target.classList.remove('dragging');
+  localStorageSave();
+  listCounter();
 }
