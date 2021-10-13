@@ -18,6 +18,7 @@ export async function saveApi () {
     },
     // body: JSON.stringify({'tasks':{'todo':[], 'in-progress': [], 'done' : []} // resets the API
     body: JSON.stringify({ tasks: { todo: [toDoTasksUl[0].outerHTML], 'in-progress': [inProgressTasksUl[0].outerHTML], done: [doneTasksUl[0].outerHTML] } })
+  // eslint-disable-next-line no-alert
   }).then((response) => { if (response.status > 400) { alert("i'm a teapot"); } });
   loader.classList.remove('loader');
 }

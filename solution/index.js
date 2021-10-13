@@ -147,6 +147,7 @@ function addTask (e) {
   if (target.className === 'add-task') {
     const inputText = target.previousElementSibling.value;
     if (inputText === '') {
+      // eslint-disable-next-line no-alert
       alert("You haven't entered any text");
     } else {
       innerAddTaskToul(target);
