@@ -4,7 +4,7 @@ import {
   doneTasksUl, deletedTasksUl, localStorageSave
 } from './localStorage';
 import {
-  gainFocus, dragItem, checkListAtAlt, endDrag
+  gainFocus, dragItem, endDrag, saveValueBlur, addHoverReplace
 } from './tasks event listeners';
 import { searchTask } from './searchbar functionality';
 import {
@@ -40,45 +40,7 @@ deletedTasksUl[0] = recycleBin.firstChild;
 
 // gaining focus function
 
-// getting out of focus after blur
-function saveValueBlur (e) {
-  const { target } = e;
-  if (target.tagName !== 'LI') {
-    return;
-  }
-  target.setAttribute('contenteditable', 'false');
-  target.style.backgroundColor = 'rgba(0,0,0,0)';
-  localStorageSave();
-  listCounter();
-}
-//
-
 // hover + alt + 1/2/3 functionality
-
-function hoverReplace (e) {
-  const { target } = e;
-  function innerKeyReplace (ev) {
-    if (ev.altKey) {
-      checkListAtAlt(ev.key, target, 1, toDoTasksUl[0]);
-      checkListAtAlt(ev.key, target, 2, inProgressTasksUl[0]);
-      checkListAtAlt(ev.key, target, 3, doneTasksUl[0]);
-    }
-    // local storage insertion
-    localStorageSave();
-    listCounter();
-  }
-  target.addEventListener('mouseleave', () => {
-    window.removeEventListener('keydown', innerKeyReplace);
-  });
-  window.addEventListener('keydown', innerKeyReplace);
-}
-// add addHoverReplace
-function addHoverReplace (e) {
-  if (e.target.tagName !== 'LI') {
-    return;
-  }
-  e.target.addEventListener('mouseenter', hoverReplace);
-}
 
 // dragItem function
 
