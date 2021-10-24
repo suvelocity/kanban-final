@@ -1,21 +1,33 @@
 {
   "name": "final",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Welcome to your pre-course final project. You are going to build a task-management application.",
   "scripts": {
     "test": "jest",
-    "final": "npm i && node ./scripts/getBin.js"
+    "final": "npm i && node ./scripts/getBin.js",
+    "build": "webpack",
+    "dev": "webpack serve"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "css-loader": "^6.4.0",
+    "eslint": "^8.0.0",
+    "eslint-config-airbnb-standard": "^3.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "gifencoder": "^2.0.1",
+    "html-webpack-plugin": "^5.3.2",
     "jest": "^27.1.1",
     "nock-puppeteer": "^1.0.6",
     "png-js": "^1.0.0",
-    "puppeteer": "^10.2.0"
+    "prettier": "^2.4.1",
+    "puppeteer": "^10.2.0",
+    "style-loader": "^3.3.0",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0",
+    "webpack-dev-server": "^4.3.1"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -24,5 +36,18 @@
     "testMatch": [
       "**/tests/**/*.test.+(js)"
     ]
-  }
+  },
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArnonAsquira/kanban-final.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ArnonAsquira/kanban-final/issues"
+  },
+  "homepage": "https://github.com/ArnonAsquira/kanban-final#readme"
 }
