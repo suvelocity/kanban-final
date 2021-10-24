@@ -36,14 +36,6 @@ deletedTasksUl[0] = recycleBin.firstChild;
 
 /* tasks */
 
-// double click functionality
-
-// gaining focus function
-
-// hover + alt + 1/2/3 functionality
-
-// dragItem function
-
 // adding event listeners for dragNdrop
 Array.from(document.querySelectorAll('.task')).forEach((li) => {
   li.addEventListener('dragstart', dragItem);
@@ -117,14 +109,9 @@ function addTask (e) {
   }
 }
 taskDiv.addEventListener('click', addTask);
-/*
+
 // create Element function
 
-/* search bar */
-
-// search bar functions
-
-// search bar animations
 //
 searchBar.addEventListener('keyup', searchTask);
 
@@ -168,34 +155,37 @@ showRecycleBin.addEventListener('click', (e) => {
 let azCounter = 1;
 
 function sortAzUp (target) {
-  Array.from(target.parentElement.lastElementChild.firstElementChild.children).sort((a, b) => {
+  const newList = Array.from(target.parentElement.lastElementChild.firstElementChild.children);
+  newList.sort((a, b) => {
     if (a.textContent > b.textContent) {
-      target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
-      return 1;
+      return -1;
     }
     if (b.textContent < a.textContent) {
-      target.parentElement.insertBefor(b, a);
-      return -1;
-    }
-    target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
-    return 0;
-  });
-}
-function sortAzDown (target) {
-  Array.from(target.parentElement.lastElementChild.firstElementChild.children).sort((a, b) => {
-    if (a.textContent < b.textContent) {
-      target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
       return 1;
     }
-    if (b.textContent > a.textContent) {
-      target.parentElement.insertBefor(b, a);
-      return -1;
-    }
-    target.parentElement.lastElementChild.firstElementChild.insertBefore(a, b);
     return 0;
   });
+  newList.forEach((li) => {
+    target.parentElement.lastElementChild.firstElementChild.appendChild(li);
+  });
 }
-
+//
+function sortAzDown (target) {
+  const newList = Array.from(target.parentElement.lastElementChild.firstElementChild.children);
+  newList.sort((a, b) => {
+    if (a.textContent < b.textContent) {
+      return -1;
+    }
+    if (b.textContent > a.textContent) {
+      return 1;
+    }
+    return 0;
+  });
+  newList.forEach((li) => {
+    target.parentElement.lastElementChild.firstElementChild.appendChild(li);
+  });
+}
+//
 function innerSortAz (counter, target) {
   if (counter % 2 === 0) {
     sortAzUp(target);
@@ -203,7 +193,7 @@ function innerSortAz (counter, target) {
     sortAzDown(target);
   }
 }
-
+//
 function sortAz (e) {
   const { target } = e;
   if (target.className !== 'sort-az') {
